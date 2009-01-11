@@ -15,7 +15,7 @@ public:
     MediaWiki( QObject *parent );
     virtual ~MediaWiki();
 
-    QStringList results() const;
+    QHash <QString, QUrl> results() const;
 
     int maxItems() const;
     void setMaxItems( int limit );

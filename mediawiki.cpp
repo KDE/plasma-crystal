@@ -8,7 +8,7 @@
 #include "mediawiki.h"
 
 struct MediaWikiPrivate {
-    QStringList results;
+    QHash<QString, QUrl> results;
     QUrl apiUrl;
     QNetworkAccessManager *manager;
     int maxItems;
@@ -29,7 +29,7 @@ MediaWiki::~MediaWiki()
     delete d;
 }
 
-QStringList MediaWiki::results() const
+QHash<QString, QUrl> MediaWiki::results() const
 {
     return d->results;
 }
@@ -94,7 +94,12 @@ bool MediaWiki::processSearchResult( QIODevice *source )
             if ( reader.name() == QString("p") ) {
                 QXmlStreamAttributes attrs = reader.attributes();
                 //qDebug() << "Found page" << attrs.value( QString("title") );
-                d->results << attrs.value( QString("title") ).toString();
+                QString base = d->apiUrl.toString(QUrl::RemovePath);
+                base.append("/");
+                QString path = attrs.value( QString("title") ).toString();
+                base.append(path);
+                QUrl url = QUrl(base);
+                d->results[attrs.value( QString("title") ).toString()] = url;
             }
         }
         else if ( tokenType == QXmlStreamReader::Invalid )
