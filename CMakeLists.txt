@@ -7,6 +7,7 @@ find_package(Nepomuk REQUIRED)
 set(crystal_SRCS
     crystal.cpp
     crystaldialog.cpp
+    mediawiki.cpp
     )
 
 kde4_add_ui_files(crystal_SRCS crystalConfig.ui )

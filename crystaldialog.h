@@ -29,7 +29,16 @@
 #include <KLineEdit>
 #include <KPushButton>
 
+// Nepomuk
+#include <Nepomuk/Types/Class>
+#include <Soprano/Vocabulary/Xesam>
+#include <nepomuk/queryserviceclient.h>
+#include <nepomuk/result.h>
+#include <nepomuk/searchhitview.h>
+
+
 //own
+#include <mediawiki.h>
 class CrystalApplet;
 
 //desktop view
@@ -43,12 +52,6 @@ namespace Solid
 {
     class Device;
 }
-
-#include <Nepomuk/Types/Class>
-#include <Soprano/Vocabulary/Xesam>
-#include <nepomuk/queryserviceclient.h>
-#include <nepomuk/result.h>
-#include <nepomuk/searchhitview.h>
 
 
 namespace Crystal
@@ -85,6 +88,8 @@ namespace Crystal
          */
         void search();
 
+
+        void wikiFinished(bool done);
         /**
          * @internal Gets called when a new match has been found
          */
@@ -106,6 +111,8 @@ namespace Crystal
           void buildDialog();
           void updateStatus(const QString status);
 
+          void setupWiki();
+
           // The widget which display the panel
           QWidget *m_widget;
 
@@ -123,8 +130,9 @@ namespace Crystal
           int m_matches;
           // Last query ran
           QString m_query;
-        // All icon sizes, indexed
-        QHash<int, int> m_iconSizes;
+          // All icon sizes, indexed
+          QHash<int, int> m_iconSizes;
+          MediaWiki* m_wiki;
   };
 
 }

@@ -48,6 +48,8 @@
 //own
 #include "crystaldialog.h"
 #include "crystal.h"
+#include "mediawiki.h"
+
 
 using namespace Crystal;
 using namespace Plasma;
@@ -88,6 +90,8 @@ CrystalDialog::CrystalDialog(CrystalApplet * crystal,QObject *parent)
     // clicking on items
     connect( m_resultsView, SIGNAL( resourceActivated(const QUrl&)),
              this, SLOT(run(const QUrl&)));
+
+    setupWiki();
 }
 
 CrystalDialog::~CrystalDialog()
@@ -196,6 +200,9 @@ void CrystalDialog::search()
     kDebug() << "Searching for ..." << m_query << " timeout after:" << m_crystal->timeout();
     updateStatus(i18nc("status in the plasmoid's popup", "Searching for <b>\"%1\"</b>...", m_query));
 
+    // Wiki search
+    m_wiki->search(m_query);
+
     // add a timeout in case something goes wrong (no user wants to wait more than N seconds)
     QTimer::singleShot( m_crystal->timeout(), this, SLOT(searchFinished()) );
     m_queryServiceClient->blockingQuery( m_query );
@@ -246,6 +253,29 @@ void CrystalDialog::newMatches( const QList<Nepomuk::Search::Result>& results)
         kDebug() << "\nNew Match:" << res.genericLabel() << type << res.genericIcon() << result.score();
     }
     updateStatus(i18np("Searching for <b>\"%2\"</b>. %1 file found so far...", "%1 files found so far.", m_matches, m_query));
+}
+
+void CrystalDialog::setupWiki() {
+    m_wiki = new MediaWiki( this );
+    m_wiki->setMaxItems(20);
+    m_wiki->setApiUrl( QUrl("http://techbase.kde.org/api.php") );
+    connect( m_wiki, SIGNAL(finished(bool)), SLOT(wikiFinished(bool)) );
+}
+
+void CrystalDialog::wikiFinished(bool done)
+{
+    Q_UNUSED( done );
+    QList<Nepomuk::Search::Result> nepResults;
+    QHash<QString, QUrl> res;
+    res = m_wiki->results();
+    //kDebug() << "===========================================================";
+    //kDebug() << "WIKI RESULTS:" << res.keys();
+    foreach(const QUrl url, res.keys()) {
+        nepResults << Nepomuk::Search::Result(url);
+    }
+    if (nepResults.count()) {
+        newMatches(nepResults);
+    }
 }
 
 void CrystalDialog::searchFinished()
