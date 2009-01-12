@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>306</width>
-    <height>257</height>
+    <width>365</width>
+    <height>369</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -15,43 +15,8 @@
   <property name="accessibleName" >
    <string>Configure Pager</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" >
-   <property name="margin" >
-    <number>0</number>
-   </property>
-   <property name="spacing" >
-    <number>0</number>
-   </property>
-   <item row="1" column="0" >
-    <spacer name="verticalSpacer" >
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" stdset="0" >
-      <size>
-       <width>20</width>
-       <height>15</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="5" column="0" >
-    <spacer name="verticalSpacer_4" >
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0" >
-      <size>
-       <width>20</width>
-       <height>47</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="3" column="0" >
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
     <widget class="QGroupBox" name="appearenceGroupBox" >
      <property name="title" >
       <string/>
@@ -66,7 +31,7 @@
       <property name="margin" >
        <number>0</number>
       </property>
-      <item row="0" column="0" >
+      <item row="1" column="0" >
        <widget class="QLabel" name="displayLabel" >
         <property name="text" >
          <string>Maximum matches</string>
@@ -76,7 +41,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
+      <item row="1" column="1" >
        <widget class="QSpinBox" name="matchesSpin" >
         <property name="sizePolicy" >
          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
@@ -101,27 +66,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="labelRows_3" >
-        <property name="text" >
-         <string>Show folders</string>
-        </property>
-        <property name="alignment" >
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="buddy" >
-         <cstring>timeoutSpin</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" >
-       <widget class="QCheckBox" name="showFoldersCheck" >
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" >
+      <item row="4" column="0" >
        <widget class="QLabel" name="label_3" >
         <property name="text" >
          <string>Timeout in seconds</string>
@@ -131,7 +76,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1" >
+      <item row="4" column="1" >
        <widget class="QSpinBox" name="timeoutSpin" >
         <property name="sizePolicy" >
          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
@@ -159,20 +104,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="2" >
-       <spacer name="horizontalSpacer" >
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0" >
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="4" column="0" >
+      <item row="11" column="0" >
        <widget class="QLabel" name="label" >
         <property name="text" >
          <string>Icon size</string>
@@ -182,7 +114,7 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1" >
+      <item row="11" column="1" >
        <widget class="QSlider" name="sizeSlider" >
         <property name="maximum" >
          <number>6</number>
@@ -195,7 +127,7 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0" >
+      <item row="12" column="0" >
        <widget class="QLabel" name="labelRows" >
         <property name="text" >
          <string>Default query</string>
@@ -208,20 +140,92 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1" >
+      <item row="12" column="1" >
        <widget class="QCheckBox" name="clipboard" >
         <property name="text" >
          <string>use clipboard</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="1" >
+      <item row="13" column="1" >
        <widget class="QLineEdit" name="defaultQuery" />
+      </item>
+      <item row="9" column="0" >
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string>&lt;b>Look and Feel&lt;/b></string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_4" >
+        <property name="text" >
+         <string>&lt;b>Local Search&lt;/b></string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" >
+       <widget class="QLabel" name="label_5" >
+        <property name="text" >
+         <string>&lt;b>Online Search&lt;/b></string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" >
+       <widget class="QLabel" name="label_6" >
+        <property name="text" >
+         <string>Wiki Searches:</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1" >
+       <widget class="QCheckBox" name="wikipedia" >
+        <property name="text" >
+         <string>Wikipedia</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1" >
+       <widget class="QCheckBox" name="userbase" >
+        <property name="text" >
+         <string>KDE UserBase</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1" >
+       <widget class="QCheckBox" name="techbase" >
+        <property name="text" >
+         <string>KDE TechBase</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0" >
+       <widget class="QLabel" name="labelRows_3" >
+        <property name="text" >
+         <string>Show folders</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buddy" >
+         <cstring>timeoutSpin</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1" >
+       <widget class="QCheckBox" name="showFoldersCheck" >
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" >
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout" >
      <item>
       <widget class="QPushButton" name="configButton" >
@@ -251,5 +255,22 @@
   <tabstop>configButton</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>clipboard</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>defaultQuery</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>240</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>240</x>
+     <y>314</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

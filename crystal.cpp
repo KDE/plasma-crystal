@@ -96,6 +96,11 @@ void CrystalApplet::init()
     m_useClipboard = cg.readEntry("useClipboard", true);
     m_defaultQuery = cg.readEntry("defaultQuery", "porn");
 
+    // The wikis
+    m_useWikipedia = cg.readEntry("useWikipedia", false);
+    m_useUserBase = cg.readEntry("useUserBase", false);
+    m_useTechBase = cg.readEntry("useTechBase", false);
+
     kDebug() << "timeout, maxMatches, useclipboard, defaultquery:" << m_timeout << m_maxMatches << m_useClipboard << m_defaultQuery << m_iconSize;
     m_dialog->updateQuery(m_defaultQuery);
     m_dialog->updateIconSize();
@@ -150,7 +155,7 @@ void CrystalApplet::createConfigurationInterface(KConfigDialog *parent)
 {
     QWidget *widget = new QWidget(parent);
     ui.setupUi(widget);
-    parent->addPage(widget, i18n("General"), Applet::icon());
+    parent->addPage(widget, i18n("Search Options"), Applet::icon());
     connect(parent, SIGNAL(applyClicked()), this, SLOT(configAccepted()));
     connect(parent, SIGNAL(okClicked()), this, SLOT(configAccepted()));
     ui.timeoutSpin->setValue((int)m_timeout/1000); // (conversion from msec)
@@ -160,6 +165,12 @@ void CrystalApplet::createConfigurationInterface(KConfigDialog *parent)
     ui.sizeSlider->setValue(m_iconSize);
     ui.clipboard->setChecked(m_useClipboard);
     ui.defaultQuery->setText(m_defaultQuery);
+    ui.defaultQuery->setEnabled(!m_useClipboard);
+
+    ui.wikipedia->setChecked(m_useWikipedia);
+    ui.userbase->setChecked(m_useUserBase);
+    ui.techbase->setChecked(m_useTechBase);
+
     connect(ui.configButton, SIGNAL(clicked()), this, SLOT(openConfig()));
 }
 
@@ -194,6 +205,21 @@ void CrystalApplet::configAccepted()
     if (m_useClipboard != ui.clipboard->isChecked()) {
         m_useClipboard = !m_useClipboard;
         cg.writeEntry("useClipboard", m_useClipboard);
+    }
+
+    if (m_useWikipedia != ui.wikipedia->isChecked()) {
+        m_useWikipedia = !m_useWikipedia;
+        cg.writeEntry("useWikipedia", m_useWikipedia);
+    }
+
+    if (m_useUserBase!= ui.userbase->isChecked()) {
+        m_useUserBase= !m_useUserBase;
+        cg.writeEntry("useUserBase", m_useUserBase);
+    }
+
+    if (m_useTechBase != ui.techbase->isChecked()) {
+        m_useTechBase= !m_useTechBase;
+        cg.writeEntry("useTechBase", m_useTechBase);
     }
 
     if (ui.defaultQuery->text() != m_defaultQuery) {

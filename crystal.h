@@ -56,6 +56,11 @@ class CrystalApplet : public Plasma::PopupApplet
         int iconSize();
         QString defaultQuery();
 
+        // Wikis
+        bool m_useWikipedia;
+        bool m_useUserBase;
+        bool m_useTechBase;
+
     protected:
         void popupEvent(bool show);
         void createConfigurationInterface(KConfigDialog *parent);

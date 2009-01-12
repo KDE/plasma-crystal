@@ -63,7 +63,10 @@ CrystalDialog::CrystalDialog(CrystalApplet * crystal,QObject *parent)
       m_lineEdit(0),
       m_crystal(crystal),
       m_matches(0),
-      m_query(0)
+      m_query(0),
+      m_wikipedia(0),
+      m_userbase(0),
+      m_techbase(0)
 {
 
     m_iconSizes[0] = 16;
@@ -73,6 +76,9 @@ CrystalDialog::CrystalDialog(CrystalApplet * crystal,QObject *parent)
     m_iconSizes[4] = 64;
     m_iconSizes[5] = 128;
     m_iconSizes[6] = 256;
+
+    // Number of hits for MediaWiki searches
+    m_wikiHits = 6;
 
     // initialize the query client
     m_queryServiceClient = new Nepomuk::Search::QueryServiceClient(this);
@@ -201,8 +207,15 @@ void CrystalDialog::search()
     updateStatus(i18nc("status in the plasmoid's popup", "Searching for <b>\"%1\"</b>...", m_query));
 
     // Wiki search
-    m_wiki->search(m_query);
-
+    if (m_crystal->m_useWikipedia) {
+        m_wikipedia->search(m_query);
+    }
+    if (m_crystal->m_useUserBase) {
+        m_userbase->search(m_query);
+    }
+    if (m_crystal->m_useTechBase) {
+        m_techbase->search(m_query);
+    }
     // add a timeout in case something goes wrong (no user wants to wait more than N seconds)
     QTimer::singleShot( m_crystal->timeout(), this, SLOT(searchFinished()) );
     m_queryServiceClient->blockingQuery( m_query );
@@ -256,25 +269,55 @@ void CrystalDialog::newMatches( const QList<Nepomuk::Search::Result>& results)
 }
 
 void CrystalDialog::setupWiki() {
-    m_wiki = new MediaWiki( this );
-    m_wiki->setMaxItems(20);
-    m_wiki->setApiUrl( QUrl("http://techbase.kde.org/api.php") );
-    connect( m_wiki, SIGNAL(finished(bool)), SLOT(wikiFinished(bool)) );
+
+    m_wikipedia = new MediaWiki( this );
+    m_wikipedia->setMaxItems(m_wikiHits);
+    m_wikipedia->setApiUrl( QUrl("http://en.wikipedia.org/w/api.php") );
+    connect( m_wikipedia, SIGNAL(finished(bool)), SLOT(wikipediaFinished(bool)) );
+
+    m_userbase= new MediaWiki( this );
+    m_userbase->setMaxItems(m_wikiHits);
+    m_userbase->setApiUrl( QUrl("http://userbase.kde.org/api.php") );
+    connect( m_userbase, SIGNAL(finished(bool)), SLOT(userbaseFinished(bool)) );
+
+    m_techbase = new MediaWiki( this );
+    m_techbase->setMaxItems(m_wikiHits);
+    m_techbase->setApiUrl( QUrl("http://techbase.kde.org/api.php") );
+    connect( m_techbase, SIGNAL(finished(bool)), SLOT(techbaseFinished(bool)) );
 }
 
-void CrystalDialog::wikiFinished(bool done)
+void CrystalDialog::wikipediaFinished(bool done)
 {
     Q_UNUSED( done );
-    QList<Nepomuk::Search::Result> nepResults;
-    QHash<QString, QUrl> res;
-    res = m_wiki->results();
-    //kDebug() << "===========================================================";
-    //kDebug() << "WIKI RESULTS:" << res.keys();
-    foreach(const QUrl url, res.keys()) {
-        nepResults << Nepomuk::Search::Result(url);
+    kDebug() << "MediaWiki::Wikipedia Results:" << m_wikipedia->results();
+    newMediaWikiResults(m_wikipedia->results());
+}
+
+void CrystalDialog::userbaseFinished(bool done)
+{
+    Q_UNUSED( done );
+    kDebug() << "MediaWiki::UserBase Results:" << m_userbase->results();
+    newMediaWikiResults(m_userbase->results());
+}
+
+void CrystalDialog::techbaseFinished(bool done)
+{
+    Q_UNUSED( done );
+    kDebug() << "MediaWiki::TechBase Results:" << m_techbase->results();
+    newMediaWikiResults(m_techbase->results());
+}
+
+void CrystalDialog::newMediaWikiResults(const QHash<QString, QUrl> pages)
+{
+    QList<Nepomuk::Search::Result> results;
+    foreach(const QUrl url, pages.values()) {
+        results << Nepomuk::Search::Result(url);
     }
-    if (nepResults.count()) {
-        newMatches(nepResults);
+    if (results.count()) {
+        newMatches(results);
+        kDebug() << "results:" << results.count();
+    } else {
+        kDebug() << "empty ...";
     }
 }
 

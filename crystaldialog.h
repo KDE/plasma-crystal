@@ -89,7 +89,6 @@ namespace Crystal
         void search();
 
 
-        void wikiFinished(bool done);
         /**
          * @internal Gets called when a new match has been found
          */
@@ -103,6 +102,10 @@ namespace Crystal
           void updateColors();
           void searchFinished();
           void run( const QUrl& );
+          void wikipediaFinished(bool done);
+          void userbaseFinished(bool done);
+          void techbaseFinished(bool done);
+          void newMediaWikiResults(const QHash<QString, QUrl> pages);
 
       private :
           /**
@@ -132,7 +135,10 @@ namespace Crystal
           QString m_query;
           // All icon sizes, indexed
           QHash<int, int> m_iconSizes;
-          MediaWiki* m_wiki;
+          MediaWiki* m_wikipedia;
+          MediaWiki* m_userbase;
+          MediaWiki* m_techbase;
+          int m_wikiHits;
   };
 
 }
