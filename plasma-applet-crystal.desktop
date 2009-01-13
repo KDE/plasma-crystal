@@ -1,6 +1,20 @@
 [Desktop Entry]
 Name=Crystal Desktop Search
+Name[et]=Crystali töölauaotsing
+Name[km]=ស្វែងរក​ផ្ទៃតុ​គ្រីស្តាល់
+Name[nds]=Crystal-Schriefdischsöök
+Name[pt]=Pesquisa no Ambiente de Trabalho Crystal
+Name[pt_BR]=Pesquisa no Ambiente de Trabalho Crystal
+Name[sv]=Kristall skrivbordssökning
+Name[uk]=Стільничний пошук Crystal
 Comment=Search through your documents
+Comment[et]=Dokumentides otsimine
+Comment[km]=ស្វែងរក​តាមរយៈ​ឯកសារ​របស់អ្នក
+Comment[nds]=Dien Dokmenten dörkieken
+Comment[pt]=Pesquisar pelos seus documentos
+Comment[pt_BR]=Pesquisar pelos seus documentos
+Comment[sv]=Sök igenom dina dokument
+Comment[uk]=Пошук у ваших документах
 Icon=nepomuk
 Type=Service
 X-KDE-ServiceTypes=Plasma/Applet
