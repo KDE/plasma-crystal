@@ -39,6 +39,7 @@ namespace Crystal
 namespace Plasma
 {
     class IconWidget;
+    class ToolTipContent;
 }
 
 class CrystalApplet : public Plasma::PopupApplet
@@ -55,6 +56,7 @@ class CrystalApplet : public Plasma::PopupApplet
         bool showFolders();
         int iconSize();
         QString defaultQuery();
+        void updateToolTip(const QString query, const int matches);
 
         // Wikis
         bool m_useWikipedia;
@@ -75,6 +77,8 @@ class CrystalApplet : public Plasma::PopupApplet
 
         ///The dialog displaying matches
         Crystal::CrystalDialog * m_dialog;
+
+        Plasma::ToolTipContent m_toolTip;
 
         // Configuration dialog
         Ui::crystalConfig ui;

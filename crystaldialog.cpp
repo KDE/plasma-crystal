@@ -98,6 +98,8 @@ CrystalDialog::CrystalDialog(CrystalApplet * crystal,QObject *parent)
              this, SLOT(run(const QUrl&)));
 
     setupWiki();
+    m_crystal->updateToolTip("", 0);
+
 }
 
 CrystalDialog::~CrystalDialog()
@@ -270,6 +272,8 @@ void CrystalDialog::newMatches( const QList<Nepomuk::Search::Result>& results)
     }
     updateStatus(i18np("Searching for <b>\"%2\"</b>. %1 file found so far...",
                        "Searching for <b>\"%2\"</b>. %1 files found so far...", m_matches, m_query));
+    m_crystal->updateToolTip(m_query, m_matches);
+
 }
 
 void CrystalDialog::setupWiki() {
@@ -332,6 +336,7 @@ void CrystalDialog::searchFinished()
     updateStatus(i18np("Search for <b>\"%2\"</b> finished. %1 matching file found.",
                        "Search for <b>\"%2\"</b> finished. %1 matching files found.", m_matches, m_query));
     m_queryServiceClient->close();
+    m_crystal->updateToolTip(m_query, m_matches);
 }
 
 void CrystalDialog::run(const QUrl& uri)

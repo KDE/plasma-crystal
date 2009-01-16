@@ -36,6 +36,7 @@
 //use for desktop view
 #include <Plasma/IconWidget>
 #include <Plasma/Theme>
+#include <Plasma/ToolTipManager>
 
 // Nepomuk
 #include <Nepomuk/Resource>
@@ -104,6 +105,7 @@ void CrystalApplet::init()
     kDebug() << "timeout, maxMatches, useclipboard, defaultquery:" << m_timeout << m_maxMatches << m_useClipboard << m_defaultQuery << m_iconSize;
     m_dialog->updateQuery(m_defaultQuery);
     m_dialog->updateIconSize();
+    updateToolTip("", 0);
 }
 
 int CrystalApplet::timeout()
@@ -131,7 +133,7 @@ QString CrystalApplet::defaultQuery()
     return m_defaultQuery;
 }
 
-QWidget *CrystalApplet::widget()
+QWidget* CrystalApplet::widget()
 {
     if (!m_dialog) {
         m_dialog = new CrystalDialog(this);
@@ -143,12 +145,32 @@ void CrystalApplet::popupEvent(bool show)
 {
     if (show) {
         QString clip = QApplication::clipboard()->text();
-        if (!clip.isEmpty() && m_useClipboard) {
+        // TODO: magic number
+        // Having more long texts in the buffer is useless for search, so we restrict it to 30 for now
+        if (!clip.isEmpty() && clip.count() < 30 && m_useClipboard) {
             kDebug() << "Clipboard:" << clip;
             m_dialog->updateQuery(clip);
         }
-        Plasma::ToolTipManager::self()->clearContent(this);
+        //Plasma::ToolTipManager::self()->clearContent(this);
     }
+}
+
+void CrystalApplet::updateToolTip(const QString query, const int matches)
+{
+
+    if (!query.isEmpty()) {
+        m_toolTip = Plasma::ToolTipContent(i18nc("Tooltip main title text", "Crystal Desktop Search"),
+                        i18nc("Tooltip sub text", "Last search: %1 (%2 matches)", query, matches),
+                        KIcon("nepomuk").pixmap(IconSize(KIconLoader::Desktop))
+                    );
+    } else {
+        m_toolTip = Plasma::ToolTipContent(i18nc("No search has been done yet", "Crystal Desktop Search"),
+                        i18nc("Tooltip sub text", "Click on the icon to start searching"),
+                        KIcon("nepomuk").pixmap(IconSize(KIconLoader::Desktop))
+                    );
+
+    }
+        Plasma::ToolTipManager::self()->setContent(this, m_toolTip);
 }
 
 void CrystalApplet::createConfigurationInterface(KConfigDialog *parent)
