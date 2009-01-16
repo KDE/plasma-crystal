@@ -219,13 +219,18 @@ void CrystalDialog::search()
     // add a timeout in case something goes wrong (no user wants to wait more than N seconds)
     QTimer::singleShot( m_crystal->timeout(), this, SLOT(searchFinished()) );
     m_queryServiceClient->blockingQuery( m_query );
-    updateStatus(i18np("Search for <b>\"%2\"</b> finished. %1 matching file found.", "Search for <b>\"%2\"</b> finished. %1 matching files found.", m_matches, m_query));
+    updateStatus(i18np( "Search for <b>\"%2\"</b> finished. %1 matching file found.",
+                        "Search for <b>\"%2\"</b> finished. %1 matching files found.", m_matches, m_query));
     kDebug() << m_query << "done.";
 }
 
 void CrystalDialog::newMatches( const QList<Nepomuk::Search::Result>& results)
 {
     foreach( const Nepomuk::Search::Result& result, results ) {
+        if (!result.resourceUri().isValid()) {
+            kDebug() << "Skipping invalid URI";
+            continue;
+        }
         Nepomuk::Resource res(result.resourceUri());
 
         QString type;
@@ -236,6 +241,7 @@ void CrystalDialog::newMatches( const QList<Nepomuk::Search::Result>& results)
         else {
             type = Nepomuk::Types::Class( res.resourceType() ).label();
         }
+        /*
         kDebug() << "Desc:" << res.genericDescription();
         kDebug() << "Score:         " << result.score() << result.resourceUri();
         kDebug() << "GenericLabel:  " << res.genericLabel() << type;
@@ -249,10 +255,7 @@ void CrystalDialog::newMatches( const QList<Nepomuk::Search::Result>& results)
             //kDebug() << "u, v" << u.toString() << props[u].toStringList();
         }
         //kDebug() << "Variant:   " << qVariantFromValue( res );
-        if (!result.resourceUri().isValid()) {
-            kDebug() << "Skipping invalid URI";
-            continue;
-        }
+        */
         if (!m_crystal->showFolders() && type == "folder") {
            continue;
         }
@@ -313,6 +316,8 @@ void CrystalDialog::newMediaWikiResults(const QHash<QString, QUrl> pages)
     QList<Nepomuk::Search::Result> results;
     foreach(const QUrl url, pages.values()) {
         results << Nepomuk::Search::Result(url);
+        // TODO,pending new MediaWiki features: Add descriptions and write them to the result, for example:
+        //res.setDescription(QString("%1 \nA file found by Crystal").arg(type));
     }
     if (results.count()) {
         newMatches(results);
