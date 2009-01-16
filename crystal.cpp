@@ -143,15 +143,19 @@ QWidget* CrystalApplet::widget()
 
 void CrystalApplet::popupEvent(bool show)
 {
+    int maxLength = 30;
     if (show) {
         QString clip = QApplication::clipboard()->text();
         // TODO: magic number
         // Having more long texts in the buffer is useless for search, so we restrict it to 30 for now
-        if (!clip.isEmpty() && clip.count() < 30 && m_useClipboard) {
+        if (!clip.isEmpty() && clip.count() <= maxLength && m_useClipboard) {
             kDebug() << "Clipboard:" << clip;
             m_dialog->updateQuery(clip);
         }
-        //Plasma::ToolTipManager::self()->clearContent(this);
+        // At least warn in this case so people find out what's going on
+        if (clip.count() > maxLength) {
+            kWarning() << "clipboard contents is longer than" << maxLength << "chars. Not using it for the query";
+        }
     }
 }
 
