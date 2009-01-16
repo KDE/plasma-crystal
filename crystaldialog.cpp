@@ -98,7 +98,7 @@ CrystalDialog::CrystalDialog(CrystalApplet * crystal,QObject *parent)
              this, SLOT(run(const QUrl&)));
 
     setupWiki();
-    m_crystal->updateToolTip("", 0);
+//     m_crystal->updateToolTip("", 0);
 
 }
 
@@ -234,6 +234,19 @@ void CrystalDialog::newMatches( const QList<Nepomuk::Search::Result>& results)
             continue;
         }
         Nepomuk::Resource res(result.resourceUri());
+        /*
+            Here, we  have our chance to make sense of a random URL for Resource.
+            We should retrieve data from the MediaWiki class and then for example:
+
+            res.setDescription(QString("%1 \nA file found by Crystal").arg(type));
+
+            ... but only if we have the resource newly created. This way, we get those
+            hits from the MediaWiki stored in Nepomuk.
+
+            Need to investigate what impact this has on performance. (I guess we
+            can make it async, as long as we don't throw away our temporary data
+            and not re-retrieve it from the Nepomukstore)
+        */
 
         QString type;
         if( res.hasType( Soprano::Vocabulary::Xesam::File() ) ||
@@ -261,7 +274,6 @@ void CrystalDialog::newMatches( const QList<Nepomuk::Search::Result>& results)
         if (!m_crystal->showFolders() && type == "folder") {
            continue;
         }
-        //res.setDescription(QString("%1 \nA file found by Crystal").arg(type));
         m_resultsView->updateResource(result);
         m_matches++;
         if (m_matches == m_crystal->maxMatches()) {
