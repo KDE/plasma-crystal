@@ -220,10 +220,13 @@ void CrystalDialog::search()
     }
     // add a timeout in case something goes wrong (no user wants to wait more than N seconds)
     QTimer::singleShot( m_crystal->timeout(), this, SLOT(searchFinished()) );
+    m_queryServiceClient->query( m_query );
+    /*
     m_queryServiceClient->blockingQuery( m_query );
     updateStatus(i18np( "Search for <b>\"%2\"</b> finished. %1 matching file found.",
                         "Search for <b>\"%2\"</b> finished. %1 matching files found.", m_matches, m_query));
     kDebug() << m_query << "done.";
+    */
 }
 
 void CrystalDialog::newMatches( const QList<Nepomuk::Search::Result>& results)
