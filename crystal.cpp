@@ -164,7 +164,7 @@ void CrystalApplet::updateToolTip(const QString query, const int matches)
 
     if (!query.isEmpty()) {
         m_toolTip = Plasma::ToolTipContent(i18nc("Tooltip main title text", "Crystal Desktop Search"),
-                        i18nc("Tooltip sub text", "Last search: %1 (%2 matches)", query, matches),
+                        i18ncp("Tooltip sub text", "Last search: %2 (%1 match)", "Last search: %2 (%1 matches)", matches, query),
                         KIcon("nepomuk").pixmap(IconSize(KIconLoader::Desktop))
                     );
     } else {
