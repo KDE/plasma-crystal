@@ -185,6 +185,7 @@ void CrystalDialog::updateColors()
     p.setColor(QPalette::Window, Plasma::Theme::defaultTheme()->color(Plasma::Theme::BackgroundColor));
     m_widget->setPalette(p);
     m_statusLabel->setPalette(p);
+    m_resultsView->setPalette(p);
 }
 
 void CrystalDialog::updateStatus(const QString status)
