@@ -95,7 +95,7 @@ void CrystalApplet::init()
     m_showFolders = cg.readEntry("showFolders", false);
     m_iconSize = cg.readEntry("iconSize", 1);
     m_useClipboard = cg.readEntry("useClipboard", true);
-    m_defaultQuery = cg.readEntry("defaultQuery", "porn");
+    m_defaultQuery = cg.readEntry("defaultQuery", "holidays");
 
     // The wikis
     m_useWikipedia = cg.readEntry("useWikipedia", false);
