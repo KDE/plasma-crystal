@@ -26,11 +26,19 @@
 
 class QNetworkReply;
 
+/**
+ * Searches MediaWiki based wikis like wikipedia and techbase.
+ *
+ * @author Richard Moore, rich@kde.org
+ */
 class MediaWiki : public QObject
 {
     Q_OBJECT
 
 public:
+    /**
+     * Contains information about a single match from the search.
+     */
     class Result {
     public:
 	Result() {
@@ -48,30 +56,66 @@ public:
 	    return *this;
 	};
 
+	/** The page title of the match. */
 	QString title;
+	/** The URL of the page containing the match. */
 	QUrl url;	
     };
 
+    /**
+     * Create a media wiki querying object with the specified parent. The querying
+     * object can be used for multple queries, though only one can be performed at
+     * a time.
+     */
     MediaWiki( QObject *parent );
     virtual ~MediaWiki();
 
+    /**
+     * Returns a list of matches.
+     */
     QList<MediaWiki::Result> results() const;
 
+    /** Returns the currently specified maximum number of results to return. */
     int maxItems() const;
+
+    /** Sets the maximum number of results to return. */
     void setMaxItems( int limit );
 
+    /** Returns the currently specified API URL. */
     QUrl apiUrl() const;
+
+    /**
+     * Sets the URL at which the wikis API page can be found. For example, wikipedia
+     * has the API file at http://en.wikipedia.org/w/api.php whilst techbase has the
+     * file at http://techbase.kde.org/api.php.
+     */
     void setApiUrl( const QUrl &url );
 
+    /** Returns the currently specified timeout in milliseconds. */
     int timeout() const;
+
+    /**
+     * Sets timeout in milliseconds. Once the specified time has elapsed, the current
+     * query is aborted.
+     */
     void setTimeout( int millis );
 
 signals:
+    /**
+     * Emitted when a search has been completed.
+     * @param success true if the search was completed successfully.
+     */
     void finished( bool success );
 
 public slots:
+    /**
+     * Search the wiki for the specified search term.
+     */
     void search( const QString &searchTerm );
 
+    /**
+     * Aborts the currently running request.
+     */
     void abort();
 
 private slots:
