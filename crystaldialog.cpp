@@ -78,7 +78,7 @@ CrystalDialog::CrystalDialog(CrystalApplet * crystal,QObject *parent)
     m_iconSizes[6] = 256;
 
     // Number of hits for MediaWiki searches
-    m_wikiHits = 6;
+    m_wikiHits = 2;
 
     // initialize the query client
     m_queryServiceClient = new Nepomuk::Search::QueryServiceClient(this);
@@ -336,8 +336,15 @@ void CrystalDialog::newMediaWikiResults(const QList<MediaWiki::Result> hits)
     QList<Nepomuk::Search::Result> results;
     foreach(MediaWiki::Result res, hits) {
         results << Nepomuk::Search::Result(res.url);
-        // TODO,pending new MediaWiki features: Add descriptions and write them to the result, for example:
-        //res.setDescription(QString("%1 \nA file found by Crystal").arg(type));
+
+        Nepomuk::Resource* resource = new Nepomuk::Resource(res.url);
+        kDebug() << resource->label() << resource->description();
+        if (resource->label().isEmpty()) {
+            resource->setLabel(res.title);
+        }
+        if (resource->description().isEmpty()) {
+            resource->setDescription(res.url.toString());
+        }
     }
     if (results.count()) {
         newMatches(results);
