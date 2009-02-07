@@ -71,7 +71,7 @@ namespace Crystal
           * @param area where the dialog is displayed
           * @param parent the parent of this object
           **/
-          CrystalDialog(CrystalApplet * crystal,QObject *parent = 0);
+          CrystalDialog(CrystalApplet * crystal, QObject *parent = 0);
 
           virtual ~CrystalDialog();
 
@@ -105,7 +105,7 @@ namespace Crystal
           void wikipediaFinished(bool done);
           void userbaseFinished(bool done);
           void techbaseFinished(bool done);
-          void newMediaWikiResults(const QHash<QString, QUrl> pages);
+          void newMediaWikiResults(const QList<MediaWiki::Result> res);
 
       private :
           /**

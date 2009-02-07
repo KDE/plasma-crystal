@@ -313,29 +313,29 @@ void CrystalDialog::setupWiki() {
 void CrystalDialog::wikipediaFinished(bool done)
 {
     Q_UNUSED( done );
-    kDebug() << "MediaWiki::Wikipedia Results:" << m_wikipedia->results();
+    //kDebug() << "MediaWiki::Wikipedia Results:" << m_wikipedia->results();
     newMediaWikiResults(m_wikipedia->results());
 }
 
 void CrystalDialog::userbaseFinished(bool done)
 {
     Q_UNUSED( done );
-    kDebug() << "MediaWiki::UserBase Results:" << m_userbase->results();
+    //kDebug() << "MediaWiki::UserBase Results:" << m_userbase->results();
     newMediaWikiResults(m_userbase->results());
 }
 
 void CrystalDialog::techbaseFinished(bool done)
 {
     Q_UNUSED( done );
-    kDebug() << "MediaWiki::TechBase Results:" << m_techbase->results();
+    //kDebug() << "MediaWiki::TechBase Results:" << m_techbase->results();
     newMediaWikiResults(m_techbase->results());
 }
 
-void CrystalDialog::newMediaWikiResults(const QHash<QString, QUrl> pages)
+void CrystalDialog::newMediaWikiResults(const QList<MediaWiki::Result> hits)
 {
     QList<Nepomuk::Search::Result> results;
-    foreach(const QUrl url, pages.values()) {
-        results << Nepomuk::Search::Result(url);
+    foreach(MediaWiki::Result res, hits) {
+        results << Nepomuk::Search::Result(res.url);
         // TODO,pending new MediaWiki features: Add descriptions and write them to the result, for example:
         //res.setDescription(QString("%1 \nA file found by Crystal").arg(type));
     }
