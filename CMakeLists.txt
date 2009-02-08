@@ -3,6 +3,7 @@ project(plasma-crystal)
 set(SOPRANO_MIN_VERSION "2.1.64")
 find_package(Soprano REQUIRED)
 find_package(Nepomuk REQUIRED)
+find_package(NepomukQuery REQUIRED)
 
 set(crystal_SRCS
     crystal.cpp
@@ -19,8 +20,8 @@ target_link_libraries(
     ${KDE4_KIO_LIBS}
     ${NEPOMUK_LIBRARIES}
     ${SOPRANO_LIBRARIES}
-    nepomukquery
-    nepomukqueryclient
+    ${NEPOMUK_QUERY_LIBRARIES}
+    ${NEPOMUK_QUERY_CLIENT_LIBRARIES}
     nepomukvisualization
 )
 
