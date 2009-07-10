@@ -67,7 +67,7 @@ public:
      * object can be used for multple queries, though only one can be performed at
      * a time.
      */
-    MediaWiki( QObject *parent );
+    MediaWiki( QObject *parent=0 );
     virtual ~MediaWiki();
 
     /**
