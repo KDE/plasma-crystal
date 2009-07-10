@@ -23,6 +23,7 @@
 #include <QXmlStreamReader>
 #include <QTimer>
 #include <QDebug>
+#include <KDebug>
 
 #include "mediawiki.h"
 
@@ -86,7 +87,7 @@ QUrl MediaWiki::apiUrl() const
 void MediaWiki::setApiUrl( const QUrl &url )
 {
     if ( d->apiUrl == url )
-	return;
+    return;
 
     d->apiUrl = url;
     d->state = StateApiChanged;
@@ -105,7 +106,7 @@ void MediaWiki::setTimeout( int millis )
 void MediaWiki::abort()
 {
     if ( !d->reply )
-	return;
+    return;
 
     d->reply->abort();
     d->reply = 0;
@@ -120,15 +121,14 @@ void MediaWiki::search( const QString &searchTerm )
     url.addQueryItem( QString("srsearch"), searchTerm );
     url.addQueryItem( QString("srlimit"), QString::number(d->maxItems) );
 
-    qDebug() << "Constructed search URL" << url;
+    kDebug() << "Constructed search URL" << url;
 
     if ( d->state == StateReady ) {
-	d->reply = d->manager->get( QNetworkRequest(url) );
-	QTimer::singleShot( d->timeout, this, SLOT( abort() ) );
-    }
-    else if ( d->state == StateApiChanged ) {
-	d->query = url;
-	findBase();
+        d->reply = d->manager->get( QNetworkRequest(url) );
+        QTimer::singleShot( d->timeout, this, SLOT( abort() ) );
+    } else if ( d->state == StateApiChanged ) {
+        d->query = url;
+        findBase();
     }
 }
 
@@ -140,7 +140,7 @@ void MediaWiki::findBase()
     url.addQueryItem( QString("format"), QString("xml") );
     url.addQueryItem( QString("meta"), QString("siteinfo") );
 
-    qDebug() << "Constructed base query URL" << url;
+    kDebug() << "Constructed base query URL" << url;
     d->reply = d->manager->get( QNetworkRequest(url) );
     d->state = StateApiUpdating;
 }
@@ -148,28 +148,26 @@ void MediaWiki::findBase()
 void MediaWiki::finished( QNetworkReply *reply )
 {
     if ( reply->error() != QNetworkReply::NoError ) {
-        qDebug() << "Request failed, " << reply->errorString();
+        kDebug() << "Request failed, " << reply->errorString();
         emit finished(false);
         return;
     }
 
-    qDebug() << "Request succeeded";
+    kDebug() << "Request succeeded";
 
     if ( d->state == StateApiUpdating ) {
-	bool ok = processBaseResult( reply );
-	emit finished( ok );
-	reply->deleteLater();
+        bool ok = processBaseResult( reply );
+        reply->deleteLater();
 
-	d->state = StateReady;
-	d->reply = d->manager->get( QNetworkRequest(d->query) );
-	QTimer::singleShot( d->timeout, this, SLOT( abort() ) );
-    }
-    else {
-	bool ok = processSearchResult( reply );
+        d->state = StateReady;
+        d->reply = d->manager->get( QNetworkRequest(d->query) );
+        QTimer::singleShot( d->timeout, this, SLOT( abort() ) );
+    } else {
+        bool ok = processSearchResult( reply );
 
-	emit finished( ok );
-	d->reply->deleteLater();
-	d->reply = 0;
+        emit finished( ok );
+        d->reply->deleteLater();
+        d->reply = 0;
     }
 }
 
@@ -179,18 +177,16 @@ bool MediaWiki::processBaseResult( QIODevice *source )
 
     while ( !reader.atEnd() ) {
         QXmlStreamReader::TokenType tokenType = reader.readNext();
-        // qDebug() << "Token" << int(tokenType);
+        // kDebug() << "Token" << int(tokenType);
         if ( tokenType == QXmlStreamReader::StartElement ) {
             if ( reader.name() == QString("general") ) {
                 QXmlStreamAttributes attrs = reader.attributes();
 
-		d->baseUrl = QUrl( attrs.value( QString("base") ).toString() );
-		return true;
-	    }
-	}
-        else if ( tokenType == QXmlStreamReader::Invalid )
+            d->baseUrl = QUrl( attrs.value( QString("base") ).toString() );
+            return true;
+            }
+        } else if ( tokenType == QXmlStreamReader::Invalid )
             return false;
-
     }
 
     return true;
@@ -203,24 +199,23 @@ bool MediaWiki::processSearchResult( QIODevice *source )
     QXmlStreamReader reader( source );
     while ( !reader.atEnd() ) {
         QXmlStreamReader::TokenType tokenType = reader.readNext();
-        // qDebug() << "Token" << int(tokenType);
+        // kDebug() << "Token" << int(tokenType);
         if ( tokenType == QXmlStreamReader::StartElement ) {
             if ( reader.name() == QString("p") ) {
                 QXmlStreamAttributes attrs = reader.attributes();
 
-		Result r;
-		r.url = d->baseUrl.resolved( attrs.value( QString("title") ).toString() );
-		r.title = attrs.value( QString("title") ).toString();
+            Result r;
+            r.url = d->baseUrl.resolved( attrs.value( QString("title") ).toString() );
+            r.title = attrs.value( QString("title") ).toString();
 
-		qDebug() << "Got result: url=" << r.url << "title=" << r.title;
+            kDebug() << "Got result: url=" << r.url << "title=" << r.title;
 
-		d->results.append( r );
+            d->results.append( r );
             }
-        }
-        else if ( tokenType == QXmlStreamReader::Invalid )
+        } else if ( tokenType == QXmlStreamReader::Invalid ) {
             return false;
+        }
     }
-
     return true;
 }
 
