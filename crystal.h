@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright 2008-2009 by Sebastian Kügler <sebas@kde.org>               *
+ *   Copyright 2008-2010 by Sebastian Kügler <sebas@kde.org>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -50,18 +50,13 @@ class CrystalApplet : public Plasma::PopupApplet
         CrystalApplet(QObject *parent, const QVariantList &args);
         ~CrystalApplet();
         void init();
-        QWidget *widget();
+        QGraphicsWidget *graphicsWidget();
         int timeout();
         int maxMatches();
         bool showFolders();
         int iconSize();
         QString defaultQuery();
         void updateToolTip(const QString query, const int matches);
-
-        // Wikis
-        bool m_useWikipedia;
-        bool m_useUserBase;
-        bool m_useTechBase;
 
     protected:
         void popupEvent(bool show);

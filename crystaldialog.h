@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright 2008-2009 by Sebastian Kügler <sebas@kde.org>               *
+ *   Copyright 2008-2010 by Sebastian Kügler <sebas@kde.org>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -26,15 +26,17 @@
 
 
 // KDE
-#include <KLineEdit>
-#include <KPushButton>
+#include <Plasma/IconWidget>
+#include <Plasma/Label>
+#include <Plasma/LineEdit>
+#include <Plasma/WebView>
 
 // Nepomuk
-#include <Nepomuk/Types/Class>
-#include <Soprano/Vocabulary/Xesam>
-#include <nepomuk/queryserviceclient.h>
-#include <nepomuk/result.h>
-#include <nepomuk/searchhitview.h>
+//#include <Nepomuk/Types/Class>
+//#include <Soprano/Vocabulary/Xesam>
+//#include <nepomuk/queryserviceclient.h>
+//#include <nepomuk/result.h>
+//#include <nepomuk/searchhitview.h>
 
 
 //own
@@ -60,7 +62,7 @@ namespace Crystal
   * @short The panel used to display search results in a popup
   *
   */
-  class CrystalDialog : public QObject
+  class CrystalDialog : public QGraphicsWidget
   {
   Q_OBJECT
 
@@ -71,14 +73,10 @@ namespace Crystal
           * @param area where the dialog is displayed
           * @param parent the parent of this object
           **/
-          CrystalDialog(CrystalApplet * crystal, QObject *parent = 0);
+          CrystalDialog(CrystalApplet *crystal);
 
           virtual ~CrystalDialog();
 
-          /**
-          * Returns the related QWidget.
-          **/
-          QWidget * dialog();
           void updateIconSize();
           void updateQuery(const QString query);
 
@@ -88,11 +86,10 @@ namespace Crystal
          */
         void search();
 
-
         /**
          * @internal Gets called when a new match has been found
          */
-        void newMatches( const QList<Nepomuk::Search::Result>& results);
+        //void newMatches( const QList<Nepomuk::Search::Result>& results);
 
       private Q_SLOTS:
           /**
@@ -102,10 +99,6 @@ namespace Crystal
           void updateColors();
           void searchFinished();
           void run( const QUrl& );
-          void wikipediaFinished(bool done);
-          void userbaseFinished(bool done);
-          void techbaseFinished(bool done);
-          void newMediaWikiResults(const QList<MediaWiki::Result> res);
 
       private :
           /**
@@ -114,17 +107,10 @@ namespace Crystal
           void buildDialog();
           void updateStatus(const QString status);
 
-          void setupWiki();
-
-          // The widget which display the panel
-          QWidget *m_widget;
-
-          Nepomuk::SearchHitView *m_resultsView;
-          Nepomuk::Search::QueryServiceClient *m_queryServiceClient;
-
-          KLineEdit * m_lineEdit;
-          KPushButton * m_searchButton;
-          QLabel * m_statusLabel;
+          Plasma::LineEdit *m_lineEdit;
+          Plasma::IconWidget *m_searchButton;
+          Plasma::WebView *m_resultsView;
+          Plasma::Label *m_statusBar;
 
           ///The applet attached to this item
           CrystalApplet * m_crystal;
@@ -135,12 +121,7 @@ namespace Crystal
           QString m_query;
           // All icon sizes, indexed
           QHash<int, int> m_iconSizes;
-          MediaWiki* m_wikipedia;
-          MediaWiki* m_userbase;
-          MediaWiki* m_techbase;
-          int m_wikiHits;
   };
-
 }
 
 #endif

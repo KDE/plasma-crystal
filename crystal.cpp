@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright 2008-2009 by Sebastian Kügler <sebas@kde.org>               *
+ *   Copyright 2008-2010 by Sebastian Kügler <sebas@kde.org>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -40,7 +40,7 @@
 
 // Nepomuk
 #include <Nepomuk/Resource>
-#include <Nepomuk/Types/Class>
+//#include <Nepomuk/Types/Class>
 #include <nepomuk/resourcemanager.h>
 
 
@@ -68,9 +68,9 @@ CrystalApplet::CrystalApplet(QObject *parent, const QVariantList &args)
     setAcceptsHoverEvents(true);
 
     // initialize the widget
-    (void)widget();
+    (void)graphicsWidget();
 
-    resize(widget()->sizeHint());
+    //resize(graphicsWidget()->sizeHint());
     m_iconSize = 1;
 }
 
@@ -96,11 +96,6 @@ void CrystalApplet::init()
     m_iconSize = cg.readEntry("iconSize", 1);
     m_useClipboard = cg.readEntry("useClipboard", true);
     m_defaultQuery = cg.readEntry("defaultQuery", "kmix.png");
-
-    // The wikis
-    m_useWikipedia = cg.readEntry("useWikipedia", false);
-    m_useUserBase = cg.readEntry("useUserBase", false);
-    m_useTechBase = cg.readEntry("useTechBase", false);
 
     kDebug() << "timeout, maxMatches, useclipboard, defaultquery:" << m_timeout << m_maxMatches << m_useClipboard << m_defaultQuery << m_iconSize;
     m_dialog->updateQuery(m_defaultQuery);
@@ -133,12 +128,12 @@ QString CrystalApplet::defaultQuery()
     return m_defaultQuery;
 }
 
-QWidget* CrystalApplet::widget()
+QGraphicsWidget* CrystalApplet::graphicsWidget()
 {
     if (!m_dialog) {
         m_dialog = new CrystalDialog(this);
     }
-    return m_dialog->dialog();
+    return m_dialog;
 }
 
 void CrystalApplet::popupEvent(bool show)
@@ -193,10 +188,6 @@ void CrystalApplet::createConfigurationInterface(KConfigDialog *parent)
     ui.defaultQuery->setText(m_defaultQuery);
     ui.defaultQuery->setEnabled(!m_useClipboard);
 
-    ui.wikipedia->setChecked(m_useWikipedia);
-    ui.userbase->setChecked(m_useUserBase);
-    ui.techbase->setChecked(m_useTechBase);
-
     connect(ui.configButton, SIGNAL(clicked()), this, SLOT(openConfig()));
 }
 
@@ -231,21 +222,6 @@ void CrystalApplet::configAccepted()
     if (m_useClipboard != ui.clipboard->isChecked()) {
         m_useClipboard = !m_useClipboard;
         cg.writeEntry("useClipboard", m_useClipboard);
-    }
-
-    if (m_useWikipedia != ui.wikipedia->isChecked()) {
-        m_useWikipedia = !m_useWikipedia;
-        cg.writeEntry("useWikipedia", m_useWikipedia);
-    }
-
-    if (m_useUserBase!= ui.userbase->isChecked()) {
-        m_useUserBase= !m_useUserBase;
-        cg.writeEntry("useUserBase", m_useUserBase);
-    }
-
-    if (m_useTechBase != ui.techbase->isChecked()) {
-        m_useTechBase= !m_useTechBase;
-        cg.writeEntry("useTechBase", m_useTechBase);
     }
 
     if (ui.defaultQuery->text() != m_defaultQuery) {

@@ -3,12 +3,10 @@ project(plasma-crystal)
 set(SOPRANO_MIN_VERSION "2.1.64")
 find_package(Soprano REQUIRED)
 find_package(Nepomuk REQUIRED)
-find_package(NepomukQuery REQUIRED)
 
 set(crystal_SRCS
     crystal.cpp
     crystaldialog.cpp
-    mediawiki.cpp
     )
 
 kde4_add_ui_files(crystal_SRCS crystalConfig.ui )
@@ -20,9 +18,6 @@ target_link_libraries(
     ${KDE4_KIO_LIBS}
     ${NEPOMUK_LIBRARIES}
     ${SOPRANO_LIBRARIES}
-    ${NEPOMUK_QUERY_LIBRARIES}
-    ${NEPOMUK_QUERY_CLIENT_LIBRARIES}
-    nepomukvisualization
 )
 
 install(TARGETS plasma_applet_crystal DESTINATION ${PLUGIN_INSTALL_DIR})
