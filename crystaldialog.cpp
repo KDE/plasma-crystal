@@ -30,6 +30,8 @@
 #include <KIconLoader>
 #include <KMimeType>
 #include <KRun>
+//#include <kio/jobclasses.h>
+#include <KIO/Job>
 
 //plasma
 #include <Plasma/Dialog>
@@ -151,22 +153,64 @@ void CrystalDialog::search()
         kDebug() << "no resource manager";
     };
 
-    //m_resultsView->clear();
+    m_resultsView->setHtml(QString("%1\nSearching ...").arg(m_resultsView->html()));
     m_matches = 0;
     m_query = m_lineEdit->text();
     kDebug() << "Searching for ..." << m_query << " timeout after:" << m_crystal->timeout();
     updateStatus(i18nc("status in the plasmoid's popup", "Searching for <b>\"%1\"</b>...", m_query));
 
+    // query syntax is at:
+    // http://techbase.kde.org/Development/Tutorials/Metadata/Nepomuk/QueryService
+    QString queryUrl = QString("nepomuksearch:/?query=%1").arg(m_query);
+    KIO::ListJob* listJob = KIO::listDir(KUrl(queryUrl), KIO::HideProgressInfo);
+    connect(listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList&)), this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)));
     // add a timeout in case something goes wrong (no user wants to wait more than N seconds)
     QTimer::singleShot( m_crystal->timeout(), this, SLOT(searchFinished()) );
     //m_queryServiceClient->query( m_query );
-    updateStatus(i18n( "Searching for<b>\"%2\"</b> ...", m_query));
+    updateStatus(i18n( "Searching for<b>\"%1\"</b> ...", m_query));
 }
 
-/*
-void CrystalDialog::newMatches( const QList<Nepomuk::Search::Result>& results)
+QString CrystalDialog::renderItem(const KIO::UDSEntry &entry)
 {
-    / *
+    QString _name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
+    //bool isDir = entry.isDir();
+    //KIO::filesize_t size = entry.numberValue( KIO::UDSEntry::UDS_SIZE, -1 );
+    QString _mimeType = entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
+    QString _icon = entry.stringValue( KIO::UDSEntry::UDS_ICON_NAME );
+    QString _nepomukUri = entry.stringValue( KIO::UDSEntry::UDS_NEPOMUK_URI );
+    //QString _fileSize =
+
+    Nepomuk::Resource *res = new Nepomuk::Resource(_nepomukUri);
+    QString _desc = res->genericDescription();
+    QString _label = res->genericLabel();
+    QString html = QString("<hr /><div class=\"result\"><strong>%1</strong><br />%2</div>").arg(_label, _desc);
+    kDebug() << html;
+    return html;
+}
+
+void CrystalDialog::entries( KIO::Job *job, const KIO::UDSEntryList &list)
+{
+    kDebug() << "entries! :)";
+    // should look like this:
+    KIO::UDSEntryList::ConstIterator it = list.begin();
+    const KIO::UDSEntryList::ConstIterator end = list.end();
+    for (; it != end; ++it) {
+        const KIO::UDSEntry& entry = *it;
+        /*
+        QString _name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
+        //bool isDir = entry.isDir();
+        //KIO::filesize_t size = entry.numberValue( KIO::UDSEntry::UDS_SIZE, -1 );
+        QString _mimeType = entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
+        QString _icon = entry.stringValue( KIO::UDSEntry::UDS_ICON_NAME );
+        QString _nepomukUri = entry.stringValue( KIO::UDSEntry::UDS_NEPOMUK_URI );
+        m_resultsView->setHtml(QString("%1<div>name: %2<br />info: %3</div>").arg(m_resultsView->html(), _name, _mimeType));
+        */
+        m_resultsView->setHtml(QString("%1\n%2").arg(m_resultsView->html(), renderItem(entry)));
+        //kDebug() << "Result:" << _icon << _name << _mimeType << _nepomukUri;
+    }
+    /*
+   //====================
+    
     foreach( const Nepomuk::Search::Result& result, results ) {
         if (!result.resourceUri().isValid()) {
             kDebug() << "Skipping invalid URI";
@@ -221,13 +265,13 @@ void CrystalDialog::newMatches( const QList<Nepomuk::Search::Result>& results)
         }
         kDebug() << "\nNew Match:" << res.genericLabel() << type << res.genericIcon() << result.score();
     }
-    * /
+    */
     updateStatus(i18np("Searching for <b>\"%2\"</b>. %1 file found so far...",
                        "Searching for <b>\"%2\"</b>. %1 files found so far...", m_matches, m_query));
     m_crystal->updateToolTip(m_query, m_matches);
 
 }
-*/
+
 void CrystalDialog::searchFinished()
 {
     updateStatus(i18np("Search for <b>\"%2\"</b> finished. %1 matching file found.",

@@ -15,7 +15,7 @@ kde4_add_plugin(plasma_applet_crystal ${crystal_SRCS})
 target_link_libraries(
     plasma_applet_crystal
     ${KDE4_PLASMA_LIBS}
-    ${KDE4_KIO_LIBS}
+    ${KDE4_KIO_LIBS} ${KDE4_KFILE_LIBS}
     ${NEPOMUK_LIBRARIES}
     ${SOPRANO_LIBRARIES}
 )

@@ -26,11 +26,14 @@
 
 
 // KDE
+#include <KIO/ListJob>
+#include <kio/jobclasses.h>
+
+// Plasma
 #include <Plasma/IconWidget>
 #include <Plasma/Label>
 #include <Plasma/LineEdit>
 #include <Plasma/WebView>
-
 // Nepomuk
 //#include <Nepomuk/Types/Class>
 //#include <Soprano/Vocabulary/Xesam>
@@ -40,7 +43,7 @@
 
 
 //own
-#include <mediawiki.h>
+//#include <mediawiki.h>
 class CrystalApplet;
 
 //desktop view
@@ -90,6 +93,7 @@ namespace Crystal
          * @internal Gets called when a new match has been found
          */
         //void newMatches( const QList<Nepomuk::Search::Result>& results);
+        void entries(KIO::Job *job, const KIO::UDSEntryList &list);
 
       private Q_SLOTS:
           /**
@@ -106,6 +110,7 @@ namespace Crystal
           **/
           void buildDialog();
           void updateStatus(const QString status);
+          QString renderItem(const KIO::UDSEntry &entry);
 
           Plasma::LineEdit *m_lineEdit;
           Plasma::IconWidget *m_searchButton;
