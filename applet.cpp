@@ -19,7 +19,7 @@
 
 //own
 #include "applet.h"
-#include "crystaldialog.h"
+#include "dialog.h"
 
 //Qt
 #include <QTimer>
@@ -98,7 +98,7 @@ void Applet::init()
 
     kDebug() << "timeout, maxMatches, useclipboard, defaultquery:" << m_timeout << m_maxMatches << m_useClipboard << m_defaultQuery << m_iconSize;
     m_dialog->updateQuery(m_defaultQuery);
-    m_dialog->updateIconSize();
+    m_dialog->updateIconSize(iconSize());
     updateToolTip("", 0);
 }
 
@@ -130,7 +130,7 @@ QString Applet::defaultQuery()
 QGraphicsWidget* Applet::graphicsWidget()
 {
     if (!m_dialog) {
-        m_dialog = new CrystalDialog(this);
+        m_dialog = new Dialog(this);
     }
     return m_dialog;
 }
@@ -215,7 +215,7 @@ void Applet::configAccepted()
         m_iconSize = ui.sizeSlider->value();
         kDebug() << "iconSize changed" << m_iconSize;
         cg.writeEntry("iconSize", m_iconSize);
-        m_dialog->updateIconSize();
+        m_dialog->updateIconSize(iconSize());
     }
 
     if (m_useClipboard != ui.clipboard->isChecked()) {

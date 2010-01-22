@@ -4,8 +4,9 @@ find_package(Nepomuk REQUIRED)
 
 set(crystal_SRCS
     stylesheet.cpp
-    crystal.cpp
-    crystaldialog.cpp
+    applet.cpp
+    dialog.cpp
+    resultwebview.cpp
     )
 
 kde4_add_ui_files(crystal_SRCS crystalConfig.ui )

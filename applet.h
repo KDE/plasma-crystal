@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
-#ifndef CRYSTAL_H
-#define CRYSTAL_H
+#ifndef CRYSTALAPPLET_H
+#define CRYSTALAPPLET_H
 
 //Plasma
 #include <Plasma/PopupApplet>
@@ -26,14 +26,9 @@
 
 // own
 #include "ui_crystalConfig.h"
-
+#include "dialog.h"
 
 class QGraphicsProxyWidget;
-
-namespace Crystal
-{
-    class CrystalDialog;
-}
 
 //desktop view
 namespace Plasma
@@ -42,8 +37,10 @@ namespace Plasma
     class ToolTipContent;
 }
 
-class Applet : public Plasma::PopupApplet
+namespace Crystal
 {
+  class Applet : public Plasma::PopupApplet
+  {
     Q_OBJECT
 
     public:
@@ -71,7 +68,7 @@ class Applet : public Plasma::PopupApplet
         Plasma::IconWidget *m_icon;
 
         ///The dialog displaying matches
-        Crystal::CrystalDialog * m_dialog;
+        Dialog *m_dialog;
 
         Plasma::ToolTipContent m_toolTip;
 
@@ -92,6 +89,7 @@ class Applet : public Plasma::PopupApplet
         bool m_useClipboard;
         // pre-filled in query
         QString m_defaultQuery;
+  };
 };
 
 #endif

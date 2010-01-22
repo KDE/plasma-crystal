@@ -34,17 +34,11 @@
 #include <Plasma/Label>
 #include <Plasma/LineEdit>
 #include <Plasma/WebView>
-// Nepomuk
-//#include <Nepomuk/Types/Class>
-//#include <Soprano/Vocabulary/Xesam>
-//#include <nepomuk/queryserviceclient.h>
-//#include <nepomuk/result.h>
-//#include <nepomuk/searchhitview.h>
-
 
 //own
-#include "stylesheet.h"
-class CrystalApplet;
+#include "resultwebview.h"
+
+//class Applet;
 
 //desktop view
 namespace Plasma
@@ -69,25 +63,30 @@ namespace Crystal
   * @short The panel used to display search results in a popup
   *
   */
-  class CrystalDialog : public QGraphicsWidget
+  class Dialog : public QGraphicsWidget
   {
   Q_OBJECT
 
-      public:
-          /**
-          * Constructor of the dialog
-          * @param crystal the crystal attached to this dialog
-          * @param area where the dialog is displayed
-          * @param parent the parent of this object
-          **/
-          CrystalDialog(CrystalApplet *crystal);
+    public:
+        /**
+        * Constructor of the dialog
+        * @param crystal the crystal attached to this dialog
+        * @param area where the dialog is displayed
+        * @param parent the parent of this object
+        **/
+        Dialog(QGraphicsWidget *parent);
 
-          virtual ~CrystalDialog();
+        virtual ~Dialog();
 
-          void updateIconSize();
-          void updateQuery(const QString query);
+        void updateIconSize(int iconsize);
+        void updateQuery(const QString query);
+        void setTimeout(int timeout);
 
-      public Q_SLOTS:
+    Q_SIGNALS:
+        void updateView();
+        void updateToolTip(const QString&, int);
+
+    public Q_SLOTS:
         /**
          * Perform a search
          */
@@ -99,44 +98,28 @@ namespace Crystal
         //void newMatches( const QList<Nepomuk::Search::Result>& results);
         void entries(KIO::Job *job, const KIO::UDSEntryList &list);
 
-      private Q_SLOTS:
-          /**
-          * @internal update the color of the label to follow plasma theme
-          *
-          **/
-          void updateColors();
-          void updateView();
-          void searchFinished();
-          void run( const QUrl& );
+    private Q_SLOTS:
+        void searchFinished();
+        void run( const QUrl& );
 
-      private :
-          /**
-          * @internal build the dialog depending where it is
-          **/
-          void buildDialog();
-          void updateStatus(const QString status);
-          QString renderItem(Nepomuk::Resource *res);
-          QString abstract(Nepomuk::Resource *res);
-          QString htmlHeader();
-          Plasma::LineEdit *m_lineEdit;
-          Plasma::IconWidget *m_searchButton;
-          Plasma::WebView *m_resultsView;
-          Plasma::Label *m_statusBar;
+    private :
+        /**
+        * @internal build the dialog depending where it is
+        **/
+        void buildDialog();
+        void updateStatus(const QString status);
+        Plasma::LineEdit *m_lineEdit;
+        Plasma::IconWidget *m_searchButton;
+        ResultWebView *m_resultsView;
+        Plasma::Label *m_statusBar;
 
-          ///The applet attached to this item
-          CrystalApplet * m_crystal;
-          QList<Nepomuk::Resource*> m_results;
-
-          // Matches found for the current query
-          int m_matches;
-          // Last query ran
-          QString m_query;
-          int m_abstractSize;
-          // All icon sizes, indexed
-          QHash<int, int> m_iconSizes;
-          // basedir for the webview, all content relative to this path
-          StyleSheet *m_css;
-          QString m_baseDir;
+        QList<Nepomuk::Resource*> m_results;
+        // All icon sizes, indexed
+        QHash<int, int> m_iconSizes;
+        int m_timeout;
+        // Last query ran
+        QString m_query;
+        int m_abstractSize;
   };
 }
 
