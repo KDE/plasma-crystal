@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2010 by Sebastian Kügler <sebas@kde.org>
+    Copyright 2010 by Sebastian Kügler <sebas@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -16,7 +16,6 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
-
 //Qt
 #include <QGraphicsGridLayout>
 #include <QLabel>

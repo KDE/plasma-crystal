@@ -7,6 +7,7 @@ set(crystal_SRCS
     applet.cpp
     dialog.cpp
     resultwebview.cpp
+    resourcewidget.cpp
     )
 
 kde4_add_ui_files(crystal_SRCS crystalConfig.ui )
