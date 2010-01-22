@@ -17,7 +17,7 @@
     Boston, MA 02110-1301, USA.
 */
 //Qt
-#include <QGraphicsGridLayout>
+#include <QGraphicsLinearLayout>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QTimer>
@@ -43,7 +43,7 @@
 #include <Nepomuk/Variant>
 
 //own
-#include "helpers.cpp"
+//#include "helpers.cpp"
 #include "resultwebview.h"
 
 using namespace Crystal;
@@ -51,11 +51,13 @@ using namespace Plasma;
 
 
 ResultWebView::ResultWebView(QGraphicsWidget *parent)
-    : Plasma::WebView(parent),
-      m_query(0),
-      m_abstractSize(200),
+    : ResultView(parent),
       m_baseDir(QString())
 {
+    m_webView = new Plasma::WebView(this);
+    QGraphicsLinearLayout *mainlayout = new QGraphicsLinearLayout(this);
+    mainlayout->addItem(m_webView);
+    setLayout(mainlayout);
 
     m_baseDir = QUrl(KStandardDirs::locate("data", "plasma-applet-crystal/user.css")).path();
 
@@ -64,11 +66,11 @@ ResultWebView::ResultWebView(QGraphicsWidget *parent)
     m_css->setFileName(m_baseDir);
     connect(m_css, SIGNAL(styleSheetChanged(const QString&)), this, SLOT(updateView()));
 
-    setDragToScroll(true);
-    mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-    mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
-    setMinimumSize(160, 200);
-    setHtml(QString("%1<h1>Crystal Desktop Search:</h1>This is the startpage and should get bookmarked queries and the past ones.").arg(htmlHeader()));
+    m_webView->setDragToScroll(true);
+    m_webView->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+    m_webView->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+    m_webView->setMinimumSize(160, 200);
+    m_webView->setHtml(QString("%1<h1>Crystal Desktop Search:</h1>This is the startpage and should get bookmarked queries and the past ones.").arg(htmlHeader()));
 
     //connect(Plasma::Theme::defaultTheme(), SIGNAL(themeChanged()), this, SLOT(updateColors()));
     //updateColors();
@@ -78,40 +80,10 @@ ResultWebView::ResultWebView(QGraphicsWidget *parent)
 ResultWebView::~ResultWebView()
 {
 }
-
-int ResultWebView::count()
-{
-    return m_results.count();
-}
-
-
-
-void ResultWebView::addMatch(const KIO::UDSEntry& entry)
-{
-    QString _nepomukUri = entry.stringValue( KIO::UDSEntry::UDS_NEPOMUK_URI );
-    Nepomuk::Resource *res = new Nepomuk::Resource(_nepomukUri);
-    /*
-    QString _name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
-    //bool isDir = entry.isDir();
-    //KIO::filesize_t size = entry.numberValue( KIO::UDSEntry::UDS_SIZE, -1 );
-    QString _mimeType = entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
-    QString _icon = entry.stringValue( KIO::UDSEntry::UDS_ICON_NAME );
-    QString _nepomukUri = entry.stringValue( KIO::UDSEntry::UDS_NEPOMUK_URI );
-    m_resultsView->setHtml(QString("%1<div>name: %2<br />info: %3</div>").arg(m_resultsView->html(), _name, _mimeType));
-    */
-    //kDebug() << "Result:" << _icon << _name << _mimeType << _nepomukUri;
-    m_results << res;
-}
-
-void ResultWebView::setQuery(const QString& query)
-{
-    m_query = query;
-}
-
 void ResultWebView::updateColors()
 {
     QString js = "document.getElementById('cssfile').href = 'user.css'";
-    mainFrame()->evaluateJavaScript(js);
+    m_webView->mainFrame()->evaluateJavaScript(js);
 }
 
 void ResultWebView::updateView()
@@ -122,42 +94,11 @@ void ResultWebView::updateView()
         _html.append(renderItem(res));
         _html.append("\n\n");
     }
-    setHtml(_html);
+    m_webView->setHtml(_html);
 }
-
-QString ResultWebView::abstract(Nepomuk::Resource *res)
-{
-    QString fulltext = res->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent")).toString();
-
-    kDebug() << "mangling" << res->genericLabel() << ", query:" << m_query;
-    if (fulltext.isEmpty()) {
-        return QString();
-    }
-    QString html = "not found";
-    int _i = fulltext.indexOf(m_query, Qt::CaseInsensitive);
-    if (_i >= 0) {
-        int _b = qMin(0, _i - (int)(m_abstractSize/2));
-        int _l = qMin(m_abstractSize, fulltext.count());
-        html = fulltext.midRef(_b, _l).toString();
-        kDebug() << "Found query at " << _i << _b << _l;
-        kDebug() << "Abstract:" << html;
-        html.replace(m_query, QString("<font color=\"red\"><strong>%1</strong</font>").arg(m_query), Qt::CaseInsensitive);
-    }
-    return html;
-}
-
 
 QString ResultWebView::renderItem(Nepomuk::Resource *res)
 {
-    /*
-    QString _name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
-    //bool isDir = entry.isDir();
-    //KIO::filesize_t size = entry.numberValue( KIO::UDSEntry::UDS_SIZE, -1 );
-    QString _mimeType = entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
-    QString _icon = entry.stringValue( KIO::UDSEntry::UDS_ICON_NAME );
-    QString _nepomukUri = entry.stringValue( KIO::UDSEntry::UDS_NEPOMUK_URI );
-    //QString _fileSize =
-    */
     QString _description = res->genericDescription();
     QString _label = res->genericLabel();
     QString _url = res->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )).toString();

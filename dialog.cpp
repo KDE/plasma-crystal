@@ -132,7 +132,6 @@ void Dialog::search()
         kDebug() << "no resource manager";
     };
 
-    m_resultsView->setHtml(QString("%1\nSearching ...").arg(m_resultsView->html()));
     m_query = m_lineEdit->text();
     m_resultsView->setQuery(m_query);
     kDebug() << "Searching for ..." << m_query << " timeout after:" << m_timeout;

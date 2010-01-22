@@ -37,6 +37,7 @@
 
 //own
 #include "stylesheet.h"
+#include "resultview.h"
 
 class CrystalApplet;
 
@@ -55,42 +56,28 @@ namespace Nepomuk
 namespace Crystal
 {
   /**
-  * @short The panel used to display search results in a popup
+  * @short The webby view used to display search results.
   *
   */
-  class ResultWebView : public Plasma::WebView
+  class ResultWebView : public ResultView
   {
   Q_OBJECT
 
     public:
         /**
         * Constructor of the dialog
-        * @param crystal the crystal attached to this dialog
-        * @param area where the dialog is displayed
         * @param parent the parent of this object
         **/
         ResultWebView(QGraphicsWidget *parent);
 
         virtual ~ResultWebView();
 
-        void setQuery(const QString&);
-
-    Q_SIGNALS:
-        void run(const QUrl&);
-
     public Q_SLOTS:
         /** Call to update the view with new entries after inserting them.
          */
-        void updateView();
+        virtual void updateView();
 
-        int count();
-
-        /**
-         * @internal Gets called when a new match has been found
-         */
-        void addMatch(const KIO::UDSEntry& entry);
-
-    private Q_SLOTS:
+    protected Q_SLOTS:
         /**
         * @internal update the color of the label to follow plasma theme
         *
@@ -102,15 +89,9 @@ namespace Crystal
         * @internal build the dialog depending where it is
         **/
         QString renderItem(Nepomuk::Resource *res);
-        QString abstract(Nepomuk::Resource *res);
         QString htmlHeader();
 
-        ///The applet attached to this item
-        QList<Nepomuk::Resource*> m_results;
-
-        // Last query ran
-        QString m_query;
-        int m_abstractSize;
+        Plasma::WebView *m_webView;
         // basedir for the webview, all content relative to this path
         StyleSheet *m_css;
         QString m_baseDir;

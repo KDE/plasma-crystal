@@ -110,7 +110,7 @@ namespace Crystal
         void updateStatus(const QString status);
         Plasma::LineEdit *m_lineEdit;
         Plasma::IconWidget *m_searchButton;
-        ResultWebView *m_resultsView;
+        ResultView *m_resultsView;
         Plasma::Label *m_statusBar;
 
         QList<Nepomuk::Resource*> m_results;
