@@ -3,6 +3,7 @@ project(plasma-crystal)
 find_package(Nepomuk REQUIRED)
 
 set(crystal_SRCS
+    stylesheet.cpp
     crystal.cpp
     crystaldialog.cpp
     )
@@ -15,7 +16,10 @@ target_link_libraries(
     ${KDE4_PLASMA_LIBS}
     ${KDE4_KIO_LIBS}
     ${NEPOMUK_LIBRARIES}
+    ${QT_QTWEBKIT_LIBRARY}
 )
 
 install(TARGETS plasma_applet_crystal DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES plasma-applet-crystal.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+
+install(FILES user.css DESTINATION ${DATA_INSTALL_DIR}/plasma-applet-crystal/)

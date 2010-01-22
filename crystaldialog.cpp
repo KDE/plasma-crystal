@@ -22,16 +22,17 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QTimer>
+#include <QWebFrame>
 
 //KDE
 #include <KDebug>
 #include <KColorScheme>
 #include <KIcon>
 #include <KIconLoader>
+#include <KIO/Job>
 #include <KMimeType>
 #include <KRun>
-//#include <kio/jobclasses.h>
-#include <KIO/Job>
+#include <KStandardDirs>
 
 //plasma
 #include <Plasma/Dialog>
@@ -39,24 +40,16 @@
 
 // Nepomuk
 #include <Nepomuk/Resource>
-//#include <Nepomuk/Types/Class>
-//#include <Nepomuk/Variant>
-//#include <Soprano/Vocabulary/Xesam>
-//#include <nepomuk/queryserviceclient.h>
-//#include <nepomuk/result.h>
-//#include <nepomuk/resource.h>
 #include <nepomuk/resourcemanager.h>
-//#include <nepomuk/searchhitview.h>
 
 //own
 #include "crystaldialog.h"
 #include "crystal.h"
 
 
+
 using namespace Crystal;
 using namespace Plasma;
-
-//Q_DECLARE_METATYPE( Nepomuk::Search::Result )
 
 CrystalDialog::CrystalDialog(CrystalApplet *crystal)
     : QGraphicsWidget(crystal),
@@ -65,7 +58,8 @@ CrystalDialog::CrystalDialog(CrystalApplet *crystal)
       m_statusBar(0),
       m_crystal(crystal),
       m_matches(0),
-      m_query(0)
+      m_query(0),
+      m_baseDir(QString())
 {
 
     m_iconSizes[0] = 16;
@@ -75,6 +69,11 @@ CrystalDialog::CrystalDialog(CrystalApplet *crystal)
     m_iconSizes[4] = 64;
     m_iconSizes[5] = 128;
     m_iconSizes[6] = 256;
+    m_baseDir = QUrl(KStandardDirs::locate("data", "plasma-applet-crystal/user.css")).path();
+
+    kDebug() << "BaseDir:" << m_baseDir;
+    m_css = new StyleSheet(this);
+    m_css->setFileName(m_baseDir);
     buildDialog();
 }
 
@@ -113,7 +112,7 @@ void CrystalDialog::buildDialog()
 
     m_resultsView = new Plasma::WebView(this);
     m_resultsView->setMinimumSize(160, 200);
-    m_resultsView->setHtml(QString("<h1>Teh ressults:</h1>"));
+    m_resultsView->setHtml(QString("%1<h1>Teh ressults:</h1>").arg(htmlHeader()));
     gridLayout->addItem(m_resultsView, 1, 0, 1, 2);
 
     m_statusBar = new Plasma::Label(this);
@@ -124,11 +123,13 @@ void CrystalDialog::buildDialog()
     updateColors();
     updateStatus(i18nc("no active search, no results shown", "Idle."));
     setPreferredSize(200, 300);
-    setMaximumSize(400, 500);
+    //setMaximumSize(400, 500);
 }
 
 void CrystalDialog::updateColors()
 {
+    QString js = "document.getElementById('cssfile').href = 'user.css'";
+    m_resultsView->mainFrame()->evaluateJavaScript(js);
     /*
     QPalette p = m_widget->palette();
     p.setColor(QPalette::Window, Plasma::Theme::defaultTheme()->color(Plasma::Theme::BackgroundColor));
@@ -188,14 +189,35 @@ QString CrystalDialog::renderItem(const KIO::UDSEntry &entry)
     return html;
 }
 
+QString CrystalDialog::htmlHeader()
+{
+    QString _html = QString("<?xml version=\"1.0\" encoding=\"UTF-8\"?> \
+<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\
+<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\
+<head>\
+  <title></title>\
+  <style type=\"text/css\">\
+  %1 \
+</style>\
+<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /> \
+<meta http-equiv=\"Content-Style-Type\" content=\"text/css\" />\
+</head>\
+<body>").arg(m_css->styleSheet());
+    _html = QString("<style>%1</style>\n\n").arg(m_css->styleSheet());
+    kDebug() << "CSS:" << _html;
+    return _html;
+}
+
 void CrystalDialog::entries( KIO::Job *job, const KIO::UDSEntryList &list)
 {
     kDebug() << "entries! :)";
     // should look like this:
     KIO::UDSEntryList::ConstIterator it = list.begin();
     const KIO::UDSEntryList::ConstIterator end = list.end();
+    QString html = htmlHeader();
     for (; it != end; ++it) {
         const KIO::UDSEntry& entry = *it;
+        m_matches++;
         /*
         QString _name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
         //bool isDir = entry.isDir();
@@ -205,9 +227,10 @@ void CrystalDialog::entries( KIO::Job *job, const KIO::UDSEntryList &list)
         QString _nepomukUri = entry.stringValue( KIO::UDSEntry::UDS_NEPOMUK_URI );
         m_resultsView->setHtml(QString("%1<div>name: %2<br />info: %3</div>").arg(m_resultsView->html(), _name, _mimeType));
         */
-        m_resultsView->setHtml(QString("%1\n%2").arg(m_resultsView->html(), renderItem(entry)));
         //kDebug() << "Result:" << _icon << _name << _mimeType << _nepomukUri;
+        html.append(renderItem(entry));
     }
+    m_resultsView->setHtml(html);
     /*
    //====================
     

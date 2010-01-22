@@ -43,7 +43,7 @@
 
 
 //own
-//#include <mediawiki.h>
+#include "stylesheet.h"
 class CrystalApplet;
 
 //desktop view
@@ -111,7 +111,7 @@ namespace Crystal
           void buildDialog();
           void updateStatus(const QString status);
           QString renderItem(const KIO::UDSEntry &entry);
-
+          QString htmlHeader();
           Plasma::LineEdit *m_lineEdit;
           Plasma::IconWidget *m_searchButton;
           Plasma::WebView *m_resultsView;
@@ -126,6 +126,9 @@ namespace Crystal
           QString m_query;
           // All icon sizes, indexed
           QHash<int, int> m_iconSizes;
+          // basedir for the webview, all content relative to this path
+          StyleSheet *m_css;
+          QString m_baseDir;
   };
 }
 
