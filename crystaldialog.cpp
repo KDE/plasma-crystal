@@ -41,6 +41,7 @@
 // Nepomuk
 #include <Nepomuk/Resource>
 #include <nepomuk/resourcemanager.h>
+#include <Nepomuk/Variant>
 
 //own
 #include "crystaldialog.h"
@@ -51,6 +52,12 @@
 using namespace Crystal;
 using namespace Plasma;
 
+// For sorting results
+bool ratingLessThan(const Nepomuk::Resource *r1, const Nepomuk::Resource *r2)
+{
+    return r1->rating() < r2->rating();
+}
+
 CrystalDialog::CrystalDialog(CrystalApplet *crystal)
     : QGraphicsWidget(crystal),
       m_lineEdit(0),
@@ -59,6 +66,7 @@ CrystalDialog::CrystalDialog(CrystalApplet *crystal)
       m_crystal(crystal),
       m_matches(0),
       m_query(0),
+      m_abstractSize(200),
       m_baseDir(QString())
 {
 
@@ -74,6 +82,7 @@ CrystalDialog::CrystalDialog(CrystalApplet *crystal)
     kDebug() << "BaseDir:" << m_baseDir;
     m_css = new StyleSheet(this);
     m_css->setFileName(m_baseDir);
+    connect(m_css, SIGNAL(styleSheetChanged(const QString&)), this, SLOT(updateView()));
     buildDialog();
 }
 
@@ -111,8 +120,11 @@ void CrystalDialog::buildDialog()
     /* ScrollWidget */
 
     m_resultsView = new Plasma::WebView(this);
+    m_resultsView->setDragToScroll(true);
+    m_resultsView->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+    m_resultsView->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
     m_resultsView->setMinimumSize(160, 200);
-    m_resultsView->setHtml(QString("%1<h1>Teh ressults:</h1>").arg(htmlHeader()));
+    m_resultsView->setHtml(QString("%1<h1>Crystal Desktop Search:</h1>This is the startpage and should get bookmarked queries and the past ones.").arg(htmlHeader()));
     gridLayout->addItem(m_resultsView, 1, 0, 1, 2);
 
     m_statusBar = new Plasma::Label(this);
@@ -122,7 +134,7 @@ void CrystalDialog::buildDialog()
     connect(Plasma::Theme::defaultTheme(), SIGNAL(themeChanged()), this, SLOT(updateColors()));
     updateColors();
     updateStatus(i18nc("no active search, no results shown", "Idle."));
-    setPreferredSize(200, 300);
+    setPreferredSize(400, 300);
     //setMaximumSize(400, 500);
 }
 
@@ -137,6 +149,17 @@ void CrystalDialog::updateColors()
     m_statusLabel->setPalette(p);
     m_resultsView->setPalette(p);
     */
+}
+
+void CrystalDialog::updateView()
+{
+    QString _html = htmlHeader();
+    qSort(m_results.begin(), m_results.end(), ratingLessThan);
+    foreach(Nepomuk::Resource* res, m_results) {
+        _html.append(renderItem(res));
+        _html.append("\n\n");
+    }
+    m_resultsView->setHtml(_html);
 }
 
 void CrystalDialog::updateStatus(const QString status)
@@ -155,6 +178,7 @@ void CrystalDialog::search()
     };
 
     m_resultsView->setHtml(QString("%1\nSearching ...").arg(m_resultsView->html()));
+    m_results.clear();
     m_matches = 0;
     m_query = m_lineEdit->text();
     kDebug() << "Searching for ..." << m_query << " timeout after:" << m_crystal->timeout();
@@ -171,8 +195,29 @@ void CrystalDialog::search()
     updateStatus(i18n( "Searching for<b>\"%1\"</b> ...", m_query));
 }
 
-QString CrystalDialog::renderItem(const KIO::UDSEntry &entry)
+QString CrystalDialog::abstract(Nepomuk::Resource *res)
 {
+    QString fulltext = res->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent")).toString();
+    kDebug() << "mangling" << res->genericLabel() << ", query:" << m_query;
+    if (fulltext.isEmpty()) {
+        return QString();
+    }
+    QString html = "not found";
+    int _i = fulltext.indexOf(m_query, Qt::CaseInsensitive); 
+    if (_i >= 0) {
+        int _b = qMin(0, _i - (int)(m_abstractSize/2));
+        int _l = qMin(m_abstractSize, fulltext.count());
+        html = fulltext.midRef(_b, _l).toString();
+        kDebug() << "Found query at " << _i << _b << _l;
+        kDebug() << "Abstract:" << html;
+        html.replace(m_query, QString("<font color=\"red\"><strong>%1</strong</font>").arg(m_query), Qt::CaseInsensitive);
+    }
+    return html;
+}
+
+QString CrystalDialog::renderItem(Nepomuk::Resource *res)
+{
+    /*
     QString _name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
     //bool isDir = entry.isDir();
     //KIO::filesize_t size = entry.numberValue( KIO::UDSEntry::UDS_SIZE, -1 );
@@ -180,11 +225,16 @@ QString CrystalDialog::renderItem(const KIO::UDSEntry &entry)
     QString _icon = entry.stringValue( KIO::UDSEntry::UDS_ICON_NAME );
     QString _nepomukUri = entry.stringValue( KIO::UDSEntry::UDS_NEPOMUK_URI );
     //QString _fileSize =
-
-    Nepomuk::Resource *res = new Nepomuk::Resource(_nepomukUri);
-    QString _desc = res->genericDescription();
+    */
+    QString _description = res->genericDescription();
     QString _label = res->genericLabel();
-    QString html = QString("<hr /><div class=\"result\"><strong>%1</strong><br />%2</div>").arg(_label, _desc);
+    QString _url = res->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )).toString();
+    QString _abstract = res->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent")).toString();
+
+    foreach(QUrl var, res->properties().keys()) {
+        kDebug() << var << res->properties()[var].variant();
+    }
+    QString html = QString("\n<li><div class=\"result\"><div class=\"link\"><a href=\"%1\">%2</a></div><br /><div class=\"description\">%3</div><div class=\"abstract\">%4</div></div></li>").arg(_url, _label, _description, abstract(res));
     kDebug() << html;
     return html;
 }
@@ -203,13 +253,14 @@ QString CrystalDialog::htmlHeader()
 <meta http-equiv=\"Content-Style-Type\" content=\"text/css\" />\
 </head>\
 <body>").arg(m_css->styleSheet());
-    _html = QString("<style>%1</style>\n\n").arg(m_css->styleSheet());
+    _html = QString("<style>%1</style>\n\n<ul>").arg(m_css->styleSheet());
     kDebug() << "CSS:" << _html;
     return _html;
 }
 
 void CrystalDialog::entries( KIO::Job *job, const KIO::UDSEntryList &list)
 {
+    Q_UNUSED( job )
     kDebug() << "entries! :)";
     // should look like this:
     KIO::UDSEntryList::ConstIterator it = list.begin();
@@ -218,6 +269,8 @@ void CrystalDialog::entries( KIO::Job *job, const KIO::UDSEntryList &list)
     for (; it != end; ++it) {
         const KIO::UDSEntry& entry = *it;
         m_matches++;
+        QString _nepomukUri = entry.stringValue( KIO::UDSEntry::UDS_NEPOMUK_URI );
+        Nepomuk::Resource *res = new Nepomuk::Resource(_nepomukUri);
         /*
         QString _name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
         //bool isDir = entry.isDir();
@@ -228,9 +281,9 @@ void CrystalDialog::entries( KIO::Job *job, const KIO::UDSEntryList &list)
         m_resultsView->setHtml(QString("%1<div>name: %2<br />info: %3</div>").arg(m_resultsView->html(), _name, _mimeType));
         */
         //kDebug() << "Result:" << _icon << _name << _mimeType << _nepomukUri;
-        html.append(renderItem(entry));
+        m_results << res;
     }
-    m_resultsView->setHtml(html);
+    updateView();
     /*
    //====================
     

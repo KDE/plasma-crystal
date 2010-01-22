@@ -58,6 +58,10 @@ namespace Solid
     class Device;
 }
 
+namespace Nepomuk
+{
+    class Resource;
+}
 
 namespace Crystal
 {
@@ -101,6 +105,7 @@ namespace Crystal
           *
           **/
           void updateColors();
+          void updateView();
           void searchFinished();
           void run( const QUrl& );
 
@@ -110,7 +115,8 @@ namespace Crystal
           **/
           void buildDialog();
           void updateStatus(const QString status);
-          QString renderItem(const KIO::UDSEntry &entry);
+          QString renderItem(Nepomuk::Resource *res);
+          QString abstract(Nepomuk::Resource *res);
           QString htmlHeader();
           Plasma::LineEdit *m_lineEdit;
           Plasma::IconWidget *m_searchButton;
@@ -119,11 +125,13 @@ namespace Crystal
 
           ///The applet attached to this item
           CrystalApplet * m_crystal;
+          QList<Nepomuk::Resource*> m_results;
 
           // Matches found for the current query
           int m_matches;
           // Last query ran
           QString m_query;
+          int m_abstractSize;
           // All icon sizes, indexed
           QHash<int, int> m_iconSizes;
           // basedir for the webview, all content relative to this path
