@@ -1,0 +1,97 @@
+/** Stylesheet for the UserWidget used in the openDesktop applet
+
+    Please use the following placeholders for colors and sizes.
+    They are replaced by colors matching the theme.
+
+        %textcolor      : Foreground color, used for text
+        %background     : background color, defaults to transparant
+        %visitedlink    : visited link color
+        %activatedlink  : activated link color
+        %hoveredlink    : link color when hovered
+        %smallfontsize  : Size of the smallest readable font
+        %fontsize       : Normal size for fonts
+ */
+
+body {
+    margin: 0px 0px 0px 0px;
+    color: %textcolor;
+    font-size: %fontsize;
+}
+
+h1 {
+    font-size: 23px;
+    font-weight: bold;
+    opacity: .4;
+}
+
+ul {
+    margin-left: 6px;
+    padding-left: 6px;
+}
+
+ul li {
+        /*content: "\00BB \0020";*/
+    content: "";
+}
+
+h2 {
+    font-size: 8px;
+    color: %textcolor;
+    opacity: .4;
+}
+
+td {
+    font-size: %smallfontsize;
+    font-style: normal;
+}
+
+.result {
+    font-size: %fontsize;
+    margin-bottom: 8px;
+}
+
+.rowheader {
+    font-size: %smallfontsize;
+    vertical-align: top;
+    font-weight: bold;
+    text-align: right;
+    opacity: .7;
+}
+
+
+.result:hover {
+    opacity: .7;
+}
+
+.link {
+    font-size: %fontsize;
+    color: %textcolor;
+    font-style: normal;
+    margin-bottom: 2px;
+}
+
+.description {
+    font-size: %smallfontsize;
+    color: %textcolor;
+    opacity: .75;
+    font-style: italic;
+    margin-bottom: 4px;
+    margin-left: 8px;
+    margin-right: 12px;
+}
+
+.abstract {
+    text-align: justify;
+    font-size: %smallfontsize;
+    color: %textcolor;
+    opacity: .5;
+    font-style: italic;
+    margin-left: 8px;
+    margin-right: 12px;
+}
+
+
+a { color: %textcolor; }
+a:visited { color: %textcolor; }
+a:link { color: %textcolor .8; }
+a:hover { text-decoration: none; opacity: .4; }
