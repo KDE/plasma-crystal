@@ -27,6 +27,7 @@
 #include <Plasma/Frame>
 
 class QGraphicsGridLayout;
+class QGraphicsProxyWidget;
 
 namespace Plasma
 {
@@ -67,7 +68,7 @@ namespace Crystal
         Plasma::IconWidget *m_iconWidget;
         Plasma::Label *m_nameLabel;
         Plasma::Label *m_infoLabel;
-        Plasma::Label *m_ratingWidget;
+        QGraphicsProxyWidget *m_ratingWidget;
   };
 }
 

@@ -69,7 +69,7 @@ ResultWidget::ResultWidget(QGraphicsWidget *parent)
     m_layout->setSpacing(1);
     m_scrollWidget->setWidget(_widget);
 
-    for (int i = 0; i<10; i++) {
+    for (int i = 0; i<2; i++) {
         
         addWidget(new Nepomuk::Resource());
     }

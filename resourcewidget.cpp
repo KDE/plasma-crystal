@@ -19,12 +19,14 @@
 
 //Qt
 #include <QGraphicsGridLayout>
+#include <QGraphicsProxyWidget>
 
 //KDE
 #include <KDebug>
 #include <KColorScheme>
 #include <KGlobalSettings>
 #include <KMimeType>
+#include <Nepomuk/KRatingWidget>
 #include <KRun>
 
 //plasma
@@ -71,10 +73,14 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     m_infoLabel->setText("Here goes the information about this resource, an abstract for example, or tags, or something");
     m_layout->addItem(m_infoLabel, 1, 1, 1, 2);
 
-    m_ratingWidget = new Plasma::Label(this);
-    m_ratingWidget->setFont(KGlobalSettings::smallestReadableFont());
-    m_ratingWidget->setText("[rating]");
-    m_layout->addItem(m_ratingWidget, 2, 0, 1, 1);
+    KRatingWidget *kratingWidget = new KRatingWidget(0);
+    kratingWidget->setMaxRating(5);
+    kratingWidget->setRating(3);
+    m_ratingWidget = new QGraphicsProxyWidget(this);
+    m_ratingWidget->setWidget(kratingWidget);
+    //m_ratingWidget->setFont(KGlobalSettings::smallestReadableFont());
+    //m_ratingWidget->setText("[rating]");
+    m_layout->addItem(m_ratingWidget, 2, 0, 1, 1, Qt::AlignCenter);
 
 }
 
