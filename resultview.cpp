@@ -16,6 +16,7 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
+
 //Qt
 #include <QGraphicsGridLayout>
 #include <QLabel>
@@ -85,6 +86,7 @@ void ResultView::addMatch(const KIO::UDSEntry& entry)
     */
     //kDebug() << "Result:" << _icon << _name << _mimeType << _nepomukUri;
     m_results << res;
+    emit resourceAdded(res);
 }
 
 void ResultView::setQuery(const QString& query)

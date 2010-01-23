@@ -61,6 +61,7 @@ namespace Crystal
 
     Q_SIGNALS:
         void run(const QUrl&);
+        void resourceAdded(Nepomuk::Resource*);
 
     public Q_SLOTS:
         /** Call to update the view with new entries after inserting them.

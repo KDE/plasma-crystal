@@ -17,23 +17,38 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef CRYSTALRESOURCEWIDGET_H
-#define CRYSTALRESOURCEWIDGET_H
+#ifndef CRYSTALRESULTWIDGET_H
+#define CRYSTALRESULTWIDGET_H
 
 //Qt
-#include <QGraphicsWidget>
+#include <QLabel>
+#include <QStringList>
+
+
+// KDE
+#include <KIO/ListJob>
+#include <kio/jobclasses.h>
 
 // Plasma
-#include <Plasma/Frame>
+#include <Plasma/IconWidget>
+#include <Plasma/Label>
+#include <Plasma/LineEdit>
+#include <Plasma/WebView>
 
-class QGraphicsGridLayout;
+//own
+#include "stylesheet.h"
+#include "resultview.h"
+#include "resourcewidget.h"
 
+class CrystalApplet;
+
+//desktop view
 namespace Plasma
 {
-    class IconWidget;
-    class Label;
+    class Icon;
+    class ScrollWidget;
+    class WebView;
 }
-
 
 namespace Nepomuk
 {
@@ -43,31 +58,29 @@ namespace Nepomuk
 namespace Crystal
 {
   /**
-  * @short ResourceWidget is a Plasma Widget to display a Nepomuk::Resource.
+  * @short A webby view used to display search results.
   *
   */
-  class ResourceWidget : public Plasma::Frame
+  class ResultWidget : public ResultView
   {
   Q_OBJECT
 
     public:
         /**
-        * Constructor of the ResourceWidget
-        * @param resource The Nepomuk::Resource this widget displays.
+        * Constructor of the dialog
         * @param parent the parent of this object
         **/
-        ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *parent = 0);
+        ResultWidget(QGraphicsWidget *parent);
 
-        virtual ~ResourceWidget();
+        virtual ~ResultWidget();
 
-    private :
-        Nepomuk::Resource *m_resource;
+    protected Q_SLOTS:
+        void addWidget(Nepomuk::Resource*);
 
-        QGraphicsGridLayout *m_layout;
-        Plasma::IconWidget *m_iconWidget;
-        Plasma::Label *m_nameLabel;
-        Plasma::Label *m_infoLabel;
-        Plasma::Label *m_ratingWidget;
+    private:
+        Plasma::ScrollWidget *m_scrollWidget;
+        QGraphicsLinearLayout *m_layout;
+        QList<ResourceWidget*> m_widgets;
   };
 }
 

@@ -7,6 +7,7 @@ set(crystal_SRCS
     applet.cpp
     dialog.cpp
     resultview.cpp
+    resultwidget.cpp
     resultwebview.cpp
     resourcewidget.cpp
     )
