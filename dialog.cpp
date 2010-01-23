@@ -107,12 +107,19 @@ void Dialog::buildDialog()
     m_searchButton->setMinimumSize(22, 22);
     gridLayout->addItem(m_searchButton, 0, 1);
 
-    /* ScrollWidget */
+    m_tabBar = new Plasma::TabBar(this);
+
+    m_dashBoard = new Plasma::WebView(m_tabBar);
+    m_dashBoard->setHtml(QString("<br /><br /><br /><center><i>This is your dashboard</i></center>"));
+    m_tabBar->addTab(KIcon("nepomuk"), i18n("Dashboard"), m_dashBoard);
 
     //m_resultsView = new Crystal::ResultWebView(this);
-    m_resultsView = new Crystal::ResultWidget(this);
+    m_resultsView = new Crystal::ResultWidget(m_tabBar);
 
-    gridLayout->addItem(m_resultsView, 1, 0, 1, 2);
+    m_tabBar->addTab(KIcon("system-search"), i18n("Results"), m_resultsView);
+    m_tabBar->setTabBarShown(false);
+    
+    gridLayout->addItem(m_tabBar, 1, 0, 1, 2);
 
     m_statusBar = new Plasma::Label(this);
     m_statusBar->setText("status");
@@ -148,6 +155,10 @@ void Dialog::search()
     m_resultsView->clear();
     m_query = m_lineEdit->text();
     m_resultsView->setQuery(m_query);
+    if (m_query.isEmpty()) {
+        m_tabBar->setCurrentIndex(0);
+        return;
+    }
     kDebug() << "Searching for ..." << m_query << " timeout after:" << m_timeout;
     updateStatus(i18nc("status in the plasmoid's popup", "Searching for <b>\"%1\"</b>...", m_query));
 
@@ -162,6 +173,7 @@ void Dialog::search()
     QTimer::singleShot( m_timeout, this, SLOT(searchFinished()) );
     //m_queryServiceClient->query( m_query );
     updateStatus(i18n( "Searching for<b>\"%1\"</b> ...", m_query));
+    m_tabBar->setCurrentIndex(1);
 }
 
 void Dialog::entries( KIO::Job *job, const KIO::UDSEntryList &list)
