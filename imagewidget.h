@@ -17,44 +17,53 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
-#ifndef STYLESHEET_H
-#define STYLESHEET_H
+#ifndef CRYSTALIMAGEWIDGET_H
+#define CRYSTALIMAGEWIDGET_H
 
 //Qt
-#include <QtCore/QHash>
+#include <QtCore/QUrl>
+#include <QtGui/QGraphicsWidget>
 
-// KDE
-#include <KDirWatch>
+//#include <Plasma/DataEngine>
 
-class StyleSheet : public QObject
+class KFileItem;
+
+namespace Crystal
+{
+    class ImageWidget;
+class ImageWidget : public QGraphicsWidget
 {
     Q_OBJECT
 
-    public:
-        StyleSheet(QObject *parent);
-        virtual ~StyleSheet();
+public:
+    explicit ImageWidget(QGraphicsWidget* parent = 0);
+    void setUrl(const QUrl& url);
+    void setMimeType(const QString &mime);
+    void setIconSize(int iconSize);
 
-        void setFileName(const QString &cssFile);
+private Q_SLOTS:
+    //void dataUpdated(const QUrl &url);
+    void previewUpdated(const KFileItem &item, const QPixmap &preview);
 
-        QString styleSheet() const;
-        void setStyleSheet(const QString &css);
+private:
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
+    void resizeEvent(QGraphicsSceneResizeEvent* event);
+    void pixmapUpdated();
 
-    Q_SIGNALS:
-        void styleSheetChanged(const QString&);
+    //Plasma::DataEngine* m_engine;
 
-    public Q_SLOTS:
-        void load(const QString &cssFile);
-        void update();
+    int border;
+    QColor fg;
+    QColor bg;
 
-    private:
-        QString m_cssFile;
-        QString m_styleSheet;
-        QString m_rawStyleSheet;
-        QString m_baseDir;
+    QPixmap m_pixmap;
+    QPixmap m_scaledPixmap;
 
-        QHash<QString, QString> m_colors;
-        KDirWatch* m_cssWatch;
+    QUrl m_url;
+    QString m_icon;
+    QString m_mimeType;
+    int m_iconSize;
 };
+}
 
 #endif
-

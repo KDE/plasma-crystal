@@ -1,0 +1,94 @@
+/** Stylesheet for the Crystal Dashboard
+
+    Please use the following placeholders for colors and sizes.
+    They are replaced by colors matching the theme.
+
+        %textcolor      : Foreground color, used for text
+        %background     : background color, defaults to transparant
+        %visitedlink    : visited link color
+        %activatedlink  : activated link color
+        %hoveredlink    : link color when hovered
+        %smallfontsize  : Size of the smallest readable font
+        %fontsize       : Normal size for fonts
+        %path           : For the local path
+ */
+
+/* Tags */
+
+body {
+    margin: 0px 0px 0px 0px;
+    color: %textcolor;
+    font-size: %fontsize;
+    background: url('%path/nepomuk.png') no-repeat bottom right;
+    background-opacity: .3;
+}
+
+h1 {
+    font-size: 23px;
+    font-weight: bold;
+    opacity: .4;
+    text-align: center;
+}
+
+h2 {
+    font-size: 12px;
+    color: %textcolor;
+    opacity: .8;
+}
+
+p {
+    text-align: justify;
+    opacity: .8;
+    font-size: %smallfontsize;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+td {
+    font-size: %smallfontsize;
+    font-style: normal;
+    opacity: .8;
+}
+
+ul {
+    margin-left: 10px;
+    padding-left: 10px;
+    font-size: %fontsize; 
+}
+
+img {
+    opacity: 1.0;
+}
+
+/* Fancier bullets?
+ul li {
+    content: "\00BB \0020";
+}
+*/
+
+/* id */
+
+#notice {
+    text-align: center;
+    font-weight: bold;
+    color: #E40000;
+    font-size: %fontsize;
+}
+
+#links {
+    margin-left: 10%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#footer {
+    text-align: right;
+    opacity: .4;
+}
+
+/* links */
+
+a { color: %textcolor; }
+a:visited { color: %textcolor; }
+a:link { color: %textcolor .8; }
+a:hover { text-decoration: none; opacity: .4; }

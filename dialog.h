@@ -39,6 +39,7 @@
 //own
 #include "resultwebview.h"
 #include "resultwidget.h"
+#include "dashboard.h"
 
 //class Applet;
 
@@ -113,7 +114,7 @@ namespace Crystal
         Plasma::LineEdit *m_lineEdit;
         Plasma::IconWidget *m_searchButton;
         Plasma::TabBar *m_tabBar;
-        Plasma::WebView *m_dashBoard;
+        DashBoard *m_dashBoard;
         ResultView *m_resultsView;
         Plasma::Label *m_statusBar;
 

@@ -6,6 +6,7 @@ set(crystal_SRCS
     stylesheet.cpp
     applet.cpp
     dialog.cpp
+    dashboard.cpp
     resultview.cpp
     resultwidget.cpp
     resultwebview.cpp
@@ -30,3 +31,6 @@ install(TARGETS plasma_applet_crystal DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES plasma-applet-crystal.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
 install(FILES user.css DESTINATION ${DATA_INSTALL_DIR}/plasma-applet-crystal/)
+install(FILES nepomuk.png DESTINATION ${DATA_INSTALL_DIR}/plasma-applet-crystal/)
+install(FILES dashboard.css DESTINATION ${DATA_INSTALL_DIR}/plasma-applet-crystal/)
+install(FILES dashboard.html DESTINATION ${DATA_INSTALL_DIR}/plasma-applet-crystal/)

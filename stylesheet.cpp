@@ -37,8 +37,9 @@ using namespace Plasma;
 StyleSheet::StyleSheet(QObject *parent)
     : QObject(parent)
 {
-    m_cssFile = "/home/sebas/kdesvn/src/playground-plasma/applets/crystal/user.css"; // For debugging quicker
-    //m_cssFile = KStandardDirs::locate("data", "plasma-applet-crystal/user.css");
+    //m_cssFile = "/home/sebas/kdesvn/src/playground-plasma/applets/crystal/user.css"; // For debugging quicker
+    m_cssFile = KStandardDirs::locate("data", "plasma-applet-crystal/user.css");
+
     load(m_cssFile);
     m_cssWatch = new KDirWatch(this);
     m_cssWatch->addFile(m_cssFile);
@@ -85,6 +86,8 @@ void StyleSheet::load(const QString &cssFile)
     } else {
         f.setFileName(cssFile);
     }
+    m_baseDir = QString("file://").append(KUrl(m_cssFile).directory());
+
     kDebug() << "(Re)loading CSS" << cssFile;
     if (f.open(QIODevice::ReadOnly)) {
         QTextStream t(&f);
@@ -113,6 +116,7 @@ void StyleSheet::update()
     m_colors["%activatedlink"] = linkvisited.name();
     m_colors["%hoveredlink"] = linkvisited.name();
     m_colors["%link"] = link.name();
+    m_colors["%path"] = m_baseDir;
     m_colors["%smallfontsize"] = QString("%1pt").arg(KGlobalSettings::smallestReadableFont().pointSize());
     m_colors["%fontsize"] = QString("%1pt").arg(KGlobalSettings::generalFont().pointSize());
 

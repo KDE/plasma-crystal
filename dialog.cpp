@@ -109,8 +109,8 @@ void Dialog::buildDialog()
 
     m_tabBar = new Plasma::TabBar(this);
 
-    m_dashBoard = new Plasma::WebView(m_tabBar);
-    m_dashBoard->setHtml(QString("<br /><br /><br /><center><i>This is your dashboard</i></center>"));
+    m_dashBoard = new DashBoard(m_tabBar);
+    //m_dashBoard->setHtml(QString("<br /><br /><br /><center><i>This is your dashboard</i></center>"));
     m_tabBar->addTab(KIcon("nepomuk"), i18n("Dashboard"), m_dashBoard);
 
     //m_resultsView = new Crystal::ResultWebView(this);
@@ -164,7 +164,12 @@ void Dialog::search()
 
     // query syntax is at:
     // http://techbase.kde.org/Development/Tutorials/Metadata/Nepomuk/QueryService
-    QString queryUrl = QString("nepomuksearch:/?query=%1").arg(m_query);
+    QString queryUrl;
+    if (m_query.startsWith("?")) {
+        queryUrl = QString("nepomuksearch:/%1").arg(m_query);
+    } else {
+        queryUrl = QString("nepomuksearch:/?query=%1").arg(m_query);
+    }
     KIO::ListJob* listJob = KIO::listDir(KUrl(queryUrl), KIO::HideProgressInfo);
     connect(listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList&)), this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)));
     connect(listJob, SIGNAL(finished(KJob*)), this, SLOT(searchFinished()));
@@ -172,7 +177,7 @@ void Dialog::search()
     // add a timeout in case something goes wrong (no user wants to wait more than N seconds)
     QTimer::singleShot( m_timeout, this, SLOT(searchFinished()) );
     //m_queryServiceClient->query( m_query );
-    updateStatus(i18n( "Searching for<b>\"%1\"</b> ...", m_query));
+    updateStatus(i18n("Searching for<b>\"%1\"</b> ...", m_query));
     m_tabBar->setCurrentIndex(1);
 }
 
