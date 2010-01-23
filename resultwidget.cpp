@@ -69,19 +69,30 @@ ResultWidget::ResultWidget(QGraphicsWidget *parent)
     m_layout->setSpacing(1);
     m_scrollWidget->setWidget(_widget);
 
+    QString q = "Fake";
+    KIO::UDSEntry e;
     for (int i = 0; i<2; i++) {
-        addWidget(new Nepomuk::Resource());
+        addWidget(new Nepomuk::Resource(), e, q);
     }
 
-    connect(this, SIGNAL(resourceAdded(Nepomuk::Resource*)), this, SLOT(addWidget(Nepomuk::Resource*)));
-    kDebug() << "ctor ran.";
+    connect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)),
+            this, SLOT(addWidget(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)));
 }
 
-void ResultWidget::addWidget(Nepomuk::Resource* resource)
+void ResultWidget::addWidget(Nepomuk::Resource* resource, const KIO::UDSEntry &entry, const QString &query)
 {
     ResourceWidget *_widget = new ResourceWidget(resource, this);
+    _widget->setQuery(query);
+    _widget->setUDSEntry(entry);
     m_layout->addItem(_widget);
     m_widgets << _widget;
+}
+
+void ResultWidget::clear()
+{
+    qDeleteAll(m_widgets);
+    m_widgets.clear();
+    ResultView::clear();
 }
 
 ResultWidget::~ResultWidget()

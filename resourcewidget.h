@@ -35,6 +35,10 @@ namespace Plasma
     class Label;
 }
 
+namespace KIO
+{
+    class UDSEntry;
+}
 
 namespace Nepomuk
 {
@@ -58,12 +62,13 @@ namespace Crystal
         * @param parent the parent of this object
         **/
         ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *parent = 0);
-
         virtual ~ResourceWidget();
+
+        void setQuery(const QString &query);
+        void setUDSEntry(const KIO::UDSEntry &entry);
 
     private :
         void updateWidgets();
-        QString stripTags(QString input);
 
         Nepomuk::Resource *m_resource;
 
@@ -71,9 +76,12 @@ namespace Crystal
         Plasma::IconWidget *m_iconWidget;
         Plasma::Label *m_nameLabel;
         Plasma::Label *m_infoLabel;
-        QGraphicsProxyWidget *m_ratingWidget;
+        //QGraphicsProxyWidget *m_ratingWidget;
+        Plasma::Label *m_ratingWidget;
 
         QUrl m_url;
+        QString m_query;
+        KIO::UDSEntry m_udsEntry;
   };
 }
 

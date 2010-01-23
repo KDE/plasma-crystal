@@ -47,8 +47,11 @@ namespace Crystal
         static bool ratingLessThan(const Nepomuk::Resource *r1, const Nepomuk::Resource *r2);
 
         static QString abstract(Nepomuk::Resource *res, const QString &query, int size = 200);
+        static QString abstract(const QString &text, const QString &query, int size = 200);
 
-        static QString highlight(QString &text, const QString &query);
+        static QString highlight(QString text, QString query);
+
+        static QString stripTags(QString input);
   };
 }
 

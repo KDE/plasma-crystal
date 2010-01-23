@@ -29,6 +29,7 @@
 #include <KIcon>
 #include <KIconLoader>
 #include <KIO/Job>
+#include <KLineEdit>
 #include <KMimeType>
 #include <KRun>
 #include <KStandardDirs>
@@ -74,7 +75,7 @@ Dialog::~Dialog()
 void Dialog::updateQuery(const QString query)
 {
     m_lineEdit->setText(query);
-    //m_lineEdit->selectAll(); FIXME
+    m_lineEdit->nativeWidget()->selectAll(); // FIXME
     m_lineEdit->setFocus();
 }
 
@@ -99,8 +100,9 @@ void Dialog::buildDialog()
     gridLayout->addItem(m_lineEdit, 0, 0);
 
     m_searchButton = new Plasma::IconWidget(this);
-    m_searchButton->setIcon("nepomuk");
-    connect(m_searchButton, SIGNAL(clicked()), SLOT(search()));
+    m_searchButton->setIcon("system-search");
+    m_searchButton->setMaximumSize(22, 22);
+    m_searchButton->setMinimumSize(22, 22);
     gridLayout->addItem(m_searchButton, 0, 1);
 
     /* ScrollWidget */
@@ -113,6 +115,10 @@ void Dialog::buildDialog()
     m_statusBar = new Plasma::Label(this);
     m_statusBar->setText("status");
     gridLayout->addItem(m_statusBar, 2, 0, 1, 2);
+
+    connect(m_lineEdit, SIGNAL(returnPressed()), SLOT(search()));
+    connect(m_lineEdit, SIGNAL(returnPressed()), m_searchButton, SLOT(setPressed()));
+    connect(m_searchButton, SIGNAL(clicked()), SLOT(search()));
 
     updateStatus(i18nc("no active search, no results shown", "Idle."));
     setPreferredSize(400, 300);
@@ -133,7 +139,7 @@ void Dialog::search()
     } else {
         kDebug() << "no resource manager";
     };
-
+    m_resultsView->clear();
     m_query = m_lineEdit->text();
     m_resultsView->setQuery(m_query);
     kDebug() << "Searching for ..." << m_query << " timeout after:" << m_timeout;
@@ -144,6 +150,7 @@ void Dialog::search()
     QString queryUrl = QString("nepomuksearch:/?query=%1").arg(m_query);
     KIO::ListJob* listJob = KIO::listDir(KUrl(queryUrl), KIO::HideProgressInfo);
     connect(listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList&)), this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)));
+    connect(listJob, SIGNAL(finished(KJob*)), this, SLOT(searchFinished()));
     // add a timeout in case something goes wrong (no user wants to wait more than N seconds)
     QTimer::singleShot( m_timeout, this, SLOT(searchFinished()) );
     //m_queryServiceClient->query( m_query );

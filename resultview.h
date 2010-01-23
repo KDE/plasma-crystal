@@ -38,6 +38,12 @@ namespace Nepomuk
     class Resource;
 }
 
+namespace KIO
+{
+    class UDSEntry;
+}
+
+
 namespace Crystal
 {
   /**
@@ -61,7 +67,7 @@ namespace Crystal
 
     Q_SIGNALS:
         void run(const QUrl&);
-        void resourceAdded(Nepomuk::Resource*);
+        void resourceAdded(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&);
 
     public Q_SLOTS:
         /** Call to update the view with new entries after inserting them.
@@ -69,6 +75,7 @@ namespace Crystal
         virtual void updateView();
 
         virtual int count();
+        virtual void clear();
 
         /**
          * @internal Gets called when a new match has been found

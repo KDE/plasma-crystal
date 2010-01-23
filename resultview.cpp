@@ -85,13 +85,28 @@ void ResultView::addMatch(const KIO::UDSEntry& entry)
     m_resultsView->setHtml(QString("%1<div>name: %2<br />info: %3</div>").arg(m_resultsView->html(), _name, _mimeType));
     */
     //kDebug() << "Result:" << _icon << _name << _mimeType << _nepomukUri;
+    kDebug() << "------------- UDSEntry -----------";
+    kDebug() << "UDS_ICON_NAME" << entry.stringValue( KIO::UDSEntry::UDS_ICON_NAME );
+    kDebug() << "UDS_MIME_TYPE" << entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
+    kDebug() << "UDS_NAME" << entry.stringValue( KIO::UDSEntry::UDS_NAME );;
+    kDebug() << "UDS_LOCAL_PATH" << entry.stringValue( KIO::UDSEntry::UDS_LOCAL_PATH );
+    foreach (uint i, entry.listFields()) {
+        kDebug() << "Field" << i << entry.stringValue(i);
+    }
+    
     m_results << res;
-    emit resourceAdded(res);
+    emit resourceAdded(res, entry, m_query);
 }
 
 void ResultView::setQuery(const QString& query)
 {
     m_query = query;
+}
+
+void ResultView::clear()
+{
+    qDeleteAll(m_results);
+    m_results.clear();
 }
 
 void ResultView::updateColors()

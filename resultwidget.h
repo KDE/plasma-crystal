@@ -44,6 +44,12 @@
 class CrystalApplet;
 
 //desktop view
+
+namespace KIO
+{
+    class UDSEntry;
+}
+
 namespace Plasma
 {
     class Icon;
@@ -74,9 +80,10 @@ namespace Crystal
         ResultWidget(QGraphicsWidget *parent);
 
         virtual ~ResultWidget();
+        virtual void clear();
 
     protected Q_SLOTS:
-        void addWidget(Nepomuk::Resource*);
+        void addWidget(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&);
 
     private:
         Plasma::ScrollWidget *m_scrollWidget;

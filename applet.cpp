@@ -94,7 +94,7 @@ void Applet::init()
     m_showFolders = cg.readEntry("showFolders", false);
     m_iconSize = cg.readEntry("iconSize", 1);
     m_useClipboard = cg.readEntry("useClipboard", true);
-    m_defaultQuery = cg.readEntry("defaultQuery", "kmix.png");
+    m_defaultQuery = cg.readEntry("defaultQuery", "kauth");
 
     kDebug() << "timeout, maxMatches, useclipboard, defaultquery:" << m_timeout << m_maxMatches << m_useClipboard << m_defaultQuery << m_iconSize;
     m_dialog->updateQuery(m_defaultQuery);
