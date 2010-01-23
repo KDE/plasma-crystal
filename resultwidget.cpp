@@ -55,6 +55,13 @@ using namespace Crystal;
 ResultWidget::ResultWidget(QGraphicsWidget *parent)
     : ResultView(parent)
 {
+    buildDialog();
+}
+
+void ResultWidget::buildDialog()
+{
+    disconnect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)),
+            this, SLOT(addWidget(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)));
     m_scrollWidget = new Plasma::ScrollWidget(this);
     QGraphicsLinearLayout *mainlayout = new QGraphicsLinearLayout(this);
     mainlayout->addItem(m_scrollWidget);
@@ -64,22 +71,24 @@ ResultWidget::ResultWidget(QGraphicsWidget *parent)
     //setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_scrollWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_scrollWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-    QGraphicsWidget *_widget = new QGraphicsWidget(this);
+    m_widget = new QGraphicsWidget(this);
     //_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     //m_widget->setMinimumSize(240, 50);
-    m_layout = new QGraphicsLinearLayout(_widget);
+    m_layout = new QGraphicsLinearLayout(m_widget);
     m_layout->setOrientation(Qt::Vertical);
     m_layout->setSpacing(1);
-    m_scrollWidget->setWidget(_widget);
+    m_scrollWidget->setWidget(m_widget);
 
+    connect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)),
+            this, SLOT(addWidget(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)));
+
+#if 0
     QString q = "Fake";
     KIO::UDSEntry e;
     for (int i = 0; i<2; i++) {
         addWidget(new Nepomuk::Resource(), e, q);
     }
-
-    connect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)),
-            this, SLOT(addWidget(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)));
+#endif
 }
 
 void ResultWidget::addWidget(Nepomuk::Resource* resource, const KIO::UDSEntry &entry, const QString &query)
@@ -113,8 +122,9 @@ void ResultWidget::clear()
     qDeleteAll(m_widgets);
     m_widgets.clear();
     ResultView::clear();
-    m_layout->setMinimumSize(-1, -1);
-    m_layout->invalidate();
+
+    delete m_scrollWidget;
+    buildDialog();
 }
 
 ResultWidget::~ResultWidget()

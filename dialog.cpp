@@ -128,9 +128,9 @@ void Dialog::buildDialog()
 
 void Dialog::updateStatus(const QString status)
 {
-    KColorScheme colorTheme = KColorScheme(QPalette::Active, KColorScheme::View,Plasma::Theme::defaultTheme()->colorScheme());
-    QString text = QString("<font color=\"%1\">%2</font>%3\%").arg(colorTheme.foreground(KColorScheme::NormalText).color().name(), status, QString::number(m_progress));
-    m_statusBar->setText(text);
+    //KColorScheme colorTheme = KColorScheme(QPalette::Active, KColorScheme::View,Plasma::Theme::defaultTheme()->colorScheme());
+    //QString text = QString("<font color=\"%1\">%2</font>").arg(colorTheme.foreground(KColorScheme::NormalText).color().name(), status);
+    m_statusBar->setText(status);
 }
 
 void Dialog::search()
@@ -169,11 +169,11 @@ void Dialog::entries( KIO::Job *job, const KIO::UDSEntryList &list)
     for (; it != end; ++it) {
         const KIO::UDSEntry& entry = *it;
         m_resultsView->addMatch(entry);
+        updateStatus(i18np("Searching for <b>\"%2\"</b>. %1 file found so far...",
+            "Searching for <b>\"%2\"</b>. %1 files found so far...", m_resultsView->count(), m_query));
     }
     m_progress = (qreal)(job->percent());
     m_resultsView->updateView();
-    updateStatus(i18np("Searching for <b>\"%2\"</b>. %1 file found so far...",
-                       "Searching for <b>\"%2\"</b>. %1 files found so far...", m_resultsView->count(), m_query));
     emit updateToolTip(m_query, m_resultsView->count());
 
 }

@@ -88,6 +88,7 @@ void ResultView::addMatch(const KIO::UDSEntry& entry)
     
     m_results << res;
     emit resourceAdded(res, entry, m_query);
+    //emit matchAdded();
 }
 
 void ResultView::setQuery(const QString& query)

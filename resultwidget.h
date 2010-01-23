@@ -87,6 +87,9 @@ namespace Crystal
         virtual void updateView();
 
     private:
+        void buildDialog();
+        //Plasma::TabBar *m_tabBar;
+        QGraphicsWidget *m_widget;
         Plasma::ScrollWidget *m_scrollWidget;
         QGraphicsLinearLayout *m_layout;
         QList<ResourceWidget*> m_widgets;
