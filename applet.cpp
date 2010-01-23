@@ -83,7 +83,7 @@ void Applet::init()
 {
     KConfigGroup cg = config();
 
-    m_icon = new Plasma::IconWidget(KIcon("nepomuk",NULL), QString());
+    m_icon = new Plasma::IconWidget(KIcon("system-search",NULL), QString());
 
     Plasma::ToolTipManager::self()->registerWidget(this);
 
@@ -159,12 +159,12 @@ void Applet::updateToolTip(const QString query, const int matches)
     if (!query.isEmpty()) {
         m_toolTip = Plasma::ToolTipContent(i18nc("Tooltip main title text", "Crystal Desktop Search"),
                         i18ncp("Tooltip sub text", "Last search: %2 (%1 match)", "Last search: %2 (%1 matches)", matches, query),
-                        KIcon("nepomuk").pixmap(IconSize(KIconLoader::Desktop))
+                        KIcon("system-search").pixmap(IconSize(KIconLoader::Desktop))
                     );
     } else {
         m_toolTip = Plasma::ToolTipContent(i18nc("No search has been done yet", "Crystal Desktop Search"),
                         i18nc("Tooltip sub text", "Click on the icon to start searching"),
-                        KIcon("nepomuk").pixmap(IconSize(KIconLoader::Desktop))
+                        KIcon("system-search").pixmap(IconSize(KIconLoader::Desktop))
                     );
 
     }
