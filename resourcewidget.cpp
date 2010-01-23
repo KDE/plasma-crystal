@@ -28,6 +28,7 @@
 #include <KColorScheme>
 #include <KGlobalSettings>
 #include <KIO/Job>
+#include <kio/jobclasses.h>
 #include <KMimeType>
 #include <Nepomuk/KRatingWidget>
 #include <KRun>
@@ -50,33 +51,39 @@
 using namespace Crystal;
 
 ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *parent)
-    : Plasma::Frame(parent),
+    : Plasma::IconWidget(parent),
+    //: Plasma::Frame(parent),
       m_resource(resource),
+      m_iconSize(48),
       m_layout(0),
       m_iconWidget(0),
       m_nameLabel(0),
       m_infoLabel(0),
       m_ratingWidget(0)
 {
-    int iconSize = 48;
-    
+    setDrawBackground(true);
+    setMinimumHeight(76);
+    //setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    connect(this, SIGNAL(activated()), this, SLOT(open()));
     m_layout = new QGraphicsGridLayout(this);
-    QGraphicsLinearLayout *m_leftLayout = new QGraphicsLinearLayout(m_layout);
+    m_layout->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+    m_leftLayout = new QGraphicsLinearLayout(m_layout);
     m_leftLayout->setOrientation(Qt::Vertical);
-    QGraphicsLinearLayout *m_rightLayout = new QGraphicsLinearLayout(m_layout);
+    m_rightLayout = new QGraphicsLinearLayout(m_layout);
     m_rightLayout->setOrientation(Qt::Vertical);
     
     
-    m_layout->setColumnFixedWidth(0, iconSize);
+    m_layout->setColumnFixedWidth(0, m_iconSize);
     m_layout->setRowStretchFactor(0, 1);
     m_layout->setRowStretchFactor(1, 100);
     m_layout->setRowStretchFactor(2, 1);
-    setLayout(m_layout);
+    //setLayout(m_layout);
 
     m_iconWidget = new Plasma::IconWidget(this);
     m_iconWidget->setIcon("nepomuk");
-    m_iconWidget->setMinimumSize(iconSize, iconSize);
-    m_iconWidget->setMaximumSize(iconSize, iconSize);
+    m_iconWidget->setMinimumSize(m_iconSize, m_iconSize);
+    m_iconWidget->setMaximumSize(m_iconSize, m_iconSize);
     m_iconWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     //m_layout->addItem(m_iconWidget, 0, 0, 2, 1);
     m_leftLayout->addItem(m_iconWidget);
@@ -91,7 +98,7 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     m_ratingWidget = new Plasma::Label(this);
     m_ratingWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     m_ratingWidget->setMaximumHeight(12);
-    m_ratingWidget->setMaximumWidth(iconSize);
+    m_ratingWidget->setMaximumWidth(m_iconSize);
     m_ratingWidget->setFont(KGlobalSettings::smallestReadableFont());
     m_ratingWidget->setText("[rating]");
     m_ratingWidget->setOpacity(0.5);
@@ -111,7 +118,7 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     m_infoLabel = new Plasma::Label(this);
     m_infoLabel->nativeWidget()->setWordWrap(true);
     m_infoLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    //m_infoLabel->setMinimumHeight(iconSize);
+    //m_infoLabel->setMinimumHeight(m_iconSize);
     //m_infoLabel->setStyleSheet("font { opacity: 0.7; }");
     m_infoLabel->setOpacity(.5);
     m_infoLabel->setFont(KGlobalSettings::smallestReadableFont());
@@ -132,11 +139,25 @@ void ResourceWidget::setQuery(const QString &query)
     updateWidgets();
 }
 
+void ResourceWidget::setUrl(const QUrl &url)
+{
+    kDebug() << "????????" << url;
+    m_url = url;
+    emit urlChanged();
+}
+
+void ResourceWidget::open()
+{
+    kDebug() << "open:" << m_url;
+    emit run(m_url);
+}
+
 void ResourceWidget::setResource(Nepomuk::Resource *resource)
 {
     m_resource = resource;
-    m_url = QUrl(resource->property(QUrl("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url")).toString());
+    setUrl(QUrl(resource->property(QUrl("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url")).toString()));
 
+#if 0
     kDebug() << "============= Resource ===============";
     foreach(QUrl var, m_resource->properties().keys()) {
         //kDebug() << var << m_resource->properties()[var].variant();
@@ -149,7 +170,7 @@ void ResourceWidget::setResource(Nepomuk::Resource *resource)
     //m_url = QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )
 
     //QString m_url = m_resource->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )).toString();
-
+#endif
     // What to display on the namelabel?
     QString m_label = m_resource->genericLabel();
     if (m_label.isEmpty()) {
@@ -174,6 +195,8 @@ void ResourceWidget::setResource(Nepomuk::Resource *resource)
 
 void ResourceWidget::setUDSEntry(const KIO::UDSEntry &entry)
 {
+#if 0
+
     kDebug() << "------------- UDSEntry -----------";
     kDebug() << "UDS_ICON_NAME" << entry.stringValue( KIO::UDSEntry::UDS_ICON_NAME );
     kDebug() << "UDS_MIME_TYPE" << entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
@@ -182,6 +205,8 @@ void ResourceWidget::setUDSEntry(const KIO::UDSEntry &entry)
     foreach (uint i, entry.listFields()) {
         kDebug() << "Field" << i << entry.stringValue(i);
     }
+#endif
+    
     m_udsEntry = KIO::UDSEntry(entry);
 
     m_icon = entry.stringValue( KIO::UDSEntry::UDS_ICON_NAME );
@@ -207,9 +232,20 @@ void ResourceWidget::updateWidgets()
     }
     //m_nameLabel->setText(m_label);
     m_nameLabel->setText("<strong>" + m_resource->genericLabel() + "</strong>");
-    m_iconWidget->setIcon(m_icon);
+    if (m_iconWidget) {
+        m_iconWidget->setIcon(m_icon);
+    }
+#if 0
     kDebug() << "==== StripShow:" << Utils::stripTags("<h1>This is my text, <br /> is it stripped?</h1>");
-    //m_layout->invalidate();
+    kDebug() << "Prefheight:" << qMax(m_leftLayout->preferredHeight(),m_rightLayout->preferredHeight());
+    kDebug() << " Minheight:" << qMax(m_leftLayout->minimumHeight(),m_rightLayout->minimumHeight());
+    kDebug() << " Maxheight:" << qMax(m_leftLayout->maximumHeight(),m_rightLayout->maximumHeight());
+
+#endif
+    
+    setMinimumHeight(qMax(m_leftLayout->minimumHeight(),m_rightLayout->minimumHeight()) + 12);
+
+    m_layout->invalidate();
 }
 
 ResourceWidget::~ResourceWidget()

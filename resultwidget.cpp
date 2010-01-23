@@ -29,6 +29,7 @@
 #include <KIcon>
 #include <KIconLoader>
 #include <KIO/Job>
+//#include <KIO/UDSEntry>
 #include <KMimeType>
 #include <KRun>
 #include <KStandardDirs>
@@ -47,6 +48,7 @@
 #include "utils.h"
 #include "resultwidget.h"
 #include "resourcewidget.h"
+#include "imageresourcewidget.h"
 
 using namespace Crystal;
 
@@ -63,7 +65,7 @@ ResultWidget::ResultWidget(QGraphicsWidget *parent)
     m_scrollWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_scrollWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     QGraphicsWidget *_widget = new QGraphicsWidget(this);
-    _widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
+    //_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     //m_widget->setMinimumSize(240, 50);
     m_layout = new QGraphicsLinearLayout(_widget);
     m_layout->setOrientation(Qt::Vertical);
@@ -82,9 +84,20 @@ ResultWidget::ResultWidget(QGraphicsWidget *parent)
 
 void ResultWidget::addWidget(Nepomuk::Resource* resource, const KIO::UDSEntry &entry, const QString &query)
 {
-    ResourceWidget *_widget = new ResourceWidget(resource, this);
+    QString _mimeType = entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
+
+    ResourceWidget *_widget;
+    if (_mimeType.startsWith("image")) {
+        kDebug() << "******************** Creating an image!" << _mimeType;
+        ImageResourceWidget *irw = new ImageResourceWidget(resource, this);
+        _widget = qobject_cast<ResourceWidget*>(irw);
+    } else {
+        kDebug() << "Creating a generic." << _mimeType;
+        _widget = new ResourceWidget(resource, this);
+    }
     _widget->setQuery(query);
     _widget->setUDSEntry(entry);
+    connect(_widget, SIGNAL(run(const QUrl&)), SLOT(run(const QUrl&)));
     m_layout->addItem(_widget);
     m_widgets << _widget;
 }
@@ -96,9 +109,12 @@ void ResultWidget::updateView()
 
 void ResultWidget::clear()
 {
+    kDebug() << "Clearing ..." << m_widgets.count();
     qDeleteAll(m_widgets);
     m_widgets.clear();
     ResultView::clear();
+    m_layout->setMinimumSize(-1, -1);
+    m_layout->invalidate();
 }
 
 ResultWidget::~ResultWidget()

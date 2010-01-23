@@ -23,7 +23,10 @@
 //Qt
 #include <QGraphicsWidget>
 
+#include <KIO/Job>
+
 // Plasma
+#include <Plasma/IconWidget>
 #include <Plasma/Frame>
 
 class QGraphicsGridLayout;
@@ -33,11 +36,6 @@ namespace Plasma
 {
     class IconWidget;
     class Label;
-}
-
-namespace KIO
-{
-    class UDSEntry;
 }
 
 namespace Nepomuk
@@ -51,7 +49,8 @@ namespace Crystal
   * @short ResourceWidget is a Plasma Widget to display a Nepomuk::Resource.
   *
   */
-  class ResourceWidget : public Plasma::Frame
+  class ResourceWidget : public Plasma::IconWidget
+  //class ResourceWidget : public Plasma::Frame
   {
   Q_OBJECT
 
@@ -64,16 +63,27 @@ namespace Crystal
         ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *parent = 0);
         virtual ~ResourceWidget();
 
-        void setQuery(const QString &query);
-        void setUDSEntry(const KIO::UDSEntry &entry);
-        void setResource(Nepomuk::Resource *resource);
+        virtual void setUrl(const QUrl &url);
+        virtual void setQuery(const QString &query);
+        virtual void setUDSEntry(const KIO::UDSEntry &entry);
+        virtual void setResource(Nepomuk::Resource *resource);
 
-    private :
-        void updateWidgets();
+    Q_SIGNALS:
+        void run(const QUrl&);
+        void resourceChanged();
+        void urlChanged();
+
+    protected Q_SLOTS:
+        void open();
+
+    protected:
+        virtual void updateWidgets();
 
         Nepomuk::Resource *m_resource;
 
         QGraphicsGridLayout *m_layout;
+        QGraphicsLinearLayout *m_leftLayout;
+        QGraphicsLinearLayout *m_rightLayout;
         Plasma::IconWidget *m_iconWidget;
         Plasma::Label *m_nameLabel;
         Plasma::Label *m_infoLabel;
@@ -84,6 +94,7 @@ namespace Crystal
         QString m_query;
         KIO::UDSEntry m_udsEntry;
 
+        int m_iconSize;
         QString m_icon;
         QString m_label;
         QString m_info;

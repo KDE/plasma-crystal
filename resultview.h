@@ -66,7 +66,6 @@ namespace Crystal
         virtual void setQuery(const QString&);
 
     Q_SIGNALS:
-        void run(const QUrl&);
         void resourceAdded(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&);
 
     public Q_SLOTS:
@@ -88,6 +87,7 @@ namespace Crystal
         *
         **/
         virtual void updateColors();
+        void run(const QUrl&);
 
     protected:
         QList<Nepomuk::Resource*> m_results;

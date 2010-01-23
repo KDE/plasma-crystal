@@ -110,4 +110,12 @@ void ResultView::updateView()
     kDebug() << "Should not be called in the base class!";
 }
 
+void ResultView::run(const QUrl& uri)
+{
+    kDebug() << "Opening ... " << uri;
+    if (uri.isValid()) {
+        new KRun(uri, 0);
+    }
+}
+
 #include "resultview.moc"

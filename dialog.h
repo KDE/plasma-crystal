@@ -101,7 +101,7 @@ namespace Crystal
 
     private Q_SLOTS:
         void searchFinished();
-        void run( const QUrl& );
+        void progressChanged(KJob *job, unsigned long percent);
 
     private :
         /**
@@ -121,6 +121,7 @@ namespace Crystal
         // Last query ran
         QString m_query;
         int m_abstractSize;
+        qreal m_progress;
   };
 }
 

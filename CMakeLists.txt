@@ -10,6 +10,8 @@ set(crystal_SRCS
     resultwidget.cpp
     resultwebview.cpp
     resourcewidget.cpp
+    imageresourcewidget.cpp
+    imagewidget.cpp
     utils.cpp
     )
 

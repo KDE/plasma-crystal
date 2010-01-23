@@ -55,7 +55,8 @@ Dialog::Dialog(QGraphicsWidget *parent)
       m_lineEdit(0),
       m_searchButton(0),
       m_statusBar(0),
-      m_query(0)
+      m_query(0),
+      m_progress(0)
 {
 
     m_iconSizes[0] = 16;
@@ -128,7 +129,7 @@ void Dialog::buildDialog()
 void Dialog::updateStatus(const QString status)
 {
     KColorScheme colorTheme = KColorScheme(QPalette::Active, KColorScheme::View,Plasma::Theme::defaultTheme()->colorScheme());
-    QString text = QString("<font color=\"%1\">%2</font>").arg(colorTheme.foreground(KColorScheme::NormalText).color().name()).arg(status);
+    QString text = QString("<font color=\"%1\">%2</font>%3\%").arg(colorTheme.foreground(KColorScheme::NormalText).color().name(), status, QString::number(m_progress));
     m_statusBar->setText(text);
 }
 
@@ -151,6 +152,7 @@ void Dialog::search()
     KIO::ListJob* listJob = KIO::listDir(KUrl(queryUrl), KIO::HideProgressInfo);
     connect(listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList&)), this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)));
     connect(listJob, SIGNAL(finished(KJob*)), this, SLOT(searchFinished()));
+    connect(listJob, SIGNAL(percent(KJob *, unsigned long)), this, SLOT(progressChanged(KJob*, unsigned long)));
     // add a timeout in case something goes wrong (no user wants to wait more than N seconds)
     QTimer::singleShot( m_timeout, this, SLOT(searchFinished()) );
     //m_queryServiceClient->query( m_query );
@@ -168,11 +170,18 @@ void Dialog::entries( KIO::Job *job, const KIO::UDSEntryList &list)
         const KIO::UDSEntry& entry = *it;
         m_resultsView->addMatch(entry);
     }
+    m_progress = (qreal)(job->percent());
     m_resultsView->updateView();
     updateStatus(i18np("Searching for <b>\"%2\"</b>. %1 file found so far...",
                        "Searching for <b>\"%2\"</b>. %1 files found so far...", m_resultsView->count(), m_query));
     emit updateToolTip(m_query, m_resultsView->count());
 
+}
+
+void Dialog::progressChanged(KJob *job, unsigned long percent)
+{
+    m_progress = (qreal)(percent);
+    kDebug() << "!!!!!!!!!!!!!!!!!!!! Progress now at:" << m_progress;
 }
 
 void Dialog::searchFinished()
@@ -183,12 +192,5 @@ void Dialog::searchFinished()
     emit updateToolTip(m_query, m_resultsView->count());
 }
 
-void Dialog::run(const QUrl& uri)
-{
-    kDebug() << "Opening ... " << uri;
-    if (uri.isValid()) {
-        new KRun(uri, 0);
-    }
-}
 
 #include "dialog.moc"
