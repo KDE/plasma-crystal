@@ -69,18 +69,20 @@ ResultWidget::ResultWidget(QGraphicsWidget *parent)
     m_layout->setSpacing(1);
     m_scrollWidget->setWidget(_widget);
 
-    for (int i; i<10; i++) {
+    for (int i = 0; i<10; i++) {
+        
         addWidget(new Nepomuk::Resource());
     }
 
     connect(this, SIGNAL(resourceAdded(Nepomuk::Resource*)), this, SLOT(addWidget(Nepomuk::Resource*)));
+    kDebug() << "ctor ran.";
 }
 
 void ResultWidget::addWidget(Nepomuk::Resource* resource)
 {
-        ResourceWidget *_widget = new ResourceWidget(resource, this);
-        m_layout->addItem(_widget);
-        m_widgets << _widget;
+    ResourceWidget *_widget = new ResourceWidget(resource, this);
+    m_layout->addItem(_widget);
+    m_widgets << _widget;
 }
 
 ResultWidget::~ResultWidget()

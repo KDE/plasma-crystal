@@ -105,7 +105,9 @@ void Dialog::buildDialog()
 
     /* ScrollWidget */
 
-    m_resultsView = new Crystal::ResultWebView(this);
+    //m_resultsView = new Crystal::ResultWebView(this);
+    m_resultsView = new Crystal::ResultWidget(this);
+
     gridLayout->addItem(m_resultsView, 1, 0, 1, 2);
 
     m_statusBar = new Plasma::Label(this);

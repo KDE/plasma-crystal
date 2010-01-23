@@ -37,6 +37,7 @@
 
 //own
 #include "resultwebview.h"
+#include "resultwidget.h"
 
 //class Applet;
 

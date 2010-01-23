@@ -59,8 +59,8 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
 
     m_iconWidget = new Plasma::IconWidget(this);
     m_iconWidget->setIcon("nepomuk");
-    m_iconWidget->setPreferredSize(64, 64);
-    m_layout->addItem(m_iconWidget,0, 0, 1, 2);
+    m_iconWidget->setPreferredSize(48, 48);
+    m_layout->addItem(m_iconWidget, 0, 0, 2, 1);
 
     m_nameLabel = new Plasma::Label(this);
     m_nameLabel->setText("Nepomuk Resource");
@@ -69,7 +69,7 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     m_infoLabel = new Plasma::Label(this);
     m_infoLabel->setFont(KGlobalSettings::smallestReadableFont());
     m_infoLabel->setText("Here goes the information about this resource, an abstract for example, or tags, or something");
-    m_layout->addItem(m_infoLabel, 1, 1, 2, 1);
+    m_layout->addItem(m_infoLabel, 1, 1, 1, 2);
 
     m_ratingWidget = new Plasma::Label(this);
     m_ratingWidget->setFont(KGlobalSettings::smallestReadableFont());

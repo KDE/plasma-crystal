@@ -21,6 +21,7 @@
 #define CRYSTALRESULTWIDGET_H
 
 //Qt
+#include <QGraphicsLinearLayout>
 #include <QLabel>
 #include <QStringList>
 
