@@ -84,6 +84,7 @@ namespace Crystal
 
     protected Q_SLOTS:
         void addWidget(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&);
+        virtual void updateView();
 
     private:
         Plasma::ScrollWidget *m_scrollWidget;

@@ -94,6 +94,7 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     m_ratingWidget->setMaximumWidth(iconSize);
     m_ratingWidget->setFont(KGlobalSettings::smallestReadableFont());
     m_ratingWidget->setText("[rating]");
+    m_ratingWidget->setOpacity(0.5);
     //m_layout->addItem(m_ratingWidget, 2, 0, 1, 1, Qt::AlignTop);
     //m_layout->addItem(m_ratingWidget, 2, 0, Qt::AlignTop);
     m_leftLayout->addItem(m_ratingWidget);
@@ -111,20 +112,17 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     m_infoLabel->nativeWidget()->setWordWrap(true);
     m_infoLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     //m_infoLabel->setMinimumHeight(iconSize);
+    //m_infoLabel->setStyleSheet("font { opacity: 0.7; }");
+    m_infoLabel->setOpacity(.5);
     m_infoLabel->setFont(KGlobalSettings::smallestReadableFont());
     //m_layout->addItem(m_infoLabel, 1, 1, 3, 1);
     m_rightLayout->addItem(m_infoLabel);
     m_layout->addItem(m_leftLayout, 0, 0);
     m_layout->addItem(m_rightLayout, 0, 1);
     
-    updateWidgets();
 
+    setResource(m_resource);
     kDebug() << "GridLayout has rows, cols:" << m_layout->rowCount() << m_layout->columnCount();
-    kDebug() << "============= Resource ===============";
-    foreach(QUrl var, m_resource->properties().keys()) {
-        //kDebug() << var << m_resource->properties()[var].variant();
-        kDebug() << var;
-    }
 
 }
 
@@ -134,35 +132,82 @@ void ResourceWidget::setQuery(const QString &query)
     updateWidgets();
 }
 
+void ResourceWidget::setResource(Nepomuk::Resource *resource)
+{
+    m_resource = resource;
+    m_url = QUrl(resource->property(QUrl("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url")).toString());
+
+    kDebug() << "============= Resource ===============";
+    foreach(QUrl var, m_resource->properties().keys()) {
+        //kDebug() << var << m_resource->properties()[var].variant();
+        kDebug() << var;
+    }
+    kDebug() << "genericLabel:" << resource->genericLabel();
+    kDebug() << "genericDescription:" << resource->genericDescription();
+    kDebug() << "genericIcon:" << resource->genericIcon();
+    kDebug() << "url" << m_url;
+    //m_url = QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )
+
+    //QString m_url = m_resource->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )).toString();
+
+    // What to display on the namelabel?
+    QString m_label = m_resource->genericLabel();
+    if (m_label.isEmpty()) {
+        m_label = "Name goes here...";
+    }
+
+    // What to display on the infolabel?
+    m_info = Utils::abstract(m_resource, m_query);;
+    QString _description = m_resource->genericDescription();
+
+    if (m_info.isEmpty()) {
+        m_info = _description;
+    }
+    if (m_info.isEmpty()) {
+        m_info = m_url.toString();
+    }
+
+    m_ratingWidget->setText(i18n("Rating: %1", m_resource->rating()));
+    updateWidgets();
+}
+
+
 void ResourceWidget::setUDSEntry(const KIO::UDSEntry &entry)
 {
+    kDebug() << "------------- UDSEntry -----------";
+    kDebug() << "UDS_ICON_NAME" << entry.stringValue( KIO::UDSEntry::UDS_ICON_NAME );
+    kDebug() << "UDS_MIME_TYPE" << entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
+    kDebug() << "UDS_NAME" << entry.stringValue( KIO::UDSEntry::UDS_NAME );;
+    kDebug() << "UDS_LOCAL_PATH" << entry.stringValue( KIO::UDSEntry::UDS_LOCAL_PATH );
+    foreach (uint i, entry.listFields()) {
+        kDebug() << "Field" << i << entry.stringValue(i);
+    }
     m_udsEntry = KIO::UDSEntry(entry);
+
+    m_icon = entry.stringValue( KIO::UDSEntry::UDS_ICON_NAME );
+    m_mimeType = entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
+    if (m_icon.isEmpty()) {
+        if (!m_mimeType.isEmpty()) {
+            m_icon = KMimeType::iconNameForUrl(m_url);
+        } else {
+            m_icon = "nepomuk";
+        }
+    }
     updateWidgets();
 }
 
 void ResourceWidget::updateWidgets()
 {
-    QString _description = m_resource->genericDescription();
-    QString _label = m_resource->genericLabel();
-    //QString _icon = 
-    QString m_url = m_resource->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )).toString();
-    QString _abstract = m_resource->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent")).toString();
-    //m_iconWidget->setIcon(KMimeType());
-
-
-    if (_label.isEmpty()) {
-        m_nameLabel->setText("Name goes here...");
-    } else {
-        m_nameLabel->setText(_label);
-
-    }
-    if (_abstract.isEmpty()) {
+    if (m_info.isEmpty()) {
         // dummy, only for testing
         m_infoLabel->setText(Utils::highlight(Utils::abstract("Here goes the information about this resource, an abstract for example, or tags, or something ... Here goes the information about this resource, an abstract for example, or tags, or something Here goes the information about this resource, an abstract for example, or tags, or something Here goes the information about this resource, an abstract for example, or tags, or something", QString("example")), QString("example")));
     } else {
-        _abstract = Utils::highlight(Utils::abstract(m_resource, m_query), m_query);
+        QString _abstract = Utils::highlight(m_info, m_query);
         m_infoLabel->setText(_abstract);
     }
+    //m_nameLabel->setText(m_label);
+    m_nameLabel->setText("<strong>" + m_resource->genericLabel() + "</strong>");
+    m_iconWidget->setIcon(m_icon);
     kDebug() << "==== StripShow:" << Utils::stripTags("<h1>This is my text, <br /> is it stripped?</h1>");
     //m_layout->invalidate();
 }

@@ -66,6 +66,7 @@ namespace Crystal
 
         void setQuery(const QString &query);
         void setUDSEntry(const KIO::UDSEntry &entry);
+        void setResource(Nepomuk::Resource *resource);
 
     private :
         void updateWidgets();
@@ -82,6 +83,11 @@ namespace Crystal
         QUrl m_url;
         QString m_query;
         KIO::UDSEntry m_udsEntry;
+
+        QString m_icon;
+        QString m_label;
+        QString m_info;
+        QString m_mimeType;
   };
 }
 

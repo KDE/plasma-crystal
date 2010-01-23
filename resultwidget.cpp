@@ -63,6 +63,7 @@ ResultWidget::ResultWidget(QGraphicsWidget *parent)
     m_scrollWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_scrollWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     QGraphicsWidget *_widget = new QGraphicsWidget(this);
+    _widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
     //m_widget->setMinimumSize(240, 50);
     m_layout = new QGraphicsLinearLayout(_widget);
     m_layout->setOrientation(Qt::Vertical);
@@ -86,6 +87,11 @@ void ResultWidget::addWidget(Nepomuk::Resource* resource, const KIO::UDSEntry &e
     _widget->setUDSEntry(entry);
     m_layout->addItem(_widget);
     m_widgets << _widget;
+}
+
+void ResultWidget::updateView()
+{
+    m_layout->invalidate();
 }
 
 void ResultWidget::clear()
