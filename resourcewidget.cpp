@@ -41,7 +41,7 @@
 
 //own
 #include "resourcewidget.h"
-//#include "helpers.cpp"
+#include "utils.h"
 
 
 using namespace Crystal;
@@ -81,7 +81,35 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     //m_ratingWidget->setFont(KGlobalSettings::smallestReadableFont());
     //m_ratingWidget->setText("[rating]");
     m_layout->addItem(m_ratingWidget, 2, 0, 1, 1, Qt::AlignCenter);
+    updateWidgets();
 
+    kDebug() << "==== StripShow:" << stripTags("<h1>This is my text, <br /> is it stripped?</h1>");
+
+}
+
+void ResourceWidget::updateWidgets()
+{
+    QString _description = m_resource->genericDescription();
+    QString _label = m_resource->genericLabel();
+    //QString _icon = 
+    QString m_url = m_resource->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )).toString();
+    QString _abstract = m_resource->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent")).toString();
+    //m_iconWidget->setIcon(KMimeType());
+    m_nameLabel->setText(_label);
+    m_infoLabel->setText(_description + stripTags(_abstract));
+}
+
+QString ResourceWidget::stripTags(QString input)
+{
+    QString txt = input;
+    QRegExp regex("<.*?>|<br\>");
+    regex.setMinimal(true);
+    txt = txt.remove(regex);
+    regex = QRegExp("<.*?>");
+    regex = QRegExp("<.*>");
+    regex.setMinimal(true);
+    txt = txt.remove(regex);
+    return txt;
 }
 
 ResourceWidget::~ResourceWidget()

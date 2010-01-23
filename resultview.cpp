@@ -44,7 +44,7 @@
 #include <Nepomuk/Variant>
 
 //own
-#include "helpers.cpp"
+#include "utils.h"
 #include "resultview.h"
 
 using namespace Crystal;
@@ -101,27 +101,6 @@ void ResultView::updateColors()
 void ResultView::updateView()
 {
     kDebug() << "Should not be called in the base class!";
-}
-
-QString ResultView::abstract(Nepomuk::Resource *res)
-{
-    QString fulltext = res->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent")).toString();
-
-    kDebug() << "mangling" << res->genericLabel() << ", query:" << m_query;
-    if (fulltext.isEmpty()) {
-        return QString();
-    }
-    QString html = "not found";
-    int _i = fulltext.indexOf(m_query, Qt::CaseInsensitive);
-    if (_i >= 0) {
-        int _b = qMin(0, _i - (int)(m_abstractSize/2));
-        int _l = qMin(m_abstractSize, fulltext.count());
-        html = fulltext.midRef(_b, _l).toString();
-        kDebug() << "Found query at " << _i << _b << _l;
-        kDebug() << "Abstract:" << html;
-        html.replace(m_query, QString("<font color=\"red\"><strong>%1</strong</font>").arg(m_query), Qt::CaseInsensitive);
-    }
-    return html;
 }
 
 #include "resultview.moc"

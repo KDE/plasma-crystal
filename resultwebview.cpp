@@ -43,7 +43,7 @@
 #include <Nepomuk/Variant>
 
 //own
-//#include "helpers.cpp"
+#include "utils.h"
 #include "resultwebview.h"
 
 using namespace Crystal;
@@ -89,7 +89,7 @@ void ResultWebView::updateColors()
 void ResultWebView::updateView()
 {
     QString _html = htmlHeader();
-    //qSort(m_results.begin(), m_results.end(), Crystal::ratingLessThan);
+    qSort(m_results.begin(), m_results.end(), Utils::ratingLessThan);
     foreach(Nepomuk::Resource* res, m_results) {
         _html.append(renderItem(res));
         _html.append("\n\n");
@@ -107,7 +107,7 @@ QString ResultWebView::renderItem(Nepomuk::Resource *res)
     foreach(QUrl var, res->properties().keys()) {
         kDebug() << var << res->properties()[var].variant();
     }
-    QString html = QString("\n<li><div class=\"result\"><div class=\"link\"><a href=\"%1\">%2</a></div><br /><div class=\"description\">%3</div><div class=\"abstract\">%4</div></div></li>").arg(_url, _label, _description, abstract(res));
+    QString html = QString("\n<li><div class=\"result\"><div class=\"link\"><a href=\"%1\">%2</a></div><br /><div class=\"description\">%3</div><div class=\"abstract\">%4</div></div></li>").arg(_url, _label, _description, Utils::abstract(res, m_query));
     kDebug() << html;
     return html;
 }

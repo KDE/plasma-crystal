@@ -17,25 +17,14 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef CRYSTALRESOURCEWIDGET_H
-#define CRYSTALRESOURCEWIDGET_H
+#ifndef CRYSTALUTILS
+#define CRYSTALUTILS
+
 
 //Qt
-#include <QGraphicsWidget>
+class QString;
 
-// Plasma
-#include <Plasma/Frame>
-
-class QGraphicsGridLayout;
-class QGraphicsProxyWidget;
-
-namespace Plasma
-{
-    class IconWidget;
-    class Label;
-}
-
-
+// Nepomuk
 namespace Nepomuk
 {
     class Resource;
@@ -44,38 +33,23 @@ namespace Nepomuk
 namespace Crystal
 {
   /**
-  * @short ResourceWidget is a Plasma Widget to display a Nepomuk::Resource.
+  * @short Static helper functions
   *
   */
-  class ResourceWidget : public Plasma::Frame
+  class Utils
   {
-  Q_OBJECT
 
     public:
         /**
-        * Constructor of the ResourceWidget
-        * @param resource The Nepomuk::Resource this widget displays.
+        * Constructor of the dialog
         * @param parent the parent of this object
         **/
-        ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *parent = 0);
+        static bool ratingLessThan(const Nepomuk::Resource *r1, const Nepomuk::Resource *r2);
 
-        virtual ~ResourceWidget();
+        static QString abstract(Nepomuk::Resource *res, const QString &query, int size = 200);
 
-    private :
-        void updateWidgets();
-        QString stripTags(QString input);
-
-        Nepomuk::Resource *m_resource;
-
-        QGraphicsGridLayout *m_layout;
-        Plasma::IconWidget *m_iconWidget;
-        Plasma::Label *m_nameLabel;
-        Plasma::Label *m_infoLabel;
-        QGraphicsProxyWidget *m_ratingWidget;
-
-        QUrl m_url;
+        static QString highlight(QString &text, const QString &query);
   };
 }
 
 #endif
-

@@ -81,7 +81,6 @@ namespace Crystal
         *
         **/
         virtual void updateColors();
-        virtual QString abstract(Nepomuk::Resource *res);
 
     protected:
         QList<Nepomuk::Resource*> m_results;

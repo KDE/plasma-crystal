@@ -44,7 +44,7 @@
 #include <Nepomuk/Variant>
 
 //own
-//#include "helpers.cpp"
+#include "utils.h"
 #include "resultwidget.h"
 #include "resourcewidget.h"
 
@@ -70,7 +70,6 @@ ResultWidget::ResultWidget(QGraphicsWidget *parent)
     m_scrollWidget->setWidget(_widget);
 
     for (int i = 0; i<2; i++) {
-        
         addWidget(new Nepomuk::Resource());
     }
 
