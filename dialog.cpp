@@ -30,6 +30,7 @@
 #include <KIconLoader>
 #include <KIO/Job>
 #include <KLineEdit>
+#include <KLocale>
 #include <KMimeType>
 #include <KRun>
 #include <KStandardDirs>
@@ -115,6 +116,9 @@ void Dialog::buildDialog()
 
     m_statusBar = new Plasma::Label(this);
     m_statusBar->setText("status");
+    m_statusBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    m_statusBar->setMaximumHeight(22);
+    m_statusBar->setFont(KGlobalSettings::smallestReadableFont());
     gridLayout->addItem(m_statusBar, 2, 0, 1, 2);
 
     connect(m_lineEdit, SIGNAL(returnPressed()), SLOT(search()));
@@ -122,7 +126,7 @@ void Dialog::buildDialog()
     connect(m_searchButton, SIGNAL(clicked()), SLOT(search()));
 
     updateStatus(i18nc("no active search, no results shown", "Idle."));
-    setPreferredSize(400, 300);
+    setPreferredSize(400, 400);
     //setMaximumSize(400, 500);
 }
 
@@ -135,6 +139,7 @@ void Dialog::updateStatus(const QString status)
 
 void Dialog::search()
 {
+    m_time.restart();
     if (Nepomuk::ResourceManager::instance()->initialized()) {
         kDebug() << "resource manager inited successfully";
     } else {
@@ -186,9 +191,10 @@ void Dialog::progressChanged(KJob *job, unsigned long percent)
 
 void Dialog::searchFinished()
 {
-    updateStatus(i18np("Search for <b>\"%2\"</b> finished. %1 matching file found.",
-                       "Search for <b>\"%2\"</b> finished. %1 matching files found.", m_resultsView->count(), m_query));
-    //m_queryServiceClient->close();
+    updateStatus(i18np("Found %2 result in %1",
+                       "Found %2 results in %1",
+                       KGlobal::locale()->formatDuration(m_time.elapsed()),
+                       m_resultsView->count()));
     emit updateToolTip(m_query, m_resultsView->count());
 }
 

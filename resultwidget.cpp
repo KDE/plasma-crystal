@@ -71,7 +71,7 @@ void ResultWidget::buildDialog()
     //setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_scrollWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_scrollWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-    m_widget = new QGraphicsWidget(this);
+    m_widget = new QGraphicsWidget(m_scrollWidget);
     //_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     //m_widget->setMinimumSize(240, 50);
     m_layout = new QGraphicsLinearLayout(m_widget);

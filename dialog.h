@@ -33,6 +33,7 @@
 #include <Plasma/IconWidget>
 #include <Plasma/Label>
 #include <Plasma/LineEdit>
+#include <Plasma/TabBar>
 #include <Plasma/WebView>
 
 //own
@@ -111,6 +112,8 @@ namespace Crystal
         void updateStatus(const QString status);
         Plasma::LineEdit *m_lineEdit;
         Plasma::IconWidget *m_searchButton;
+        Plasma::TabBar *m_tabBar;
+        Plasma::WebView *m_dashBoard;
         ResultView *m_resultsView;
         Plasma::Label *m_statusBar;
 
@@ -122,6 +125,7 @@ namespace Crystal
         QString m_query;
         int m_abstractSize;
         qreal m_progress;
+        QTime m_time;
   };
 }
 

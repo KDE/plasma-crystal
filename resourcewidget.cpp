@@ -67,7 +67,7 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     connect(this, SIGNAL(activated()), this, SLOT(open()));
     m_layout = new QGraphicsGridLayout(this);
     m_layout->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
+    
     m_leftLayout = new QGraphicsLinearLayout(m_layout);
     m_leftLayout->setOrientation(Qt::Vertical);
     m_rightLayout = new QGraphicsLinearLayout(m_layout);
@@ -127,6 +127,9 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     m_layout->addItem(m_leftLayout, 0, 0);
     m_layout->addItem(m_rightLayout, 0, 1);
     
+    m_layout->setContentsMargins(4, 4, 4, 4);
+    m_leftLayout->setContentsMargins(4, 4, 4, 4);
+    m_rightLayout->setContentsMargins(4, 4, 4, 4);
 
     setResource(m_resource);
     kDebug() << "GridLayout has rows, cols:" << m_layout->rowCount() << m_layout->columnCount();
