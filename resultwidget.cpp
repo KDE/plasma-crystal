@@ -76,7 +76,6 @@ void ResultWidget::buildDialog()
     disconnect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)),
             this, SLOT(addWidget(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)));
 
-    
     m_widget = new QGraphicsWidget(m_scrollWidget);
     //_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     //m_widget->setMinimumSize(240, 50);
@@ -103,11 +102,11 @@ void ResultWidget::addWidget(Nepomuk::Resource* resource, const KIO::UDSEntry &e
 
     ResourceWidget *_widget;
     if (_mimeType.startsWith("image")) {
-        kDebug() << "******************** Creating an image!" << _mimeType;
+        kDebug() << "*** Creating an image widget!" << _mimeType;
         ImageResourceWidget *irw = new ImageResourceWidget(resource, m_widget);
         _widget = qobject_cast<ResourceWidget*>(irw);
     } else {
-        kDebug() << "Creating a generic." << _mimeType;
+        kDebug() << "Creating a generic widget." << _mimeType;
         _widget = new ResourceWidget(resource, m_widget);
     }
     _widget->setQuery(query);

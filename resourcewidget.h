@@ -29,6 +29,9 @@
 #include <Plasma/IconWidget>
 #include <Plasma/Frame>
 
+// own
+#include "ratingwidget.h"
+
 class QGraphicsGridLayout;
 class QGraphicsProxyWidget;
 class QGraphicsSceneMouseEvent;
@@ -93,7 +96,7 @@ namespace Crystal
         Plasma::Label *m_nameLabel;
         Plasma::Label *m_infoLabel;
         //QGraphicsProxyWidget *m_ratingWidget;
-        Plasma::Label *m_ratingWidget;
+        RatingWidget *m_ratingWidget;
 
         QUrl m_url;
         QString m_query;

@@ -13,6 +13,7 @@ set(crystal_SRCS
     resourcewidget.cpp
     imageresourcewidget.cpp
     imagewidget.cpp
+    ratingwidget.cpp
     utils.cpp
     )
 

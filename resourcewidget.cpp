@@ -48,6 +48,7 @@
 
 //own
 #include "resourcewidget.h"
+#include "ratingwidget.h"
 #include "utils.h"
 
 
@@ -102,7 +103,8 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     m_ratingWidget->setWidget(kratingWidget);
 
     */
-    m_ratingWidget = new Plasma::Label(this);
+    m_ratingWidget = new RatingWidget(this);
+    /*
     m_ratingWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     m_ratingWidget->setMaximumHeight(12);
     m_ratingWidget->setMaximumWidth(m_iconSize);
@@ -111,6 +113,7 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     m_ratingWidget->setOpacity(0.5);
     //m_layout->addItem(m_ratingWidget, 2, 0, 1, 1, Qt::AlignTop);
     //m_layout->addItem(m_ratingWidget, 2, 0, Qt::AlignTop);
+    */
     m_leftLayout->addItem(m_ratingWidget);
 
 
@@ -202,7 +205,6 @@ void ResourceWidget::setResource(Nepomuk::Resource *resource)
         m_info = m_url.toString();
     }
 
-    m_ratingWidget->setText(i18n("Rating: %1", m_resource->rating()));
     updateWidgets();
 }
 
@@ -249,6 +251,7 @@ void ResourceWidget::updateWidgets()
     if (m_iconWidget) {
         m_iconWidget->setIcon(m_icon);
     }
+    m_ratingWidget->setRating(m_resource->rating());
 #if 0
     kDebug() << "==== StripShow:" << Utils::stripTags("<h1>This is my text, <br /> is it stripped?</h1>");
     kDebug() << "Prefheight:" << qMax(m_leftLayout->preferredHeight(),m_rightLayout->preferredHeight());
@@ -256,7 +259,7 @@ void ResourceWidget::updateWidgets()
     kDebug() << " Maxheight:" << qMax(m_leftLayout->maximumHeight(),m_rightLayout->maximumHeight());
 
 #endif
-    
+
     setMinimumHeight(qMax(m_leftLayout->minimumHeight(),m_rightLayout->minimumHeight()) + 12);
 
     m_layout->invalidate();
