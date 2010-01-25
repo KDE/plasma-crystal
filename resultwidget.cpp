@@ -53,8 +53,21 @@
 using namespace Crystal;
 
 ResultWidget::ResultWidget(QGraphicsWidget *parent)
-    : ResultView(parent)
+    : ResultView(parent),
+    m_widget(0),
+    m_outerLayout(0),
+    m_scrollWidget(0),
+    m_layout(0)
 {
+    m_outerLayout = new QGraphicsLinearLayout(this);
+    m_outerLayout->setContentsMargins(0,0,0,0);
+    setLayout(m_outerLayout);
+
+    m_scrollWidget = new Plasma::ScrollWidget(this);
+    m_scrollWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_scrollWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    m_scrollWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    m_outerLayout->addItem(m_scrollWidget);
     buildDialog();
 }
 
@@ -62,16 +75,8 @@ void ResultWidget::buildDialog()
 {
     disconnect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)),
             this, SLOT(addWidget(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)));
-    m_scrollWidget = new Plasma::ScrollWidget(this);
-    QGraphicsLinearLayout *mainlayout = new QGraphicsLinearLayout(this);
-    mainlayout->setContentsMargins(0,0,0,0);
-    mainlayout->addItem(m_scrollWidget);
-    setLayout(mainlayout);
 
-    m_scrollWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); // for testing
-    //setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    m_scrollWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    m_scrollWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    
     m_widget = new QGraphicsWidget(m_scrollWidget);
     //_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     //m_widget->setMinimumSize(240, 50);
@@ -99,11 +104,11 @@ void ResultWidget::addWidget(Nepomuk::Resource* resource, const KIO::UDSEntry &e
     ResourceWidget *_widget;
     if (_mimeType.startsWith("image")) {
         kDebug() << "******************** Creating an image!" << _mimeType;
-        ImageResourceWidget *irw = new ImageResourceWidget(resource, this);
+        ImageResourceWidget *irw = new ImageResourceWidget(resource, m_widget);
         _widget = qobject_cast<ResourceWidget*>(irw);
     } else {
         kDebug() << "Creating a generic." << _mimeType;
-        _widget = new ResourceWidget(resource, this);
+        _widget = new ResourceWidget(resource, m_widget);
     }
     _widget->setQuery(query);
     _widget->setUDSEntry(entry);
@@ -123,8 +128,13 @@ void ResultWidget::clear()
     qDeleteAll(m_widgets);
     m_widgets.clear();
     ResultView::clear();
+    //m_widget->setMinimumSize(0, 0);
+    delete m_widget;
+    m_widget = 0;
+    //delete m_layout;
+    //delete m_scrollWidget;
+    //delete m_outerLayout;
 
-    delete m_scrollWidget;
     buildDialog();
 }
 

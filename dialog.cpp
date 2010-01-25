@@ -163,7 +163,6 @@ void Dialog::search()
     } else {
         kDebug() << "no resource manager";
     };
-    m_resultsView->clear();
     m_query = m_lineEdit->text();
     if (m_query.isEmpty()) {
         m_tabBar->setCurrentIndex(0);
@@ -183,6 +182,8 @@ void Dialog::search(const QUrl &nepomukUrl)
     m_resultsView->setQuery(m_query);
     m_lineEdit->setText(m_query);
     kDebug() << "searching for ..." << nepomukUrl;
+
+    m_resultsView->clear();
     m_time.restart();
     KIO::ListJob* listJob = KIO::listDir(KUrl(nepomukUrl), KIO::HideProgressInfo);
     connect(listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList&)), this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)));

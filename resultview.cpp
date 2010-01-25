@@ -98,6 +98,7 @@ void ResultView::setQuery(const QString& query)
 
 void ResultView::clear()
 {
+    kDebug() << "Clear.";
     qDeleteAll(m_results);
     m_results.clear();
 }

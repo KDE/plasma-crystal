@@ -89,6 +89,7 @@ namespace Crystal
     private:
         void buildDialog();
         QGraphicsWidget *m_widget;
+        QGraphicsLinearLayout *m_outerLayout;
         Plasma::ScrollWidget *m_scrollWidget;
         QGraphicsLinearLayout *m_layout;
         QList<ResourceWidget*> m_widgets;

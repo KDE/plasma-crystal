@@ -39,6 +39,7 @@ using namespace Crystal;
 
 ImageWidget::ImageWidget(QGraphicsWidget* parent)
     : QGraphicsWidget(parent),
+    m_icon(QString()),
     m_iconSize(48),
     m_previewJob(0)
 {
@@ -47,7 +48,6 @@ ImageWidget::ImageWidget(QGraphicsWidget* parent)
     fg = Plasma::Theme::defaultTheme()->color(Plasma::Theme::TextColor);
     bg = Plasma::Theme::defaultTheme()->color(Plasma::Theme::BackgroundColor);
     setIconSize(m_iconSize);
-    pixmapUpdated();
 }
 
 ImageWidget::~ImageWidget()
@@ -116,6 +116,16 @@ void ImageWidget::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
     Q_UNUSED(option)
     Q_UNUSED(widget)
 
+    if (!m_previewJob) {
+        // KIO::PreviewJob: http://api.kde.org/4.x-api/kdelibs-apidocs/kio/html/classKIO_1_1PreviewJob.html
+        KFileItem kfile(KUrl(m_url), m_mimeType, KFileItem::Unknown);
+        KFileItemList list;
+        list << kfile;
+        KIO::PreviewJob *job = new KIO::PreviewJob(list, m_iconSize, m_iconSize, m_iconSize, 128, true, true, 0);
+        connect(job, SIGNAL(gotPreview(const KFileItem&, const QPixmap&)), SLOT(previewUpdated(const KFileItem&, const QPixmap&)));
+        m_previewJob = job;
+        pixmapUpdated();
+    }
     painter->setRenderHint(QPainter::SmoothPixmapTransform);
     painter->setRenderHint(QPainter::Antialiasing);
 
@@ -133,15 +143,6 @@ void ImageWidget::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
     // paint our cached scaled version of the pixmap on top of that
     painter->drawPixmap(QPoint(border, border), m_scaledPixmap);
 
-    if (!m_previewJob) {
-        // KIO::PreviewJob: http://api.kde.org/4.x-api/kdelibs-apidocs/kio/html/classKIO_1_1PreviewJob.html
-        KFileItem kfile(KUrl(m_url), m_mimeType, KFileItem::Unknown);
-        KFileItemList list;
-        list << kfile;
-        KIO::PreviewJob *job = new KIO::PreviewJob(list, m_iconSize, m_iconSize, m_iconSize, 128, true, true, 0);
-        connect(job, SIGNAL(gotPreview(const KFileItem&, const QPixmap&)), SLOT(previewUpdated(const KFileItem&, const QPixmap&)));
-        m_previewJob = job;
-    }
     //parent()->paint(painter, option, widget);
 
 }
