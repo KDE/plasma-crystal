@@ -33,6 +33,7 @@
 
 // Nepomuk
 #include <Nepomuk/Resource>
+#include <Nepomuk/Tag>
 
 //own
 #include "dashboard.h"
@@ -118,10 +119,16 @@ void DashBoard::update()
 QString DashBoard::tags()
 {
     QString _html;
-    QStringList _tags;
-    _tags << "KDE" << "Wallpaper" << "Iceland";
-    foreach (const QString &_t, _tags) {
-        _html.append(QString("<li>%1</li>\n").arg(_t));
+
+    QList<Nepomuk::Tag> allTags = Nepomuk::Tag::allTags();
+    foreach (Nepomuk::Tag t, allTags) {
+
+        int high = 10;
+        int low = 1;
+        int weight = qrand() % ((high + 1) - low) + low;
+
+        _html.append(QString("<li><a  class=\"tag%2\" href=\"nepomuksearch://?hasTag=%1\">%1</a></li>\n").arg(t.genericLabel(), QString::number(weight)));
+        kDebug() << "Tag!" << t.genericLabel() << weight;
     }
     return _html;
 }

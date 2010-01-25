@@ -11,7 +11,11 @@
         %smallfontsize  : Size of the smallest readable font
         %fontsize       : Normal size for fonts
         %path           : For the local path
- */
+
+text-shadow: 0px 1px 0px #e5e5ee;
+font-effect: none | emboss | engrave | outline | initial | inherit
+
+*/
 
 /* Tags */
 
@@ -20,26 +24,30 @@ body {
     color: %textcolor;
     font-size: %fontsize;
     background: url('%path/nepomuk.png') no-repeat bottom right;
-    background-opacity: .3;
 }
 
 h1 {
-    font-size: 23px;
+    font-size: 16px;
     font-weight: bold;
-    opacity: .4;
-    text-align: center;
+    opacity: .8;
+    text-align: left;
+    margin-top: 10px;
+    margin-left: 10px;
+    text-shadow: rgba(255,255,255,.8) 0 1px 0;
 }
 
 h2 {
-    font-size: 12px;
+    font-size: 14;
     color: %textcolor;
     opacity: .8;
+    margin-bottom: 0px;
+    text-shadow: rgba(255,255,255,.8) 0 1px 0;
 }
 
 p {
     text-align: justify;
-    opacity: .8;
-    font-size: %smallfontsize;
+    opacity: .6;
+    font-size: %fontsize;
     margin-left: 10px;
     margin-right: 10px;
 }
@@ -51,8 +59,9 @@ td {
 }
 
 ul {
-    margin-left: 10px;
-    padding-left: 10px;
+    margin-top: 8px;
+    margin-left: 4px;
+    padding-left: 12px;
     font-size: %fontsize; 
 }
 
@@ -88,7 +97,31 @@ ul li {
 
 /* links */
 
-a { color: %textcolor; }
+a { color: %textcolor; border-bottom: 1px dashed; text-decoration: none; }
 a:visited { color: %textcolor; }
 a:link { color: %textcolor .8; }
 a:hover { text-decoration: none; opacity: .4; }
+
+/* tag cloud */
+/* inspired by http://webdesign.about.com/od/csstutorials/a/aa011407.htm */
+ 
+#cloud a.tag1 { font-size: 8px; font-weight: 100; opacity: .4;}
+#cloud a.tag2 { font-size: 9px; font-weight: 200;  opacity: .4;}
+#cloud a.tag3 { font-size: 10px; font-weight: 300;  opacity: .5;}
+#cloud a.tag4 { font-size: 11px; font-weight: 400;  opacity: .5;}
+#cloud a.tag5 { font-size: 12px; font-weight: 500;  opacity: .6;}
+#cloud a.tag6 { font-size: 14px; font-weight: 600;  opacity: .6;}
+#cloud a.tag7 { font-size: 16px; font-weight: 700;  opacity: .8;}
+#cloud a.tag8 { font-size: 18px; font-weight: 800;  opacity: .8;}
+#cloud a.tag9 { font-size: 20px; font-weight: 900;  opacity: 1;}
+#cloud a.tag10 { font-size: 22px; font-weight: 900;  opacity: 1;}
+
+#cloud { padding: 2px; line-height: 2em; text-align: center; }
+#cloud a { padding: 0px; text-decoration: none; border: none;}
+#cloud a:hover { opacity: 1; background: rgba(255,255,255,0.6);}
+
+#cloud { margin: 0 15 0 0; }
+#cloud li { display: inline; }
+
+
+
