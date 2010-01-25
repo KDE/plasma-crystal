@@ -64,6 +64,7 @@ void ResultWidget::buildDialog()
             this, SLOT(addWidget(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)));
     m_scrollWidget = new Plasma::ScrollWidget(this);
     QGraphicsLinearLayout *mainlayout = new QGraphicsLinearLayout(this);
+    mainlayout->setContentsMargins(0,0,0,0);
     mainlayout->addItem(m_scrollWidget);
     setLayout(mainlayout);
 

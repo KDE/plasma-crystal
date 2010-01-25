@@ -53,13 +53,15 @@ using namespace Crystal;
 
 Dialog::Dialog(QGraphicsWidget *parent)
     : QGraphicsWidget(parent),
+      m_navIcon(0),
       m_lineEdit(0),
       m_searchButton(0),
       m_statusBar(0),
       m_query(0),
       m_progress(0)
 {
-
+    m_time.start();
+    m_timeout = 20000; // 20 seconds should be enough for everyone!
     m_iconSizes[0] = 16;
     m_iconSizes[1] = 22;
     m_iconSizes[2] = 32;
@@ -98,14 +100,20 @@ void Dialog::buildDialog()
     QGraphicsGridLayout *gridLayout = new QGraphicsGridLayout(this);
     setLayout(gridLayout);
 
+    m_navIcon = new Plasma::IconWidget(this);
+    m_navIcon->setIcon("go-next");
+    m_navIcon->setMaximumSize(22, 22);
+    m_navIcon->setMinimumSize(22, 22);
+    gridLayout->addItem(m_navIcon, 0, 0);
+
     m_lineEdit = new Plasma::LineEdit(this);
-    gridLayout->addItem(m_lineEdit, 0, 0);
+    gridLayout->addItem(m_lineEdit, 0, 1);
 
     m_searchButton = new Plasma::IconWidget(this);
     m_searchButton->setIcon("system-search");
     m_searchButton->setMaximumSize(22, 22);
     m_searchButton->setMinimumSize(22, 22);
-    gridLayout->addItem(m_searchButton, 0, 1);
+    gridLayout->addItem(m_searchButton, 0, 2);
 
     m_tabBar = new Plasma::TabBar(this);
 
@@ -119,20 +127,24 @@ void Dialog::buildDialog()
     m_tabBar->addTab(KIcon("system-search"), i18n("Results"), m_resultsView);
     m_tabBar->setTabBarShown(false);
     
-    gridLayout->addItem(m_tabBar, 1, 0, 1, 2);
+    gridLayout->addItem(m_tabBar, 1, 0, 1, 3);
 
     m_statusBar = new Plasma::Label(this);
     m_statusBar->setText("status");
     m_statusBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     m_statusBar->setMaximumHeight(22);
     m_statusBar->setFont(KGlobalSettings::smallestReadableFont());
-    gridLayout->addItem(m_statusBar, 2, 0, 1, 2);
+    gridLayout->addItem(m_statusBar, 2, 0, 1, 3);
 
     connect(m_lineEdit, SIGNAL(returnPressed()), SLOT(search()));
     connect(m_lineEdit, SIGNAL(returnPressed()), m_searchButton, SLOT(setPressed()));
     connect(m_searchButton, SIGNAL(clicked()), SLOT(search()));
+    connect(m_dashBoard, SIGNAL(search(const QUrl&)), SLOT(search(const QUrl&)));
+    connect(m_tabBar, SIGNAL(currentChanged(int)), SLOT(updateNavIcon(int)));
+    connect(m_navIcon, SIGNAL(clicked()), SLOT(toggleTab()));
 
     updateStatus(i18nc("no active search, no results shown", "Idle."));
+    updateNavIcon(m_tabBar->currentIndex());
     setPreferredSize(400, 400);
     //setMaximumSize(400, 500);
 }
@@ -146,7 +158,6 @@ void Dialog::updateStatus(const QString status)
 
 void Dialog::search()
 {
-    m_time.restart();
     if (Nepomuk::ResourceManager::instance()->initialized()) {
         kDebug() << "resource manager inited successfully";
     } else {
@@ -154,30 +165,33 @@ void Dialog::search()
     };
     m_resultsView->clear();
     m_query = m_lineEdit->text();
-    m_resultsView->setQuery(m_query);
     if (m_query.isEmpty()) {
         m_tabBar->setCurrentIndex(0);
         return;
     }
     kDebug() << "Searching for ..." << m_query << " timeout after:" << m_timeout;
-    updateStatus(i18nc("status in the plasmoid's popup", "Searching for <b>\"%1\"</b>...", m_query));
 
     // query syntax is at:
     // http://techbase.kde.org/Development/Tutorials/Metadata/Nepomuk/QueryService
-    QString queryUrl;
-    if (m_query.startsWith("?")) {
-        queryUrl = QString("nepomuksearch:/%1").arg(m_query);
-    } else {
-        queryUrl = QString("nepomuksearch:/?query=%1").arg(m_query);
-    }
-    KIO::ListJob* listJob = KIO::listDir(KUrl(queryUrl), KIO::HideProgressInfo);
+    QUrl queryUrl = QUrl(QString("nepomuksearch:/%1").arg(m_query));
+    search(queryUrl);
+}
+
+void Dialog::search(const QUrl &nepomukUrl)
+{
+    m_query = nepomukUrl.toString().remove("nepomuksearch:/");
+    m_resultsView->setQuery(m_query);
+    m_lineEdit->setText(m_query);
+    kDebug() << "searching for ..." << nepomukUrl;
+    m_time.restart();
+    KIO::ListJob* listJob = KIO::listDir(KUrl(nepomukUrl), KIO::HideProgressInfo);
     connect(listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList&)), this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)));
     connect(listJob, SIGNAL(finished(KJob*)), this, SLOT(searchFinished()));
     connect(listJob, SIGNAL(percent(KJob *, unsigned long)), this, SLOT(progressChanged(KJob*, unsigned long)));
     // add a timeout in case something goes wrong (no user wants to wait more than N seconds)
     QTimer::singleShot( m_timeout, this, SLOT(searchFinished()) );
     //m_queryServiceClient->query( m_query );
-    updateStatus(i18n("Searching for<b>\"%1\"</b> ...", m_query));
+    updateStatus(i18nc("status in the plasmoid's popup", "Searching for <i>\"%1\"</i>...", m_query));
     m_tabBar->setCurrentIndex(1);
 }
 
@@ -191,8 +205,8 @@ void Dialog::entries( KIO::Job *job, const KIO::UDSEntryList &list)
     for (; it != end; ++it) {
         const KIO::UDSEntry& entry = *it;
         m_resultsView->addMatch(entry);
-        updateStatus(i18np("Searching for <b>\"%2\"</b>. %1 file found so far...",
-            "Searching for <b>\"%2\"</b>. %1 files found so far...", m_resultsView->count(), m_query));
+        updateStatus(i18np("Searching for <i>\"%2\"</i>. %1 file found so far...",
+            "Searching for <i>\"%2\"</i>. %1 files found so far...", m_resultsView->count(), m_query));
     }
     m_progress = (qreal)(job->percent());
     m_resultsView->updateView();
@@ -202,18 +216,38 @@ void Dialog::entries( KIO::Job *job, const KIO::UDSEntryList &list)
 
 void Dialog::progressChanged(KJob *job, unsigned long percent)
 {
+    Q_UNUSED( job )
     m_progress = (qreal)(percent);
     kDebug() << "!!!!!!!!!!!!!!!!!!!! Progress now at:" << m_progress;
 }
 
 void Dialog::searchFinished()
 {
-    updateStatus(i18np("Found %2 result in %1",
-                       "Found %2 results in %1",
+    updateStatus(i18np("Found %2 result in %1.",
+                       "Found %2 results in %1.",
                        KGlobal::locale()->formatDuration(m_time.elapsed()),
                        m_resultsView->count()));
     emit updateToolTip(m_query, m_resultsView->count());
 }
 
+void Dialog::updateNavIcon(int tabIndex)
+{
+    if (tabIndex == 0) {
+        m_navIcon->setEnabled((m_resultsView->count() > 0));
+        m_navIcon->setIcon("go-next");
+    } else {
+        m_navIcon->setEnabled(true);
+        m_navIcon->setIcon("go-previous");
+    }
+}
+
+void Dialog::toggleTab()
+{
+    if (m_tabBar->currentIndex() == 0) {
+        m_tabBar->setCurrentIndex(1);
+    } else {
+        m_tabBar->setCurrentIndex(0);
+    }
+}
 
 #include "dialog.moc"

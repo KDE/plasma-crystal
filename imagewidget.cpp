@@ -39,7 +39,8 @@ using namespace Crystal;
 
 ImageWidget::ImageWidget(QGraphicsWidget* parent)
     : QGraphicsWidget(parent),
-    m_iconSize(48)
+    m_iconSize(48),
+    m_previewJob(0)
 {
 
     border = 1; // should be a power of two, otherwise we get blurry lines
@@ -47,6 +48,10 @@ ImageWidget::ImageWidget(QGraphicsWidget* parent)
     bg = Plasma::Theme::defaultTheme()->color(Plasma::Theme::BackgroundColor);
     setIconSize(m_iconSize);
     pixmapUpdated();
+}
+
+ImageWidget::~ImageWidget()
+{
 }
 
 void ImageWidget::setIconSize(int iconSize)
@@ -59,16 +64,7 @@ void ImageWidget::setIconSize(int iconSize)
 
 void ImageWidget::setUrl(const QUrl& url)
 {
-    kDebug() << "!!!!!!!!!";
-    if (!m_url.isEmpty()) {
-    }
     m_url = url.isValid() ? url : QUrl();
-    // KIO::PreviewJob: http://api.kde.org/4.x-api/kdelibs-apidocs/kio/html/classKIO_1_1PreviewJob.html
-    KFileItem kfile(KUrl(m_url), m_mimeType, KFileItem::Unknown);
-    KFileItemList list;
-    list << kfile;
-    KIO::PreviewJob *job = new KIO::PreviewJob(list, m_iconSize, m_iconSize, m_iconSize, 128, true, true, 0);
-    connect(job, SIGNAL(gotPreview(const KFileItem&, const QPixmap&)), SLOT(previewUpdated(const KFileItem&, const QPixmap&)));
 }
 
 void ImageWidget::setMimeType(const QString &mime)
@@ -80,14 +76,16 @@ void ImageWidget::setMimeType(const QString &mime)
 void ImageWidget::previewUpdated(const KFileItem &item, const QPixmap &preview)
 //void ImageWidget::dataUpdated(const QUrl& url)
 {
+    Q_UNUSED( item )
     //m_pixmap = data.value("Pixmap").value<QPixmap>();
     m_pixmap = preview;
+    /*
     KFileMetaInfo *fmi = new KFileMetaInfo(KUrl(m_url.path()));
     kDebug() << "++++++++ MetaInfo:" << m_url;
     foreach (const QString &key, fmi->items().keys()) {
         kDebug() << "FMI: key:" << key;
     }
-
+    */
     pixmapUpdated();
     update();
 }
@@ -108,7 +106,7 @@ void ImageWidget::pixmapUpdated()
         }
         m_scaledPixmap = m_pixmap.scaled(newSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     } else {
-        m_scaledPixmap = KIcon("system-users").pixmap(newSize);
+        m_scaledPixmap = KIcon(m_icon).pixmap(newSize);
     }
 }
 
@@ -128,11 +126,24 @@ void ImageWidget::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
     painter->translate(.5, .5); // unblur (align to full pixel)
 
     // compute rect of the pixmap to paint the frame
-    QRectF r = QRect(contentsRect().left(), contentsRect().top(), m_scaledPixmap.width() + border*2, m_scaledPixmap.height() + border*2);
+    QRectF r = QRect(contentsRect().left(), contentsRect().top(), m_scaledPixmap.width() + border*2 - 1, m_scaledPixmap.height() + border*2 - 1);
     painter->drawRoundedRect(r, border*2, border*2);
+    painter->translate(-.5, -.5); // unblur (align to full pixel)
 
     // paint our cached scaled version of the pixmap on top of that
     painter->drawPixmap(QPoint(border, border), m_scaledPixmap);
+
+    if (!m_previewJob) {
+        // KIO::PreviewJob: http://api.kde.org/4.x-api/kdelibs-apidocs/kio/html/classKIO_1_1PreviewJob.html
+        KFileItem kfile(KUrl(m_url), m_mimeType, KFileItem::Unknown);
+        KFileItemList list;
+        list << kfile;
+        KIO::PreviewJob *job = new KIO::PreviewJob(list, m_iconSize, m_iconSize, m_iconSize, 128, true, true, 0);
+        connect(job, SIGNAL(gotPreview(const KFileItem&, const QPixmap&)), SLOT(previewUpdated(const KFileItem&, const QPixmap&)));
+        m_previewJob = job;
+    }
+    //parent()->paint(painter, option, widget);
+
 }
 
 
@@ -143,5 +154,9 @@ void ImageWidget::resizeEvent(QGraphicsSceneResizeEvent* event)
     pixmapUpdated();
 }
 
+QPixmap ImageWidget::pixmap()
+{
+    return m_pixmap;
+}
 
 #include "imagewidget.moc"

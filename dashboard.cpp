@@ -24,12 +24,15 @@
 #include <QGraphicsWidget>
 #include <QLabel>
 #include <QWebFrame>
+#include <QWebPage>
+#include <QWebSettings>
 
 // KDE
 #include <KDirWatch>
 #include <KStandardDirs>
 #include <KDebug>
 #include <KLocale>
+#include <KRun>
 
 // Nepomuk
 #include <Nepomuk/Resource>
@@ -45,6 +48,13 @@ using namespace Crystal;
 DashBoard::DashBoard(QGraphicsWidget *parent)
     : Plasma::WebView(parent)
 {
+
+    QWebSettings::globalSettings()->setAttribute( QWebSettings::PluginsEnabled, false );
+    QWebSettings::globalSettings()->setAttribute( QWebSettings::LinksIncludedInFocusChain, true);
+
+    QWebPage *_page = mainFrame()->page();
+    _page->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(_page, SIGNAL(linkClicked(const QUrl&)), SLOT(linkClicked(const QUrl&)));
 
     // The stylesheet
     QString css = QUrl(KStandardDirs::locate("data", "plasma-applet-crystal/dashboard.css")).path();
@@ -108,11 +118,11 @@ void DashBoard::update()
 
     _html = m_template;
     foreach(const QString &k, stringMap.keys()) {
-        kDebug() << "replacing" << k;
+        //kDebug() << "replacing" << k;
         _html.replace(k, stringMap[k]);
     }
-    kDebug() << "HTML:" << _html;
-    kDebug() << "Base:" << mainFrame()->baseUrl();
+    //kDebug() << "HTML:" << _html;
+    //kDebug() << "Base:" << mainFrame()->baseUrl();
     setHtml(_html);
 }
 
@@ -127,7 +137,7 @@ QString DashBoard::tags()
         int low = 1;
         int weight = qrand() % ((high + 1) - low) + low;
 
-        _html.append(QString("<li><a  class=\"tag%2\" href=\"nepomuksearch://?hasTag=%1\">%1</a></li>\n").arg(t.genericLabel(), QString::number(weight)));
+        _html.append(QString("<li><a  class=\"tag%2\" href=\"nepomuksearch:/hastag:%1\">%1</a></li>\n").arg(t.genericLabel(), QString::number(weight)));
         kDebug() << "Tag!" << t.genericLabel() << weight;
     }
     return _html;
@@ -171,5 +181,14 @@ void DashBoard::load(const QString &templatePath)
     update();
 }
 
-
+void DashBoard::linkClicked(const QUrl &clickedUrl)
+{
+    if (KUrl(clickedUrl).protocol() == "nepomuksearch") {
+        kDebug() << "Nepomuk URL, we can handle that!" << clickedUrl;
+        emit search(clickedUrl);
+    } else {
+        kDebug() << "opening external" << clickedUrl;
+        new KRun(clickedUrl, 0);
+    }
+}
 #include "dashboard.moc"

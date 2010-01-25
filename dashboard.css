@@ -27,7 +27,7 @@ body {
 }
 
 h1 {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     opacity: .8;
     text-align: left;
@@ -105,23 +105,34 @@ a:hover { text-decoration: none; opacity: .4; }
 /* tag cloud */
 /* inspired by http://webdesign.about.com/od/csstutorials/a/aa011407.htm */
  
-#cloud a.tag1 { font-size: 8px; font-weight: 100; opacity: .4;}
-#cloud a.tag2 { font-size: 9px; font-weight: 200;  opacity: .4;}
-#cloud a.tag3 { font-size: 10px; font-weight: 300;  opacity: .5;}
-#cloud a.tag4 { font-size: 11px; font-weight: 400;  opacity: .5;}
-#cloud a.tag5 { font-size: 12px; font-weight: 500;  opacity: .6;}
-#cloud a.tag6 { font-size: 14px; font-weight: 600;  opacity: .6;}
-#cloud a.tag7 { font-size: 16px; font-weight: 700;  opacity: .8;}
-#cloud a.tag8 { font-size: 18px; font-weight: 800;  opacity: .8;}
-#cloud a.tag9 { font-size: 20px; font-weight: 900;  opacity: 1;}
-#cloud a.tag10 { font-size: 22px; font-weight: 900;  opacity: 1;}
+#cloud a.tag1  { font-size:  8px; font-weight: 100; opacity: .4;}
+#cloud a.tag2  { font-size:  9px; font-weight: 200; opacity: .4;}
+#cloud a.tag3  { font-size: 10px; font-weight: 300; opacity: .5;}
+#cloud a.tag4  { font-size: 11px; font-weight: 400; opacity: .5;}
+#cloud a.tag5  { font-size: 12px; font-weight: 500; opacity: .6;}
+#cloud a.tag6  { font-size: 14px; font-weight: 600; opacity: .6;}
+#cloud a.tag7  { font-size: 16px; font-weight: 700; opacity: .8;}
+#cloud a.tag8  { font-size: 18px; font-weight: 800; opacity: .8;}
+#cloud a.tag9  { font-size: 20px; font-weight: 900; opacity: 1;}
+#cloud a.tag10 { font-size: 22px; font-weight: 900; opacity: 1;}
 
-#cloud { padding: 2px; line-height: 2em; text-align: center; }
-#cloud a { padding: 0px; text-decoration: none; border: none;}
+#cloud {
+    padding: 2px;
+    line-height: 2em;
+    text-align: center;
+    margin: 0 15 0 0;
+}
+
+#cloud li { display: inline; }
+
+#cloud a {
+    padding: 0px;
+    text-decoration: none;
+    border: none;
+}
+
 #cloud a:hover { opacity: 1; background: rgba(255,255,255,0.6);}
 
-#cloud { margin: 0 15 0 0; }
-#cloud li { display: inline; }
 
 
 

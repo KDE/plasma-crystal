@@ -27,6 +27,7 @@
 //#include <Plasma/DataEngine>
 
 class KFileItem;
+class KJob;
 
 namespace Crystal
 {
@@ -37,12 +38,14 @@ class ImageWidget : public QGraphicsWidget
 
 public:
     explicit ImageWidget(QGraphicsWidget* parent = 0);
+    ~ImageWidget();
+
     void setUrl(const QUrl& url);
     void setMimeType(const QString &mime);
     void setIconSize(int iconSize);
+    QPixmap pixmap();
 
 private Q_SLOTS:
-    //void dataUpdated(const QUrl &url);
     void previewUpdated(const KFileItem &item, const QPixmap &preview);
 
 private:
@@ -63,6 +66,8 @@ private:
     QString m_icon;
     QString m_mimeType;
     int m_iconSize;
+
+    KJob *m_previewJob;
 };
 }
 

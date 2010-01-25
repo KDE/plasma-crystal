@@ -53,9 +53,13 @@ namespace Crystal
         //void setUrl(const QStringList &matches);
         void setMatches(const QStringList &matches);
 
+    Q_SIGNALS:
+        void search(const QUrl nepomukUrl);
+
     public Q_SLOTS:
         void load(const QString &templatePath);
         void update();
+        void linkClicked(const QUrl &clickedUrl);
 
     private:
         QString header();

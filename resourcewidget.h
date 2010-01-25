@@ -31,6 +31,7 @@
 
 class QGraphicsGridLayout;
 class QGraphicsProxyWidget;
+class QGraphicsSceneMouseEvent;
 
 namespace Plasma
 {
@@ -67,6 +68,7 @@ namespace Crystal
         virtual void setQuery(const QString &query);
         virtual void setUDSEntry(const KIO::UDSEntry &entry);
         virtual void setResource(Nepomuk::Resource *resource);
+        virtual QPixmap pixmap();
 
     Q_SIGNALS:
         void run(const QUrl&);
@@ -75,9 +77,12 @@ namespace Crystal
 
     protected Q_SLOTS:
         void open();
+        void mousePressEvent(QGraphicsSceneMouseEvent * event);
+        void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
 
     protected:
         virtual void updateWidgets();
+        virtual void startDrag();
 
         Nepomuk::Resource *m_resource;
 
@@ -99,6 +104,9 @@ namespace Crystal
         QString m_label;
         QString m_info;
         QString m_mimeType;
+
+        QPointF m_startPos;
+
   };
 }
 

@@ -18,15 +18,18 @@
 */
 
 //Qt
+#include <QApplication>
 #include <QGraphicsGridLayout>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
 #include <QLabel>
+#include <QGraphicsSceneMouseEvent>
 
 //KDE
 #include <KDebug>
 #include <KColorScheme>
 #include <KGlobalSettings>
+#include <KIcon>
 #include <KIO/Job>
 #include <kio/jobclasses.h>
 #include <KMimeType>
@@ -54,12 +57,13 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     : Plasma::IconWidget(parent),
     //: Plasma::Frame(parent),
       m_resource(resource),
-      m_iconSize(48),
       m_layout(0),
       m_iconWidget(0),
       m_nameLabel(0),
       m_infoLabel(0),
-      m_ratingWidget(0)
+      m_ratingWidget(0),
+      m_iconSize(48)
+
 {
     setDrawBackground(true);
     setMinimumHeight(76);
@@ -85,6 +89,9 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     m_iconWidget->setMinimumSize(m_iconSize, m_iconSize);
     m_iconWidget->setMaximumSize(m_iconSize, m_iconSize);
     m_iconWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    m_iconWidget->setAcceptsHoverEvents(false);
+    connect(m_iconWidget, SIGNAL(activated()), this, SLOT(open()));
+
     //m_layout->addItem(m_iconWidget, 0, 0, 2, 1);
     m_leftLayout->addItem(m_iconWidget);
     /*
@@ -134,6 +141,10 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     setResource(m_resource);
     kDebug() << "GridLayout has rows, cols:" << m_layout->rowCount() << m_layout->columnCount();
 
+}
+
+ResourceWidget::~ResourceWidget()
+{
 }
 
 void ResourceWidget::setQuery(const QString &query)
@@ -251,9 +262,49 @@ void ResourceWidget::updateWidgets()
     m_layout->invalidate();
 }
 
-ResourceWidget::~ResourceWidget()
+void ResourceWidget::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    if (event->button() == Qt::LeftButton) {
+        kDebug() << "clicked";
+        m_startPos = event->pos();
+    }
+    Plasma::IconWidget::mousePressEvent(event);
 }
 
+void ResourceWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (event->buttons() & Qt::LeftButton) {
+        int distance = (event->pos() - m_startPos).toPoint().manhattanLength();
+        if (distance >= QApplication::startDragDistance()) {
+            startDrag();
+        }
+    }
+    Plasma::IconWidget::mouseMoveEvent(event);
+}
+
+void ResourceWidget::startDrag()
+{
+
+    QMimeData* mimeData = new QMimeData();
+    kDebug() << "Starting drag!";
+    QList<QUrl> urls;
+    urls << m_url;
+    kDebug() << "url:" << urls;
+    mimeData->setUrls(urls);
+
+    // This is a bit random, but we need a QWidget for the constructor
+    QDrag* drag = new QDrag(m_nameLabel->nativeWidget());
+    drag->setMimeData(mimeData);
+    //drag->setPixmap(KIcon(m_icon).pixmap(64, 64));
+    drag->setPixmap(pixmap());
+    if (drag->start(Qt::LinkAction)) {
+        kDebug() << "dragging starting";
+    }
+}
+
+QPixmap ResourceWidget::pixmap()
+{
+    return KIcon(m_icon).pixmap(64,64);
+}
 
 #include "resourcewidget.moc"

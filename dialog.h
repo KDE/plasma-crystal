@@ -104,6 +104,9 @@ namespace Crystal
     private Q_SLOTS:
         void searchFinished();
         void progressChanged(KJob *job, unsigned long percent);
+        void search(const QUrl &nepomukUrl);
+        void updateNavIcon(int tabIndex);
+        void toggleTab();
 
     private :
         /**
@@ -111,6 +114,7 @@ namespace Crystal
         **/
         void buildDialog();
         void updateStatus(const QString status);
+        Plasma::IconWidget *m_navIcon;
         Plasma::LineEdit *m_lineEdit;
         Plasma::IconWidget *m_searchButton;
         Plasma::TabBar *m_tabBar;

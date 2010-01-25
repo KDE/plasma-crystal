@@ -57,4 +57,9 @@ void ImageResourceWidget::updateUrl()
     m_imageWidget->setMimeType(m_mimeType);
     m_imageWidget->setUrl(m_url);
 }
+
+QPixmap ImageResourceWidget::pixmap()
+{
+    return m_imageWidget->pixmap();
+}
 #include "imageresourcewidget.moc"

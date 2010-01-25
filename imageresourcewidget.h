@@ -69,6 +69,7 @@ namespace Crystal
         **/
         ImageResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *parent = 0);
         virtual ~ImageResourceWidget();
+        virtual QPixmap pixmap();
 
         //void setUrl(const QUrl &url);
 
