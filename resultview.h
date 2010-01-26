@@ -38,11 +38,7 @@ namespace Nepomuk
     class Resource;
 }
 
-namespace KIO
-{
-    class UDSEntry;
-}
-
+class KFileItem;
 
 namespace Crystal
 {
@@ -66,7 +62,7 @@ namespace Crystal
         virtual void setQuery(const QString&);
 
     Q_SIGNALS:
-        void resourceAdded(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&);
+        void resourceAdded(Nepomuk::Resource*, const KFileItem&, const QString&);
         void matchFound();
 
     public Q_SLOTS:
@@ -80,7 +76,7 @@ namespace Crystal
         /**
          * @internal Gets called when a new match has been found
          */
-        virtual void addMatch(const KIO::UDSEntry& entry);
+        virtual void addMatch(const KFileItem& item);
 
     protected Q_SLOTS:
         /**

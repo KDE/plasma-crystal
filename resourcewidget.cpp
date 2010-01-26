@@ -28,6 +28,7 @@
 //KDE
 #include <KDebug>
 #include <KColorScheme>
+#include <KFileItem>
 #include <KGlobalSettings>
 #include <KIcon>
 #include <KIO/Job>
@@ -234,6 +235,24 @@ void ResourceWidget::setUDSEntry(const KIO::UDSEntry &entry)
             m_icon = "nepomuk";
         }
     }
+    updateWidgets();
+}
+
+void ResourceWidget::setFileItem(const KFileItem &item)
+{
+    m_fileItem = item;
+
+    m_icon = item.iconName();
+    //m_mimeType = entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
+    /*
+    if (m_icon.isEmpty()) {
+        if (!m_mimeType.isEmpty()) {
+            m_icon = KMimeType::iconNameForUrl(m_url);
+        } else {
+            m_icon = "nepomuk";
+        }
+    }
+    */
     updateWidgets();
 }
 

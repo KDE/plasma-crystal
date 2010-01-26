@@ -24,8 +24,9 @@
 #include <QLabel>
 #include <QStringList>
 
-
 // KDE
+#include <KDirLister>
+#include <KFileItem>
 #include <KIO/ListJob>
 #include <kio/jobclasses.h>
 
@@ -99,7 +100,7 @@ namespace Crystal
          * @internal Gets called when a new match has been found
          */
         //void newMatches( const QList<Nepomuk::Search::Result>& results);
-        void entries(KIO::Job *job, const KIO::UDSEntryList &list);
+        void entries(const KFileItemList &list);
 
     private Q_SLOTS:
         void searchFinished();
@@ -110,7 +111,7 @@ namespace Crystal
 
     private :
         /**
-        * @internal build the dialog depending where it is
+        * @internal build the dialog
         **/
         void buildDialog();
         void updateStatus(const QString status);
@@ -122,7 +123,8 @@ namespace Crystal
         ResultView *m_resultsView;
         Plasma::Label *m_statusBar;
 
-        QList<Nepomuk::Resource*> m_results;
+        KDirLister *m_lister;
+
         // All icon sizes, indexed
         QHash<int, int> m_iconSizes;
         int m_timeout;

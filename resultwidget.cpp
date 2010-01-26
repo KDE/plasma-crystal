@@ -73,8 +73,8 @@ ResultWidget::ResultWidget(QGraphicsWidget *parent)
 
 void ResultWidget::buildDialog()
 {
-    disconnect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)),
-            this, SLOT(addWidget(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)));
+    disconnect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const KFileItem&, const QString&)),
+            this, SLOT(addWidget(Nepomuk::Resource*, const KFileItem&, const QString&)));
 
     m_widget = new QGraphicsWidget(m_scrollWidget);
     //_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
@@ -84,8 +84,8 @@ void ResultWidget::buildDialog()
     m_layout->setSpacing(1);
     m_scrollWidget->setWidget(m_widget);
 
-    connect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)),
-            this, SLOT(addWidget(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&)));
+    connect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const KFileItem&, const QString&)),
+            this, SLOT(addWidget(Nepomuk::Resource*, const KFileItem&, const QString&)));
 
 #if 0
     QString q = "Fake";
@@ -96,9 +96,9 @@ void ResultWidget::buildDialog()
 #endif
 }
 
-void ResultWidget::addWidget(Nepomuk::Resource* resource, const KIO::UDSEntry &entry, const QString &query)
+void ResultWidget::addWidget(Nepomuk::Resource* resource, const KFileItem &item, const QString &query)
 {
-    QString _mimeType = entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
+    QString _mimeType = item.mimetype();
 
     ResourceWidget *_widget;
     if (_mimeType.startsWith("image")) {
@@ -110,7 +110,7 @@ void ResultWidget::addWidget(Nepomuk::Resource* resource, const KIO::UDSEntry &e
         _widget = new ResourceWidget(resource, m_widget);
     }
     _widget->setQuery(query);
-    _widget->setUDSEntry(entry);
+    _widget->setFileItem(item);
     connect(_widget, SIGNAL(run(const QUrl&)), SLOT(run(const QUrl&)));
     m_layout->addItem(_widget);
     m_widgets << _widget;

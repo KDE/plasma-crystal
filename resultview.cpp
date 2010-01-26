@@ -27,6 +27,7 @@
 //KDE
 #include <KDebug>
 #include <KColorScheme>
+#include <KFileItem>
 #include <KIcon>
 #include <KIconLoader>
 #include <KIO/Job>
@@ -56,8 +57,6 @@ ResultView::ResultView(QGraphicsWidget *parent)
       m_query(0),
       m_abstractSize(200)
 {
-    // default constructor
-    kDebug() << "Defaulf CTor, shouldn't be called!";
 }
 
 ResultView::~ResultView()
@@ -69,25 +68,12 @@ int ResultView::count()
     return m_results.count();
 }
 
-
-
-void ResultView::addMatch(const KIO::UDSEntry& entry)
+void ResultView::addMatch(const KFileItem& item)
 {
-    QString _nepomukUri = entry.stringValue( KIO::UDSEntry::UDS_NEPOMUK_URI );
-    Nepomuk::Resource *res = new Nepomuk::Resource(_nepomukUri);
-    /*
-    QString _name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
-    //bool isDir = entry.isDir();
-    //KIO::filesize_t size = entry.numberValue( KIO::UDSEntry::UDS_SIZE, -1 );
-    QString _mimeType = entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
-    QString _icon = entry.stringValue( KIO::UDSEntry::UDS_ICON_NAME );
-    QString _nepomukUri = entry.stringValue( KIO::UDSEntry::UDS_NEPOMUK_URI );
-    m_resultsView->setHtml(QString("%1<div>name: %2<br />info: %3</div>").arg(m_resultsView->html(), _name, _mimeType));
-    */
+    Nepomuk::Resource *res = new Nepomuk::Resource(item.nepomukUri());
     //kDebug() << "Result:" << _icon << _name << _mimeType << _nepomukUri;
-    
     m_results << res;
-    emit resourceAdded(res, entry, m_query);
+    emit resourceAdded(res, item, m_query);
     //emit matchAdded();
 }
 
@@ -109,7 +95,6 @@ void ResultView::updateColors()
 
 void ResultView::updateView()
 {
-    kDebug() << "Should not be called in the base class!";
 }
 
 void ResultView::run(const QUrl& uri)

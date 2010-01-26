@@ -23,6 +23,7 @@
 //Qt
 #include <QGraphicsWidget>
 
+#include <KFileItem>
 #include <KIO/Job>
 
 // Plasma
@@ -69,6 +70,7 @@ namespace Crystal
 
         virtual void setUrl(const QUrl &url);
         virtual void setQuery(const QString &query);
+        virtual void setFileItem(const KFileItem &item);
         virtual void setUDSEntry(const KIO::UDSEntry &entry);
         virtual void setResource(Nepomuk::Resource *resource);
         virtual QPixmap pixmap();
@@ -109,7 +111,7 @@ namespace Crystal
         QString m_mimeType;
 
         QPointF m_startPos;
-
+        KFileItem m_fileItem;
   };
 }
 

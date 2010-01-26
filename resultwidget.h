@@ -83,7 +83,7 @@ namespace Crystal
         virtual void clear();
 
     protected Q_SLOTS:
-        void addWidget(Nepomuk::Resource*, const KIO::UDSEntry&, const QString&);
+        void addWidget(Nepomuk::Resource*, const KFileItem&, const QString&);
         virtual void updateView();
 
     private:

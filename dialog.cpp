@@ -53,6 +53,7 @@ using namespace Crystal;
 
 Dialog::Dialog(QGraphicsWidget *parent)
     : QGraphicsWidget(parent),
+      m_lister(0),
       m_navIcon(0),
       m_lineEdit(0),
       m_searchButton(0),
@@ -69,6 +70,11 @@ Dialog::Dialog(QGraphicsWidget *parent)
     m_iconSizes[4] = 64;
     m_iconSizes[5] = 128;
     m_iconSizes[6] = 256;
+
+    m_lister = new KDirLister(this);
+    connect(m_lister, SIGNAL(completed()), this, SLOT(searchFinished()));
+
+
     buildDialog();
 }
 
@@ -172,8 +178,7 @@ void Dialog::search()
 
     // query syntax is at:
     // http://techbase.kde.org/Development/Tutorials/Metadata/Nepomuk/QueryService
-    QUrl queryUrl = QUrl(QString("nepomuksearch:/%1").arg(m_query));
-    search(queryUrl);
+    search(QUrl(QString("nepomuksearch:/%1").arg(m_query)));
 }
 
 void Dialog::search(const QUrl &nepomukUrl)
@@ -185,10 +190,16 @@ void Dialog::search(const QUrl &nepomukUrl)
 
     m_resultsView->clear();
     m_time.restart();
+
+    m_lister->openUrl(nepomukUrl);
+    /*
     KIO::ListJob* listJob = KIO::listDir(KUrl(nepomukUrl), KIO::HideProgressInfo);
     connect(listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList&)), this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)));
     connect(listJob, SIGNAL(finished(KJob*)), this, SLOT(searchFinished()));
     connect(listJob, SIGNAL(percent(KJob *, unsigned long)), this, SLOT(progressChanged(KJob*, unsigned long)));
+    */
+
+
     // add a timeout in case something goes wrong (no user wants to wait more than N seconds)
     QTimer::singleShot( m_timeout, this, SLOT(searchFinished()) );
     //m_queryServiceClient->query( m_query );
@@ -196,20 +207,19 @@ void Dialog::search(const QUrl &nepomukUrl)
     m_tabBar->setCurrentIndex(1);
 }
 
-void Dialog::entries( KIO::Job *job, const KIO::UDSEntryList &list)
+void Dialog::entries(const KFileItemList &list)
 {
-    Q_UNUSED( job )
     kDebug() << "entries! :)";
     // should look like this:
-    KIO::UDSEntryList::ConstIterator it = list.begin();
-    const KIO::UDSEntryList::ConstIterator end = list.end();
+    KFileItemList::ConstIterator it = list.begin();
+    const KFileItemList::ConstIterator end = list.end();
     for (; it != end; ++it) {
-        const KIO::UDSEntry& entry = *it;
-        m_resultsView->addMatch(entry);
-        updateStatus(i18np("Searching for <i>\"%2\"</i>. %1 file found so far...",
-            "Searching for <i>\"%2\"</i>. %1 files found so far...", m_resultsView->count(), m_query));
+        const KFileItem& item = *it;
+        m_resultsView->addMatch(item);
     }
-    m_progress = (qreal)(job->percent());
+    updateStatus(i18np("Searching for <i>\"%2\"</i>. %1 file found so far...",
+        "Searching for <i>\"%2\"</i>. %1 files found so far...", m_resultsView->count(), m_query));
+    //m_progress = (qreal)(job->percent());
     m_resultsView->updateView();
     emit updateToolTip(m_query, m_resultsView->count());
 
@@ -224,6 +234,9 @@ void Dialog::progressChanged(KJob *job, unsigned long percent)
 
 void Dialog::searchFinished()
 {
+    if (!m_resultsView->count()) {
+        entries(m_lister->items());
+    }
     updateStatus(i18np("Found %2 result in %1.",
                        "Found %2 results in %1.",
                        KGlobal::locale()->formatDuration(m_time.elapsed()),
