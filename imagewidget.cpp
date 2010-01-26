@@ -31,7 +31,6 @@
 #include <KFileItem>
 
 // Plasma
-//#include <Plasma/DataEngine>
 #include <Plasma/Theme>
 
 
@@ -72,20 +71,10 @@ void ImageWidget::setMimeType(const QString &mime)
     m_mimeType = mime;
 }
 
-
 void ImageWidget::previewUpdated(const KFileItem &item, const QPixmap &preview)
-//void ImageWidget::dataUpdated(const QUrl& url)
 {
     Q_UNUSED( item )
-    //m_pixmap = data.value("Pixmap").value<QPixmap>();
     m_pixmap = preview;
-    /*
-    KFileMetaInfo *fmi = new KFileMetaInfo(KUrl(m_url.path()));
-    kDebug() << "++++++++ MetaInfo:" << m_url;
-    foreach (const QString &key, fmi->items().keys()) {
-        kDebug() << "FMI: key:" << key;
-    }
-    */
     pixmapUpdated();
     update();
 }
@@ -109,7 +98,6 @@ void ImageWidget::pixmapUpdated()
         m_scaledPixmap = KIcon(m_icon).pixmap(newSize);
     }
 }
-
 
 void ImageWidget::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
@@ -142,11 +130,7 @@ void ImageWidget::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
 
     // paint our cached scaled version of the pixmap on top of that
     painter->drawPixmap(QPoint(border, border), m_scaledPixmap);
-
-    //parent()->paint(painter, option, widget);
-
 }
-
 
 void ImageWidget::resizeEvent(QGraphicsSceneResizeEvent* event)
 {

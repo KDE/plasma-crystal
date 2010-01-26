@@ -18,10 +18,7 @@
 */
 
 //Qt
-#include <QGraphicsGridLayout>
 #include <QGraphicsLinearLayout>
-#include <QGraphicsWidget>
-#include <QLabel>
 
 // Nepomuk
 #include <Nepomuk/Resource>
@@ -53,7 +50,6 @@ ImageResourceWidget::~ImageResourceWidget()
 
 void ImageResourceWidget::updateUrl()
 {
-    kDebug() << "SET URL!!!!!!!!" << m_url;
     m_imageWidget->setMimeType(m_mimeType);
     m_imageWidget->setUrl(m_url);
 }
@@ -62,4 +58,5 @@ QPixmap ImageResourceWidget::pixmap()
 {
     return m_imageWidget->pixmap();
 }
+
 #include "imageresourcewidget.moc"

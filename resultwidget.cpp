@@ -18,34 +18,20 @@
 */
 //Qt
 #include <QGraphicsLinearLayout>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QTimer>
-#include <QWebFrame>
 
 //KDE
 #include <KDebug>
-#include <KColorScheme>
-#include <KIcon>
-#include <KIconLoader>
-#include <KIO/Job>
-//#include <KIO/UDSEntry>
-#include <KMimeType>
-#include <KRun>
-#include <KStandardDirs>
 
 //plasma
-#include <Plasma/Dialog>
 #include <Plasma/ScrollWidget>
 #include <Plasma/Theme>
 
 // Nepomuk
 #include <Nepomuk/Resource>
-#include <nepomuk/resourcemanager.h>
+//#include <nepomuk/resourcemanager.h>
 #include <Nepomuk/Variant>
 
 //own
-#include "utils.h"
 #include "resultwidget.h"
 #include "resourcewidget.h"
 #include "imageresourcewidget.h"
@@ -77,8 +63,6 @@ void ResultWidget::buildDialog()
             this, SLOT(addWidget(Nepomuk::Resource*, const KFileItem&, const QString&)));
 
     m_widget = new QGraphicsWidget(m_scrollWidget);
-    //_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-    //m_widget->setMinimumSize(240, 50);
     m_layout = new QGraphicsLinearLayout(m_widget);
     m_layout->setOrientation(Qt::Vertical);
     m_layout->setSpacing(1);
@@ -87,13 +71,6 @@ void ResultWidget::buildDialog()
     connect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const KFileItem&, const QString&)),
             this, SLOT(addWidget(Nepomuk::Resource*, const KFileItem&, const QString&)));
 
-#if 0
-    QString q = "Fake";
-    KIO::UDSEntry e;
-    for (int i = 0; i<2; i++) {
-        addWidget(new Nepomuk::Resource(), e, q);
-    }
-#endif
 }
 
 void ResultWidget::addWidget(Nepomuk::Resource* resource, const KFileItem &item, const QString &query)
@@ -130,9 +107,6 @@ void ResultWidget::clear()
     //m_widget->setMinimumSize(0, 0);
     delete m_widget;
     m_widget = 0;
-    //delete m_layout;
-    //delete m_scrollWidget;
-    //delete m_outerLayout;
 
     buildDialog();
 }

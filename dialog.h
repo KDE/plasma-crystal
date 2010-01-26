@@ -104,7 +104,7 @@ namespace Crystal
 
     private Q_SLOTS:
         void searchFinished();
-        void progressChanged(KJob *job, unsigned long percent);
+        void progressChanged(int percent);
         void search(const QUrl &nepomukUrl);
         void updateNavIcon(int tabIndex);
         void toggleTab();
@@ -115,6 +115,9 @@ namespace Crystal
         **/
         void buildDialog();
         void updateStatus(const QString status);
+
+        KDirLister *m_lister;
+
         Plasma::IconWidget *m_navIcon;
         Plasma::LineEdit *m_lineEdit;
         Plasma::IconWidget *m_searchButton;
@@ -123,7 +126,6 @@ namespace Crystal
         ResultView *m_resultsView;
         Plasma::Label *m_statusBar;
 
-        KDirLister *m_lister;
 
         // All icon sizes, indexed
         QHash<int, int> m_iconSizes;
@@ -131,7 +133,7 @@ namespace Crystal
         // Last query ran
         QString m_query;
         int m_abstractSize;
-        qreal m_progress;
+        int m_progress;
         QTime m_time;
   };
 }

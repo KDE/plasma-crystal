@@ -18,39 +18,21 @@
 */
 
 //Qt
-#include <QGraphicsGridLayout>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QTimer>
-#include <QWebFrame>
+#include <QGraphicsWidget>
 
 //KDE
 #include <KDebug>
-#include <KColorScheme>
 #include <KFileItem>
-#include <KIcon>
-#include <KIconLoader>
-#include <KIO/Job>
-#include <KMimeType>
 #include <KRun>
-#include <KStandardDirs>
-
-//plasma
-#include <Plasma/Dialog>
-#include <Plasma/Theme>
 
 // Nepomuk
 #include <Nepomuk/Resource>
-#include <nepomuk/resourcemanager.h>
-#include <Nepomuk/Variant>
 
 //own
-#include "utils.h"
 #include "resultview.h"
 
-using namespace Crystal;
-using namespace Plasma;
 
+using namespace Crystal;
 
 ResultView::ResultView(QGraphicsWidget *parent)
     : QGraphicsWidget(parent),

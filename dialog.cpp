@@ -73,7 +73,7 @@ Dialog::Dialog(QGraphicsWidget *parent)
 
     m_lister = new KDirLister(this);
     connect(m_lister, SIGNAL(completed()), this, SLOT(searchFinished()));
-
+    connect(m_lister, SIGNAL(percent(int)), this, SLOT(progressChanged()));
 
     buildDialog();
 }
@@ -124,7 +124,6 @@ void Dialog::buildDialog()
     m_tabBar = new Plasma::TabBar(this);
 
     m_dashBoard = new DashBoard(m_tabBar);
-    //m_dashBoard->setHtml(QString("<br /><br /><br /><center><i>This is your dashboard</i></center>"));
     m_tabBar->addTab(KIcon("nepomuk"), i18n("Dashboard"), m_dashBoard);
 
     //m_resultsView = new Crystal::ResultWebView(this);
@@ -132,7 +131,7 @@ void Dialog::buildDialog()
 
     m_tabBar->addTab(KIcon("system-search"), i18n("Results"), m_resultsView);
     m_tabBar->setTabBarShown(false);
-    
+
     gridLayout->addItem(m_tabBar, 1, 0, 1, 3);
 
     m_statusBar = new Plasma::Label(this);
@@ -152,13 +151,10 @@ void Dialog::buildDialog()
     updateStatus(i18nc("no active search, no results shown", "Idle."));
     updateNavIcon(m_tabBar->currentIndex());
     setPreferredSize(400, 400);
-    //setMaximumSize(400, 500);
 }
 
 void Dialog::updateStatus(const QString status)
 {
-    //KColorScheme colorTheme = KColorScheme(QPalette::Active, KColorScheme::View,Plasma::Theme::defaultTheme()->colorScheme());
-    //QString text = QString("<font color=\"%1\">%2</font>").arg(colorTheme.foreground(KColorScheme::NormalText).color().name(), status);
     m_statusBar->setText(status);
 }
 
@@ -192,25 +188,15 @@ void Dialog::search(const QUrl &nepomukUrl)
     m_time.restart();
 
     m_lister->openUrl(nepomukUrl);
-    /*
-    KIO::ListJob* listJob = KIO::listDir(KUrl(nepomukUrl), KIO::HideProgressInfo);
-    connect(listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList&)), this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)));
-    connect(listJob, SIGNAL(finished(KJob*)), this, SLOT(searchFinished()));
-    connect(listJob, SIGNAL(percent(KJob *, unsigned long)), this, SLOT(progressChanged(KJob*, unsigned long)));
-    */
 
-
-    // add a timeout in case something goes wrong (no user wants to wait more than N seconds)
-    QTimer::singleShot( m_timeout, this, SLOT(searchFinished()) );
-    //m_queryServiceClient->query( m_query );
     updateStatus(i18nc("status in the plasmoid's popup", "Searching for <i>\"%1\"</i>...", m_query));
-    m_tabBar->setCurrentIndex(1);
 }
 
 void Dialog::entries(const KFileItemList &list)
 {
+    m_tabBar->setCurrentIndex(1);
     kDebug() << "entries! :)";
-    // should look like this:
+
     KFileItemList::ConstIterator it = list.begin();
     const KFileItemList::ConstIterator end = list.end();
     for (; it != end; ++it) {
@@ -219,17 +205,16 @@ void Dialog::entries(const KFileItemList &list)
     }
     updateStatus(i18np("Searching for <i>\"%2\"</i>. %1 file found so far...",
         "Searching for <i>\"%2\"</i>. %1 files found so far...", m_resultsView->count(), m_query));
-    //m_progress = (qreal)(job->percent());
+
     m_resultsView->updateView();
     emit updateToolTip(m_query, m_resultsView->count());
 
 }
 
-void Dialog::progressChanged(KJob *job, unsigned long percent)
+void Dialog::progressChanged(int percent)
 {
-    Q_UNUSED( job )
-    m_progress = (qreal)(percent);
-    kDebug() << "!!!!!!!!!!!!!!!!!!!! Progress now at:" << m_progress;
+    m_progress = percent;
+    kDebug() << "!!! Progress now at:" << m_progress;
 }
 
 void Dialog::searchFinished()

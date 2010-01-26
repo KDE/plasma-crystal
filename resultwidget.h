@@ -22,39 +22,16 @@
 
 //Qt
 #include <QGraphicsLinearLayout>
-#include <QLabel>
-#include <QStringList>
-
-
-// KDE
-#include <KIO/ListJob>
-#include <kio/jobclasses.h>
-
-// Plasma
-#include <Plasma/IconWidget>
-#include <Plasma/Label>
-#include <Plasma/LineEdit>
-#include <Plasma/WebView>
 
 //own
-#include "stylesheet.h"
 #include "resultview.h"
 #include "resourcewidget.h"
 
 class CrystalApplet;
 
-//desktop view
-
-namespace KIO
-{
-    class UDSEntry;
-}
-
 namespace Plasma
 {
-    class Icon;
     class ScrollWidget;
-    class WebView;
 }
 
 namespace Nepomuk
@@ -65,7 +42,7 @@ namespace Nepomuk
 namespace Crystal
 {
   /**
-  * @short A webby view used to display search results.
+  * @short A plasma-widget view used to display search results.
   *
   */
   class ResultWidget : public ResultView

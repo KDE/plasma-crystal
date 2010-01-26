@@ -26,13 +26,6 @@
 #include <QStringList>
 
 
-// KDE
-#include <KIO/ListJob>
-#include <kio/jobclasses.h>
-
-//own
-#include "stylesheet.h"
-
 namespace Nepomuk
 {
     class Resource;

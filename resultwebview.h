@@ -30,10 +30,10 @@
 #include <kio/jobclasses.h>
 
 // Plasma
-#include <Plasma/IconWidget>
-#include <Plasma/Label>
-#include <Plasma/LineEdit>
-#include <Plasma/WebView>
+//#include <Plasma/IconWidget>
+//#include <Plasma/Label>
+//#include <Plasma/LineEdit>
+//#include <Plasma/WebView>
 
 //own
 #include "stylesheet.h"
@@ -44,7 +44,6 @@ class CrystalApplet;
 //desktop view
 namespace Plasma
 {
-    class Icon;
     class WebView;
 }
 

@@ -18,28 +18,18 @@
 */
 //Qt
 #include <QGraphicsLinearLayout>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QTimer>
 #include <QWebFrame>
 
 //KDE
 #include <KDebug>
 #include <KColorScheme>
-#include <KIcon>
-#include <KIconLoader>
-#include <KIO/Job>
-#include <KMimeType>
-#include <KRun>
 #include <KStandardDirs>
 
 //plasma
-#include <Plasma/Dialog>
-#include <Plasma/Theme>
+#include <Plasma/WebView>
 
 // Nepomuk
 #include <Nepomuk/Resource>
-#include <nepomuk/resourcemanager.h>
 #include <Nepomuk/Variant>
 
 //own

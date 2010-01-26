@@ -25,7 +25,6 @@
 #include <QtCore/QUrl>
 #include <QtGui/QGraphicsWidget>
 
-//#include <Plasma/DataEngine>
 
 class KFileItem;
 class KJob;
@@ -53,8 +52,6 @@ private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
     void resizeEvent(QGraphicsSceneResizeEvent* event);
     void pixmapUpdated();
-
-    //Plasma::DataEngine* m_engine;
 
     int border;
     QColor fg;

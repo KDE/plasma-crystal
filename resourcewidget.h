@@ -23,12 +23,11 @@
 //Qt
 #include <QGraphicsWidget>
 
+// KDE
 #include <KFileItem>
-#include <KIO/Job>
 
 // Plasma
 #include <Plasma/IconWidget>
-#include <Plasma/Frame>
 
 // own
 #include "ratingwidget.h"
@@ -39,7 +38,6 @@ class QGraphicsSceneMouseEvent;
 
 namespace Plasma
 {
-    class IconWidget;
     class Label;
 }
 
@@ -55,7 +53,6 @@ namespace Crystal
   *
   */
   class ResourceWidget : public Plasma::IconWidget
-  //class ResourceWidget : public Plasma::Frame
   {
   Q_OBJECT
 
@@ -71,7 +68,6 @@ namespace Crystal
         virtual void setUrl(const QUrl &url);
         virtual void setQuery(const QString &query);
         virtual void setFileItem(const KFileItem &item);
-        virtual void setUDSEntry(const KIO::UDSEntry &entry);
         virtual void setResource(Nepomuk::Resource *resource);
         virtual QPixmap pixmap();
 
@@ -97,7 +93,6 @@ namespace Crystal
         Plasma::IconWidget *m_iconWidget;
         Plasma::Label *m_nameLabel;
         Plasma::Label *m_infoLabel;
-        //QGraphicsProxyWidget *m_ratingWidget;
         RatingWidget *m_ratingWidget;
 
         QUrl m_url;

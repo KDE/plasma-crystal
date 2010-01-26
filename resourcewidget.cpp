@@ -17,37 +17,29 @@
     Boston, MA 02110-1301, USA.
 */
 
-//Qt
+// Qt
 #include <QApplication>
 #include <QGraphicsGridLayout>
 #include <QGraphicsLinearLayout>
-#include <QGraphicsProxyWidget>
+//#include <QGraphicsProxyWidget>
 #include <QLabel>
 #include <QGraphicsSceneMouseEvent>
 
-//KDE
+// KDE
 #include <KDebug>
-#include <KColorScheme>
 #include <KFileItem>
 #include <KGlobalSettings>
 #include <KIcon>
-#include <KIO/Job>
-#include <kio/jobclasses.h>
-#include <KMimeType>
-#include <Nepomuk/KRatingWidget>
-#include <KRun>
 
-//plasma
-#include <Plasma/Frame>
+// Plasma
 #include <Plasma/IconWidget>
 #include <Plasma/Label>
-#include <Plasma/Theme>
 
 // Nepomuk
 #include <Nepomuk/Resource>
 #include <Nepomuk/Variant>
 
-//own
+// Own
 #include "resourcewidget.h"
 #include "ratingwidget.h"
 #include "utils.h"
@@ -69,22 +61,20 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
 {
     setDrawBackground(true);
     setMinimumHeight(76);
-    //setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
     connect(this, SIGNAL(activated()), this, SLOT(open()));
     m_layout = new QGraphicsGridLayout(this);
     m_layout->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    
+
     m_leftLayout = new QGraphicsLinearLayout(m_layout);
     m_leftLayout->setOrientation(Qt::Vertical);
     m_rightLayout = new QGraphicsLinearLayout(m_layout);
     m_rightLayout->setOrientation(Qt::Vertical);
-    
-    
+
     m_layout->setColumnFixedWidth(0, m_iconSize);
     m_layout->setRowStretchFactor(0, 1);
     m_layout->setRowStretchFactor(1, 100);
     m_layout->setRowStretchFactor(2, 1);
-    //setLayout(m_layout);
 
     m_iconWidget = new Plasma::IconWidget(this);
     m_iconWidget->setIcon("nepomuk");
@@ -92,59 +82,33 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
     m_iconWidget->setMaximumSize(m_iconSize, m_iconSize);
     m_iconWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     m_iconWidget->setAcceptsHoverEvents(false);
+    m_leftLayout->addItem(m_iconWidget);
     connect(m_iconWidget, SIGNAL(activated()), this, SLOT(open()));
 
-    //m_layout->addItem(m_iconWidget, 0, 0, 2, 1);
-    m_leftLayout->addItem(m_iconWidget);
-    /*
-    KRatingWidget *kratingWidget = new KRatingWidget(0); // leaks!
-    kratingWidget->setMaxRating(5);
-    kratingWidget->setRating(3);
-    m_ratingWidget = new QGraphicsProxyWidget(this);
-    m_ratingWidget->setWidget(kratingWidget);
-
-    */
     m_ratingWidget = new RatingWidget(this);
-    /*
-    m_ratingWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    m_ratingWidget->setMaximumHeight(12);
-    m_ratingWidget->setMaximumWidth(m_iconSize);
-    m_ratingWidget->setFont(KGlobalSettings::smallestReadableFont());
-    m_ratingWidget->setText("[rating]");
-    m_ratingWidget->setOpacity(0.5);
-    //m_layout->addItem(m_ratingWidget, 2, 0, 1, 1, Qt::AlignTop);
-    //m_layout->addItem(m_ratingWidget, 2, 0, Qt::AlignTop);
-    */
     m_leftLayout->addItem(m_ratingWidget);
-
 
     m_nameLabel = new Plasma::Label(this);
     m_nameLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     m_nameLabel->setMaximumHeight(KGlobalSettings::generalFont().pointSize()*1.5);
     m_nameLabel->setText("Nepomuk Resource");
-    //m_layout->addItem(m_nameLabel, 0, 1, 1, 1);
-    //m_layout->addItem(m_nameLabel, 0, 1);
     m_rightLayout->addItem(m_nameLabel);
-    
+
     m_infoLabel = new Plasma::Label(this);
     m_infoLabel->nativeWidget()->setWordWrap(true);
     m_infoLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    //m_infoLabel->setMinimumHeight(m_iconSize);
-    //m_infoLabel->setStyleSheet("font { opacity: 0.7; }");
     m_infoLabel->setOpacity(.5);
     m_infoLabel->setFont(KGlobalSettings::smallestReadableFont());
-    //m_layout->addItem(m_infoLabel, 1, 1, 3, 1);
     m_rightLayout->addItem(m_infoLabel);
     m_layout->addItem(m_leftLayout, 0, 0);
     m_layout->addItem(m_rightLayout, 0, 1);
-    
+
     m_layout->setContentsMargins(4, 4, 4, 4);
     m_leftLayout->setContentsMargins(4, 4, 4, 4);
     m_rightLayout->setContentsMargins(4, 4, 4, 4);
 
     setResource(m_resource);
-    kDebug() << "GridLayout has rows, cols:" << m_layout->rowCount() << m_layout->columnCount();
-
+    //kDebug() << "GridLayout has rows, cols:" << m_layout->rowCount() << m_layout->columnCount();
 }
 
 ResourceWidget::~ResourceWidget()
@@ -159,7 +123,6 @@ void ResourceWidget::setQuery(const QString &query)
 
 void ResourceWidget::setUrl(const QUrl &url)
 {
-    kDebug() << "????????" << url;
     m_url = url;
     emit urlChanged();
 }
@@ -206,35 +169,6 @@ void ResourceWidget::setResource(Nepomuk::Resource *resource)
         m_info = m_url.toString();
     }
 
-    updateWidgets();
-}
-
-
-void ResourceWidget::setUDSEntry(const KIO::UDSEntry &entry)
-{
-#if 0
-
-    kDebug() << "------------- UDSEntry -----------";
-    kDebug() << "UDS_ICON_NAME" << entry.stringValue( KIO::UDSEntry::UDS_ICON_NAME );
-    kDebug() << "UDS_MIME_TYPE" << entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
-    kDebug() << "UDS_NAME" << entry.stringValue( KIO::UDSEntry::UDS_NAME );;
-    kDebug() << "UDS_LOCAL_PATH" << entry.stringValue( KIO::UDSEntry::UDS_LOCAL_PATH );
-    foreach (uint i, entry.listFields()) {
-        kDebug() << "Field" << i << entry.stringValue(i);
-    }
-#endif
-    
-    m_udsEntry = KIO::UDSEntry(entry);
-
-    m_icon = entry.stringValue( KIO::UDSEntry::UDS_ICON_NAME );
-    m_mimeType = entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
-    if (m_icon.isEmpty()) {
-        if (!m_mimeType.isEmpty()) {
-            m_icon = KMimeType::iconNameForUrl(m_url);
-        } else {
-            m_icon = "nepomuk";
-        }
-    }
     updateWidgets();
 }
 

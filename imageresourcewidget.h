@@ -25,23 +25,19 @@
 
 //Qt
 #include <QGraphicsWidget>
-class QGraphicsGridLayout;
-class QGraphicsProxyWidget;
 
 // Plasma
 #include <Plasma/IconWidget>
 #include <Plasma/Frame>
 
 
+class QGraphicsGridLayout;
+class QGraphicsProxyWidget;
+
 namespace Plasma
 {
     class IconWidget;
     class Label;
-}
-
-namespace KIO
-{
-    class UDSEntry;
 }
 
 namespace Nepomuk
@@ -51,7 +47,7 @@ namespace Nepomuk
 
 namespace Crystal
 {
-    class ImageWidget;
+  class ImageWidget;
   /**
   * @short ImageResourceWidget is a Plasma Widget to display a Nepomuk::Resource.
   *
