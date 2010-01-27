@@ -114,7 +114,8 @@ void DashBoard::update()
     stringMap["%footer"] = QString();
     stringMap["%notice"] = QString();
     stringMap["%path"] = m_baseDir;
-    
+    stringMap["%refreshDashboard"] = QString("crystal:/refreshDashboard");
+
 
     _html = m_template;
     foreach(const QString &k, stringMap.keys()) {
@@ -186,6 +187,13 @@ void DashBoard::linkClicked(const QUrl &clickedUrl)
     if (KUrl(clickedUrl).protocol() == "nepomuksearch") {
         kDebug() << "Nepomuk URL, we can handle that!" << clickedUrl;
         emit search(clickedUrl);
+    } else if (KUrl(clickedUrl).protocol() == "crystal") {
+        QString cmd = clickedUrl.toString().remove("crystal:/");
+        if (cmd == "refreshDashboard") {
+            update();
+        } else {
+            kWarning() << "unknown crystal:/ URL:" << clickedUrl;
+        }
     } else {
         kDebug() << "opening external" << clickedUrl;
         new KRun(clickedUrl, 0);
