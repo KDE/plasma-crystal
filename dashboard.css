@@ -90,6 +90,10 @@ ul li {
     margin-bottom: 20px;
 }
 
+#recent {
+    text-align: top;
+}
+
 #footer {
     text-align: right;
     opacity: .4;

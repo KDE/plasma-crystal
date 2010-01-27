@@ -60,7 +60,7 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *par
 
 {
     setDrawBackground(true);
-    setMinimumHeight(76);
+    setMinimumHeight(64);
 
     connect(this, SIGNAL(activated()), this, SLOT(open()));
     m_layout = new QGraphicsGridLayout(this);

@@ -92,6 +92,8 @@ void ImageWidget::pixmapUpdated()
         }
         if (newSize.height() > m_pixmap.height()) {
             newSize.setHeight(m_pixmap.height());
+            setMinimumHeight(newSize.height());
+            setMaximumHeight(newSize.height());
         }
         m_scaledPixmap = m_pixmap.scaled(newSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     } else {

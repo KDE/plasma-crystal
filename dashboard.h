@@ -50,9 +50,6 @@ namespace Crystal
         DashBoard(QGraphicsWidget *parent = 0);
         virtual ~DashBoard();
 
-        //void setUrl(const QStringList &matches);
-        void setMatches(const QStringList &matches);
-
     Q_SIGNALS:
         void search(const QUrl nepomukUrl);
 

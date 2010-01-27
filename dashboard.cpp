@@ -52,6 +52,10 @@ DashBoard::DashBoard(QGraphicsWidget *parent)
     QWebSettings::globalSettings()->setAttribute( QWebSettings::PluginsEnabled, false );
     QWebSettings::globalSettings()->setAttribute( QWebSettings::LinksIncludedInFocusChain, true);
 
+    setDragToScroll(true);
+    mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+    mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+
     QWebPage *_page = mainFrame()->page();
     _page->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     connect(_page, SIGNAL(linkClicked(const QUrl&)), SLOT(linkClicked(const QUrl&)));
@@ -87,16 +91,6 @@ DashBoard::DashBoard(QGraphicsWidget *parent)
 DashBoard::~DashBoard()
 {
 }
-/*
-void DashBoard::setUrl(const QStringList &matches)
-{
-    
-}
-*/
-void DashBoard::setMatches(const QStringList &matches)
-{
-
-}
 
 void DashBoard::update()
 {
@@ -116,14 +110,10 @@ void DashBoard::update()
     stringMap["%path"] = m_baseDir;
     stringMap["%refreshDashboard"] = QString("crystal:/refreshDashboard");
 
-
     _html = m_template;
     foreach(const QString &k, stringMap.keys()) {
-        //kDebug() << "replacing" << k;
         _html.replace(k, stringMap[k]);
     }
-    //kDebug() << "HTML:" << _html;
-    //kDebug() << "Base:" << mainFrame()->baseUrl();
     setHtml(_html);
 }
 
@@ -132,7 +122,14 @@ QString DashBoard::tags()
     QString _html;
 
     QList<Nepomuk::Tag> allTags = Nepomuk::Tag::allTags();
+    if (!allTags.count()) {
+        return i18n("No tags found.");
+    }
+    int maxTags = 16;
+    int _i = 0;
     foreach (Nepomuk::Tag t, allTags) {
+
+        _i++;
 
         int high = 10;
         int low = 1;
@@ -140,6 +137,9 @@ QString DashBoard::tags()
 
         _html.append(QString("<li><a  class=\"tag%2\" href=\"nepomuksearch:/hastag:%1\">%1</a></li>\n").arg(t.genericLabel(), QString::number(weight)));
         kDebug() << "Tag!" << t.genericLabel() << weight;
+        if (_i >= maxTags) {
+            break;
+        }
     }
     return _html;
 }
@@ -148,9 +148,9 @@ QString DashBoard::recent()
 {
     QString _html;
     QStringList _tags;
-    _tags << "kauth" << "linux" << "akademy";
+    _tags << "kauth" << "linux" << "hastag:Wallpaper" << "akademy" << "crystal";
     foreach (const QString &_t, _tags) {
-        _html.append(QString("<li>%1</li>\n").arg(_t));
+        _html.append(QString("<li><a href=\"nepomuksearch:/%1\">%1</a></li>\n").arg(_t));
     }
     return _html;
 }
