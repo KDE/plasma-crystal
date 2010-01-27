@@ -36,6 +36,7 @@
 
 // Nepomuk
 #include <Nepomuk/Resource>
+#include <Nepomuk/ResourceManager>
 #include <Nepomuk/Tag>
 
 //own
@@ -106,7 +107,7 @@ void DashBoard::update()
     stringMap["%tags"] = tags();
     stringMap["%recent"] = recent();
     stringMap["%footer"] = QString();
-    stringMap["%notice"] = QString();
+    stringMap["%notice"] = notice();
     stringMap["%path"] = m_baseDir;
     stringMap["%refreshDashboard"] = QString("crystal:/refreshDashboard");
 
@@ -115,6 +116,14 @@ void DashBoard::update()
         _html.replace(k, stringMap[k]);
     }
     setHtml(_html);
+}
+
+QString DashBoard::notice()
+{
+    if (!(Nepomuk::ResourceManager::instance()->initialized())) {
+        return i18n("Desktop search is not activated. Please enable it in System Settings");
+    }
+    return QString();
 }
 
 QString DashBoard::tags()

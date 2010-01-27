@@ -62,6 +62,7 @@ namespace Crystal
         QString header();
         QString tags();
         QString recent();
+        QString notice();
 
         StyleSheet *m_css;
         KDirWatch *m_templateWatch;

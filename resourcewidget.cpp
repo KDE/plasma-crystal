@@ -194,7 +194,7 @@ void ResourceWidget::updateWidgets()
 {
     if (m_info.isEmpty()) {
         // dummy, only for testing
-        m_infoLabel->setText(Utils::highlight(Utils::abstract("Here goes the information about this resource, an abstract for example, or tags, or something ... Here goes the information about this resource, an abstract for example, or tags, or something Here goes the information about this resource, an abstract for example, or tags, or something Here goes the information about this resource, an abstract for example, or tags, or something", QString("example")), QString("example")));
+        //m_infoLabel->setText(Utils::highlight(Utils::abstract("Here goes the information about this resource, an abstract for example, or tags, or something ... Here goes the information about this resource, an abstract for example, or tags, or something Here goes the information about this resource, an abstract for example, or tags, or something Here goes the information about this resource, an abstract for example, or tags, or something", QString("example")), QString("example")));
     } else {
         QString _abstract = Utils::highlight(m_info, m_query);
         m_infoLabel->setText(_abstract);
@@ -205,15 +205,8 @@ void ResourceWidget::updateWidgets()
         m_iconWidget->setIcon(m_icon);
     }
     m_ratingWidget->setRating(m_resource->rating());
-#if 0
-    kDebug() << "==== StripShow:" << Utils::stripTags("<h1>This is my text, <br /> is it stripped?</h1>");
-    kDebug() << "Prefheight:" << qMax(m_leftLayout->preferredHeight(),m_rightLayout->preferredHeight());
-    kDebug() << " Minheight:" << qMax(m_leftLayout->minimumHeight(),m_rightLayout->minimumHeight());
-    kDebug() << " Maxheight:" << qMax(m_leftLayout->maximumHeight(),m_rightLayout->maximumHeight());
 
-#endif
-
-    setMinimumHeight(qMax(m_leftLayout->minimumHeight(),m_rightLayout->minimumHeight()) + 12);
+    setMinimumHeight(m_leftLayout->minimumHeight() + 6);//,m_rightLayout->minimumHeight()) + 12);
 
     m_layout->invalidate();
 }
@@ -251,7 +244,6 @@ void ResourceWidget::startDrag()
     // This is a bit random, but we need a QWidget for the constructor
     QDrag* drag = new QDrag(m_nameLabel->nativeWidget());
     drag->setMimeData(mimeData);
-    //drag->setPixmap(KIcon(m_icon).pixmap(64, 64));
     drag->setPixmap(pixmap());
     if (drag->start(Qt::LinkAction)) {
         kDebug() << "dragging starting";
