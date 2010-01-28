@@ -66,14 +66,20 @@ namespace Crystal
         ImageResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *parent = 0);
         virtual ~ImageResourceWidget();
         virtual QPixmap pixmap();
+        virtual void setResource(Nepomuk::Resource *resource);
 
         //void setUrl(const QUrl &url);
 
     protected:
+        virtual void updateWidgets();
         ImageWidget *m_imageWidget;
 
     private Q_SLOTS:
         void updateUrl();
+
+    private:
+        int m_width;
+        int m_height;
   };
 }
 

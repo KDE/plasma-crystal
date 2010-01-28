@@ -100,7 +100,7 @@ namespace Crystal
          * @internal Gets called when a new match has been found
          */
         //void newMatches( const QList<Nepomuk::Search::Result>& results);
-        void entries(const KFileItemList &list);
+        void entries(const KUrl &url, const KFileItemList &list);
 
     private Q_SLOTS:
         void searchFinished();

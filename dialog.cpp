@@ -73,7 +73,9 @@ Dialog::Dialog(QGraphicsWidget *parent)
 
     m_lister = new KDirLister(this);
     connect(m_lister, SIGNAL(completed()), this, SLOT(searchFinished()));
-    connect(m_lister, SIGNAL(percent(int)), this, SLOT(progressChanged()));
+    connect(m_lister, SIGNAL(percent(int)), this, SLOT(progressChanged(int)));
+    connect(m_lister, SIGNAL(itemsAdded(const KUrl&, const KFileItemList&)),
+                this, SLOT(entries(const KUrl&, const KFileItemList&)));
 
     buildDialog();
 }
@@ -192,19 +194,24 @@ void Dialog::search(const QUrl &nepomukUrl)
     updateStatus(i18nc("status in the plasmoid's popup", "Searching for <i>\"%1\"</i>...", m_query));
 }
 
-void Dialog::entries(const KFileItemList &list)
+void Dialog::entries(const KUrl &url, const KFileItemList &list)
 {
-    m_tabBar->setCurrentIndex(1);
+    Q_UNUSED( url )
     kDebug() << "entries! :)";
 
     KFileItemList::ConstIterator it = list.begin();
     const KFileItemList::ConstIterator end = list.end();
     for (; it != end; ++it) {
         const KFileItem& item = *it;
+        
         m_resultsView->addMatch(item);
+        QEventLoop loop;
+        loop.processEvents();
+        loop.quit();
     }
     updateStatus(i18np("Searching for <i>\"%2\"</i>. %1 file found so far...",
         "Searching for <i>\"%2\"</i>. %1 files found so far...", m_resultsView->count(), m_query));
+    m_tabBar->setCurrentIndex(1);
 
     m_resultsView->updateView();
     emit updateToolTip(m_query, m_resultsView->count());
@@ -219,9 +226,6 @@ void Dialog::progressChanged(int percent)
 
 void Dialog::searchFinished()
 {
-    if (!m_resultsView->count()) {
-        entries(m_lister->items());
-    }
     updateStatus(i18np("Found %2 result in %1.",
                        "Found %2 results in %1.",
                        KGlobal::locale()->formatDuration(m_time.elapsed()),

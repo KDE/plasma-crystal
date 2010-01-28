@@ -79,11 +79,11 @@ void ResultWidget::addWidget(Nepomuk::Resource* resource, const KFileItem &item,
 
     ResourceWidget *_widget;
     if (_mimeType.startsWith("image")) {
-        kDebug() << "*** Creating an image widget!" << _mimeType;
+        //kDebug() << "*** Creating an image widget!" << _mimeType;
         ImageResourceWidget *irw = new ImageResourceWidget(resource, m_widget);
         _widget = qobject_cast<ResourceWidget*>(irw);
     } else {
-        kDebug() << "Creating a generic widget." << _mimeType;
+        //kDebug() << "Creating a generic widget." << _mimeType;
         _widget = new ResourceWidget(resource, m_widget);
     }
     _widget->setQuery(query);

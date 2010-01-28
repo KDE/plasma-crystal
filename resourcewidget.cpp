@@ -206,7 +206,7 @@ void ResourceWidget::updateWidgets()
     }
     m_ratingWidget->setRating(m_resource->rating());
 
-    setMinimumHeight(m_leftLayout->minimumHeight() + 6);//,m_rightLayout->minimumHeight()) + 12);
+    setMinimumHeight(qMax(m_leftLayout->minimumHeight(), m_rightLayout->minimumHeight() + 12));
 
     m_layout->invalidate();
 }
