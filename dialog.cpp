@@ -184,7 +184,7 @@ void Dialog::search(const QUrl &nepomukUrl)
     m_query = nepomukUrl.toString().remove("nepomuksearch:/");
     m_resultsView->setQuery(m_query);
     m_lineEdit->setText(m_query);
-    kDebug() << "searching for ..." << nepomukUrl;
+    kDebug() << "searching for ..." << nepomukUrl << m_query;
 
     m_resultsView->clear();
     m_time.restart();

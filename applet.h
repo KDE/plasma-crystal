@@ -89,6 +89,8 @@ namespace Crystal
         bool m_useClipboard;
         // pre-filled in query
         QString m_defaultQuery;
+
+        QString m_arg;
   };
 };
 

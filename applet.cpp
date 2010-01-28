@@ -60,7 +60,6 @@ Applet::Applet(QObject *parent, const QVariantList &args)
         kDebug() << "no resource manager";
     };
 
-
     setBackgroundHints(StandardBackground);
     setAspectRatioMode(Plasma::IgnoreAspectRatio);
     setHasConfigurationInterface(true);
@@ -70,6 +69,12 @@ Applet::Applet(QObject *parent, const QVariantList &args)
     (void)graphicsWidget();
 
     //resize(graphicsWidget()->sizeHint());
+    if (args.count() > 0) {
+        kDebug() << "CrystalAppletArgs" << args;
+        // FIXME: error handling
+        kDebug() << args.at(0).toString();
+        m_arg = args.at(0).toString();
+    }
     m_iconSize = 1;
 }
 
@@ -97,7 +102,12 @@ void Applet::init()
     m_defaultQuery = cg.readEntry("defaultQuery", "kauth");
 
     kDebug() << "timeout, maxMatches, useclipboard, defaultquery:" << m_timeout << m_maxMatches << m_useClipboard << m_defaultQuery << m_iconSize;
-    m_dialog->updateQuery(m_defaultQuery);
+    if (!m_arg.isEmpty()) {
+        KUrl _url(m_arg);
+        m_dialog->search(_url);
+    } else {
+        m_dialog->updateQuery(m_defaultQuery);
+    }
     m_dialog->updateIconSize(iconSize());
     updateToolTip("", 0);
 }

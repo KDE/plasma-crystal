@@ -95,6 +95,7 @@ namespace Crystal
          * Perform a search
          */
         void search();
+        void search(const QUrl &nepomukUrl);
 
         /**
          * @internal Gets called when a new match has been found
@@ -105,7 +106,6 @@ namespace Crystal
     private Q_SLOTS:
         void searchFinished();
         void progressChanged(int percent);
-        void search(const QUrl &nepomukUrl);
         void updateNavIcon(int tabIndex);
         void toggleTab();
 
