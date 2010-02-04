@@ -40,20 +40,31 @@ QString Utils::abstract(Nepomuk::Resource *res, const QString &query, int size)
 QString Utils::abstract(const QString &text, const QString &query, int size)
 {
     QString plainText = stripTags(text);
-    //kDebug() << "mangling" << res->genericLabel() << ", query:" << query;
+    //kDebug() << "========================== mangling" << text.count() << query << size; // << res->genericLabel() << ", query:" << query;
     if (plainText.isEmpty()) {
         return plainText;
     }
     if (query.isEmpty()) {
+        //kDebug() << "query empty, no higlighting";
         return plainText.midRef(0, size).toString();
     }
     QString html;
     int _i = plainText.indexOf(query, Qt::CaseInsensitive);
     if (_i >= 0) {
-        int _b = qMin(0, _i - (int)(size/2));
+        int _b = qMax(0, _i - (int)(size/2));
         int _l = qMin(size, plainText.count());
         html = plainText.midRef(_b, _l).toString();
+        //kDebug() << "...............................................................";
+        //kDebug() << plainText;
+        //kDebug() << "...............................................................";
         kDebug() << "Found query at " << _i << _b << _l;
+        // display "..."?
+        if (_b) {
+            html = QString("... %1").arg(html);
+        }
+        if ((_b+_l) < plainText.count()) {
+            html = QString("%1 ...").arg(html);
+        }
         kDebug() << "Abstract:" << html;
     } else {
         html = html.midRef(0, size).toString();

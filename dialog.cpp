@@ -59,7 +59,8 @@ Dialog::Dialog(QGraphicsWidget *parent)
       m_searchButton(0),
       m_statusBar(0),
       m_query(0),
-      m_progress(0)
+      m_progress(0),
+      m_historySize(4)
 {
     m_time.start();
     m_timeout = 20000; // 20 seconds should be enough for everyone!
@@ -174,9 +175,33 @@ void Dialog::search()
     }
     kDebug() << "Searching for ..." << m_query << " timeout after:" << m_timeout;
 
+    if (!(m_history.contains(m_query))) {
+        m_history << m_query;
+        kDebug() << "Inserting query into history" << m_query << m_history;
+        if (m_historySize < m_history.size()) {
+            m_history.removeFirst();
+            kDebug() << "removed first entry";
+        }
+        m_dashBoard->setHistory(m_history);
+        emit historyChanged(m_history);
+    } else {
+        kDebug() << "query already in history" << m_query << m_history;
+    }
+
     // query syntax is at:
     // http://techbase.kde.org/Development/Tutorials/Metadata/Nepomuk/QueryService
     search(QUrl(QString("nepomuksearch:/%1").arg(m_query)));
+}
+
+void Dialog::setHistory(QStringList history)
+{
+    m_history = history;
+    m_dashBoard->setHistory(m_history);
+}
+
+QStringList Dialog::history()
+{
+    return m_history;
 }
 
 void Dialog::search(const QUrl &nepomukUrl)

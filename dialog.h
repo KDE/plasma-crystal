@@ -85,10 +85,13 @@ namespace Crystal
         void updateIconSize(int iconsize);
         void updateQuery(const QString query);
         void setTimeout(int timeout);
+        QStringList history();
+        void setHistory(QStringList history);
 
     Q_SIGNALS:
         void updateView();
         void updateToolTip(const QString&, int);
+        void historyChanged(const QStringList &history);
 
     public Q_SLOTS:
         /**
@@ -135,6 +138,9 @@ namespace Crystal
         int m_abstractSize;
         int m_progress;
         QTime m_time;
+
+        QStringList m_history;
+        int m_historySize;
   };
 }
 

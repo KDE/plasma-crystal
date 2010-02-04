@@ -118,6 +118,7 @@ ResourceWidget::~ResourceWidget()
 void ResourceWidget::setQuery(const QString &query)
 {
     m_query = query;
+    m_info = Utils::abstract(m_resource, m_query);
     updateWidgets();
 }
 
@@ -159,7 +160,6 @@ void ResourceWidget::setResource(Nepomuk::Resource *resource)
     }
 
     // What to display on the infolabel?
-    m_info = Utils::abstract(m_resource, m_query);;
     QString _description = m_resource->genericDescription();
 
     if (m_info.isEmpty()) {

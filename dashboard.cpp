@@ -153,12 +153,18 @@ QString DashBoard::tags()
     return _html;
 }
 
+void DashBoard::setHistory(const QStringList &history)
+{
+    m_history = history;
+    update();
+}
+
 QString DashBoard::recent()
 {
     QString _html;
     QStringList _tags;
-    _tags << "kauth" << "linux" << "hastag:Wallpaper" << "akademy" << "crystal";
-    foreach (const QString &_t, _tags) {
+    _tags << "Benachrichtigungsmechanismus" << "kauth" << "linux" << "hastag:Wallpaper" << "akademy" << "crystal";
+    foreach (const QString &_t, m_history) {
         _html.append(QString("<li><a href=\"nepomuksearch:/%1\">%1</a></li>\n").arg(_t));
     }
     return _html;

@@ -76,6 +76,8 @@ Applet::Applet(QObject *parent, const QVariantList &args)
         m_arg = args.at(0).toString();
     }
     m_iconSize = 1;
+
+    connect(m_dialog, SIGNAL(historyChanged(const QStringList&)), this, SLOT(historyChanged(const QStringList)));
 }
 
 Applet::~Applet()
@@ -86,22 +88,27 @@ Applet::~Applet()
 
 void Applet::init()
 {
-    KConfigGroup cg = config();
-
     m_icon = new Plasma::IconWidget(KIcon("system-search",NULL), QString());
 
     Plasma::ToolTipManager::self()->registerWidget(this);
 
     setPopupIcon(m_icon->icon());
 
+    configChanged();
+}
+
+void Applet::configChanged()
+{
+    KConfigGroup cg = config();
     m_timeout = cg.readEntry("timeout", 20000);
     m_maxMatches = cg.readEntry("maxMatches", 25);
     m_showFolders = cg.readEntry("showFolders", false);
     m_iconSize = cg.readEntry("iconSize", 1);
     m_useClipboard = cg.readEntry("useClipboard", true);
     m_defaultQuery = cg.readEntry("defaultQuery", "kauth");
-
-    kDebug() << "timeout, maxMatches, useclipboard, defaultquery:" << m_timeout << m_maxMatches << m_useClipboard << m_defaultQuery << m_iconSize;
+    QStringList history = cg.readEntry("history", QStringList());
+    m_dialog->setHistory(history);
+    //kDebug() << "timeout, maxMatches, useclipboard, defaultquery:" << m_timeout << m_maxMatches << m_useClipboard << m_defaultQuery << m_iconSize << history;
     if (!m_arg.isEmpty()) {
         KUrl _url(m_arg);
         m_dialog->search(_url);
@@ -110,6 +117,12 @@ void Applet::init()
     }
     m_dialog->updateIconSize(iconSize());
     updateToolTip("", 0);
+}
+
+void Applet::historyChanged(const QStringList &history)
+{
+    config().writeEntry("history", history);
+    emit configNeedsSaving();
 }
 
 int Applet::timeout()

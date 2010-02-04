@@ -50,6 +50,8 @@ namespace Crystal
         DashBoard(QGraphicsWidget *parent = 0);
         virtual ~DashBoard();
 
+        void setHistory(const QStringList &history);
+
     Q_SIGNALS:
         void search(const QUrl nepomukUrl);
 
@@ -70,6 +72,8 @@ namespace Crystal
         QString m_baseDir;
         QString m_templatePath;
         QString m_template;
+
+        QStringList m_history;
   };
 }
 

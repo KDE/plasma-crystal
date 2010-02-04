@@ -60,14 +60,16 @@ namespace Crystal
         void createConfigurationInterface(KConfigDialog *parent);
 
     protected Q_SLOTS:
+        void configChanged();
         void configAccepted();
         void openConfig();
+        void historyChanged(const QStringList &history);
 
     private:
-        ///the icon used when the applet is in the taskbar
+        // the icon used when the applet is in the taskbar
         Plasma::IconWidget *m_icon;
 
-        ///The dialog displaying matches
+        // The dialog displaying matches
         Dialog *m_dialog;
 
         Plasma::ToolTipContent m_toolTip;
