@@ -58,7 +58,6 @@ Dialog::Dialog(QGraphicsWidget *parent)
       m_lineEdit(0),
       m_searchButton(0),
       m_statusBar(0),
-      m_query(0),
       m_progress(0),
       m_historySize(4)
 {

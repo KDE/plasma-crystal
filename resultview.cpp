@@ -36,7 +36,6 @@ using namespace Crystal;
 
 ResultView::ResultView(QGraphicsWidget *parent)
     : QGraphicsWidget(parent),
-      m_query(0),
       m_abstractSize(200)
 {
 }
