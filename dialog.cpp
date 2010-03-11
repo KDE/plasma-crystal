@@ -137,7 +137,7 @@ void Dialog::buildDialog()
     gridLayout->addItem(m_tabBar, 1, 0, 1, 3);
 
     m_statusBar = new Plasma::Label(this);
-    m_statusBar->setText("status");
+    //m_statusBar->setText("status");
     m_statusBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     m_statusBar->setMaximumHeight(22);
     m_statusBar->setFont(KGlobalSettings::smallestReadableFont());
@@ -221,20 +221,25 @@ void Dialog::search(const QUrl &nepomukUrl)
 void Dialog::entries(const KUrl &url, const KFileItemList &list)
 {
     Q_UNUSED( url )
+    if (!list.count()) {
+        return;
+    }
     kDebug() << "entries! :)";
 
     KFileItemList::ConstIterator it = list.begin();
     const KFileItemList::ConstIterator end = list.end();
     for (; it != end; ++it) {
         const KFileItem& item = *it;
-        
         m_resultsView->addMatch(item);
         QEventLoop loop;
         loop.processEvents();
         loop.quit();
     }
-    updateStatus(i18np("Searching for <i>\"%2\"</i>. %1 file found so far...",
-        "Searching for <i>\"%2\"</i>. %1 files found so far...", m_resultsView->count(), m_query));
+    updateStatus(i18np("Found %1 result for \"<i>%2</i>\" in %3.",
+                       "Found %1 results for \"<i>%2</i>\" in %3.",
+                       m_resultsView->count(),
+                       m_query,
+                       KGlobal::locale()->formatDuration(m_time.elapsed())));
     m_tabBar->setCurrentIndex(1);
 
     m_resultsView->updateView();
