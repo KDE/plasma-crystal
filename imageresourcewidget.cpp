@@ -62,7 +62,7 @@ void ImageResourceWidget::updateWidgets()
         m_infoLabel->setText(i18nc("info in the image widget", "Image Size: %1x%2", m_width, m_height));
         kDebug() << "Size: " << m_width << m_height;
     } else {
-        kDebug() << "=========> Size not found" << m_resource->allProperties().keys();
+        kDebug() << "=========> Size not found" << m_resource->properties().keys();
         kDebug() << m_resource->property(QUrl("http://www.semanticdesktop.org/ontologies/2007/05/10/nexif#model")).toString().toInt();
         kDebug() << m_resource->property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width")).toString().toInt();
         kDebug() << m_resource->property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height")).toString().toInt();
