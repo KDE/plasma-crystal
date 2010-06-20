@@ -25,6 +25,7 @@ target_link_libraries(
     ${KDE4_PLASMA_LIBS}
     ${KDE4_KIO_LIBS}
     ${NEPOMUK_LIBRARIES}
+    ${SOPRANO_LIBRARIES}
     ${QT_QTWEBKIT_LIBRARY}
 )
 
