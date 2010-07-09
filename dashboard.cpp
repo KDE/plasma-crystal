@@ -121,7 +121,7 @@ void DashBoard::update()
 QString DashBoard::notice()
 {
     if (!(Nepomuk::ResourceManager::instance()->initialized())) {
-        return i18n("Desktop search is not activated. Please enable it in System Settings");
+        return i18n("Desktop search is not activated. <a href=\"crystal:/opensettings\">Click here</a> to enable it in System Settings.");
     }
     return QString();
 }
@@ -206,6 +206,8 @@ void DashBoard::linkClicked(const QUrl &clickedUrl)
         QString cmd = clickedUrl.toString().remove("crystal:/");
         if (cmd == "refreshDashboard") {
             update();
+        } else if (cmd == "opensettings") {
+            KRun::runCommand("kcmshell4 nepomuk", 0);
         } else {
             kWarning() << "unknown crystal:/ URL:" << clickedUrl;
         }
