@@ -49,6 +49,16 @@ ImageResourceWidget::ImageResourceWidget(Nepomuk::Resource *resource, QGraphicsW
     updateUrl();
     connect(this, SIGNAL(urlChanged()), this, SLOT(updateUrl()));
     setResource(resource);
+    /*
+    // Fade in when this widget appears
+    Plasma::Animation* fadeAnimation = Plasma::Animator::create(Plasma::Animator::FadeAnimation);
+    fadeAnimation->setTargetWidget(this);
+    fadeAnimation->setProperty("startOpacity", 0.0);
+    fadeAnimation->setProperty("targetOpacity", 1.0);
+    fadeAnimation->setProperty("Duration", 2000);
+
+    fadeAnimation->start();
+    */
 }
 
 ImageResourceWidget::~ImageResourceWidget()
