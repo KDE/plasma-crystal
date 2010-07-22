@@ -144,7 +144,7 @@ QString DashBoard::tags()
         int low = 1;
         int weight = qrand() % ((high + 1) - low) + low;
 
-        _html.append(QString("<li><a  class=\"tag%2\" href=\"nepomuksearch:/hastag:%1\">%1</a></li>\n").arg(t.genericLabel(), QString::number(weight)));
+        _html.append(QString("<li><a  class=\"tag%2\" href=\"nepomuksearch:/?query=hastag:%1\">%1</a></li>\n").arg(t.genericLabel(), QString::number(weight)));
         kDebug() << "Tag!" << t.genericLabel() << weight;
         if (_i >= maxTags) {
             break;
