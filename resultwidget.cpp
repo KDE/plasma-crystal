@@ -78,7 +78,7 @@ void ResultWidget::buildDialog()
 void ResultWidget::newEntries(const QList<Nepomuk::Query::Result> &entries)
 {
     foreach (Nepomuk::Query::Result res, entries) {
-        kDebug() << "REsult!!!" << res.resource();
+        kDebug() << "Result!!!" << res.resource().genericLabel() << res.resource().type();
         addWidget(new Nepomuk::Resource(res.resource()));
     }
 }
