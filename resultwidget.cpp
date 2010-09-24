@@ -85,7 +85,10 @@ void ResultWidget::newEntries(const QList<Nepomuk::Query::Result> &entries)
 
 void ResultWidget::addWidget(Nepomuk::Resource* resource, const QString &query, const KFileItem &item)
 {
-    QString _mimeType = item.mimetype();
+    QString _mimeType;
+    if (!item.isNull()) {
+        _mimeType = item.mimetype();
+    }
 
     ResourceWidget *_widget;
     if (_mimeType.startsWith("image")) {
