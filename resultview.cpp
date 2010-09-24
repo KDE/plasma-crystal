@@ -54,7 +54,7 @@ void ResultView::addMatch(const KFileItem& item)
     Nepomuk::Resource *res = new Nepomuk::Resource(item.nepomukUri());
     //kDebug() << "Result:" << _icon << _name << _mimeType << _nepomukUri;
     m_results << res;
-    emit resourceAdded(res, item, m_query);
+    emit resourceAdded(res, m_query, item);
     //emit matchAdded();
 }
 

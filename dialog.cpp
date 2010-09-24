@@ -40,9 +40,23 @@
 #include <Plasma/Theme>
 
 // Nepomuk
-#include <Nepomuk/Resource>
+#include <nepomuk/resource.h>
+//#include <Nepomuk/Resource>
 #include <nepomuk/resourcemanager.h>
 #include <Nepomuk/Variant>
+#include <Nepomuk/Query/Query>
+#include <soprano/queryresultiterator.h>
+#include <soprano/model.h>
+//#include <nie.h>
+#include "ontologies/nco.h"
+//#include "onologies/personcontact.h"
+//#include <emailaddress.h>
+
+#include <nepomuk/tag.h>
+#include <nepomuk/andterm.h>
+#include <nepomuk/comparisonterm.h>
+#include <nepomuk/literalterm.h>
+#include <nepomuk/resourcetypeterm.h>
 
 //own
 #include "dialog.h"
@@ -76,6 +90,8 @@ Dialog::Dialog(QGraphicsWidget *parent)
     connect(m_lister, SIGNAL(percent(int)), this, SLOT(progressChanged(int)));
     connect(m_lister, SIGNAL(itemsAdded(const KUrl&, const KFileItemList&)),
                 this, SLOT(entries(const KUrl&, const KFileItemList&)));
+
+    m_queryClient = new Nepomuk::Query::QueryServiceClient(this);
 
     buildDialog();
 }
@@ -146,9 +162,13 @@ void Dialog::buildDialog()
     connect(m_lineEdit, SIGNAL(returnPressed()), SLOT(search()));
     connect(m_lineEdit, SIGNAL(returnPressed()), m_searchButton, SLOT(setPressed()));
     connect(m_searchButton, SIGNAL(clicked()), SLOT(search()));
-    connect(m_dashBoard, SIGNAL(search(const QUrl&)), SLOT(search(const QUrl&)));
+    connect(m_dashBoard, SIGNAL(search(const QString&)), SLOT(search(const QString&)));
     connect(m_tabBar, SIGNAL(currentChanged(int)), SLOT(updateNavIcon(int)));
     connect(m_navIcon, SIGNAL(clicked()), SLOT(toggleTab()));
+
+    connect(m_queryClient, SIGNAL(newEntries(const QList<Nepomuk::Query::Result> &)),
+            m_resultsView, SLOT(newEntries(const QList<Nepomuk::Query::Result> &)));
+    kDebug() << "CONNECTED!!!!!!!!";
 
     updateStatus(i18nc("no active search, no results shown", "Idle."));
     updateNavIcon(m_tabBar->currentIndex());
@@ -189,7 +209,10 @@ void Dialog::search()
 
     // query syntax is at:
     // http://techbase.kde.org/Development/Tutorials/Metadata/Nepomuk/QueryService
-    search(QUrl(QString("nepomuksearch:/%1").arg(m_query)));
+    //search(QUrl(QString("nepomuksearch:/?query=%1").arg(m_query)));
+    //search(QUrl(QString("filenamesearch:/home/sebas?search=%1&checkContent=yes").arg(m_query));
+    //search(m_query);
+    search2(m_query);
 }
 
 void Dialog::setHistory(QStringList history)
@@ -203,16 +226,64 @@ QStringList Dialog::history()
     return m_history;
 }
 
-void Dialog::search(const QUrl &nepomukUrl)
+void Dialog::search2(QString queryString)
 {
-    m_query = nepomukUrl.toString().remove("nepomuksearch:/");
+    // searches emailAddress
+    //QString name = "Marco Martin";
+    kDebug() << queryString;
+    bool found = false;
+    QUrl graphUri = QUrl();
+    Nepomuk::Query::Query query;
+    /*
+    Nepomuk::Query::AndTerm andTerm;
+    Nepomuk::Query::ResourceTypeTerm personTypeTerm( Vocabulary::NCO::PersonContact() );
+    andTerm.addSubTerm( personTypeTerm );
+
+    const Nepomuk::Query::ComparisonTerm addrTerm( Vocabulary::NCO::emailAddress(),
+            Nepomuk::Query::LiteralTerm( queryString ), Nepomuk::Query::ComparisonTerm::Contains );
+    const Nepomuk::Query::ComparisonTerm mailTerm( Vocabulary::NCO::hasEmailAddress(), addrTerm );
+
+    andTerm.addSubTerm( mailTerm );
+    */
+    Nepomuk::Query::LiteralTerm nepomukTerm(queryString);
+    query.setTerm( nepomukTerm );
+    query.setLimit( 20 );
+
+    m_queryClient->query(query);
+    //m_queryClient->sparqlQuery(query.toSparqlQuery(), Soprano::Query::QueryLanguageSparql );
+
+
+    /*
+    Soprano::QueryResultIterator it = Nepomuk::ResourceManager::instance()->mainModel()->executeQuery(
+                                        query.toSparqlQuery(), Soprano::Query::QueryLanguageSparql );
+    kDebug() << query.toSparqlQuery();
+
+    if ( it.next() ) {
+        found = true;
+        const QUrl uri = it.binding( 0 ).uri();
+        it.close();
+        kDebug() << "Yay, found someone ... " << uri;
+        //return NepomukFast::PersonContact( uri, graphUri );
+    } else {
+        // create a new contact
+        kDebug() << "Did not find " << queryString<< ", creating a new PersonContact";
+        found = false;
+    }
+    */
+}
+
+void Dialog::search(const QString &queryString)
+{
+    //m_query = nepomukUrl.toString().remove("nepomuksearch:/?query=");
+    m_query = queryString;
     m_resultsView->setQuery(m_query);
     m_lineEdit->setText(m_query);
-    kDebug() << "searching for ..." << nepomukUrl << m_query;
+    kDebug() << "searching for ..." << queryString << m_query;
 
     m_resultsView->clear();
     m_time.restart();
 
+    QUrl nepomukUrl = QUrl(QString("filenamesearch:/home/sebas/kde/articles?search=%1&checkContent=yes").arg(m_query));
     m_lister->openUrl(nepomukUrl);
 
     updateStatus(i18nc("status in the plasmoid's popup", "Searching for <i>\"%1\"</i>...", m_query));

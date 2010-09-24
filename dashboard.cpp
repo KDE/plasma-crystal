@@ -145,7 +145,7 @@ QString DashBoard::tags()
         int weight = qrand() % ((high + 1) - low) + low;
 
         _html.append(QString("<li><a  class=\"tag%2\" href=\"nepomuksearch:/?query=hastag:%1\">%1</a></li>\n").arg(t.genericLabel(), QString::number(weight)));
-        kDebug() << "Tag!" << t.genericLabel() << weight;
+        //kDebug() << "Tag!" << t.genericLabel() << weight;
         if (_i >= maxTags) {
             break;
         }
@@ -201,7 +201,9 @@ void DashBoard::linkClicked(const QUrl &clickedUrl)
 {
     if (KUrl(clickedUrl).protocol() == "nepomuksearch") {
         kDebug() << "Nepomuk URL, we can handle that!" << clickedUrl;
-        emit search(clickedUrl);
+        QString _q = clickedUrl.toString();
+        _q.remove("nepomuksearch:/");
+        emit search(_q);
     } else if (KUrl(clickedUrl).protocol() == "crystal") {
         QString cmd = clickedUrl.toString().remove("crystal:/");
         if (cmd == "refreshDashboard") {

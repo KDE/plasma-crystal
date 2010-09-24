@@ -30,6 +30,8 @@
 #include <Nepomuk/Resource>
 //#include <nepomuk/resourcemanager.h>
 #include <Nepomuk/Variant>
+#include <Nepomuk/Query/Query>
+#include <Nepomuk/Query/Result>
 
 //own
 #include "resultwidget.h"
@@ -59,8 +61,8 @@ ResultWidget::ResultWidget(QGraphicsWidget *parent)
 
 void ResultWidget::buildDialog()
 {
-    disconnect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const KFileItem&, const QString&)),
-            this, SLOT(addWidget(Nepomuk::Resource*, const KFileItem&, const QString&)));
+    disconnect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const QString&, const KFileItem&)),
+            this, SLOT(addWidget(Nepomuk::Resource*, const QString&, const KFileItem&)));
 
     m_widget = new QGraphicsWidget(m_scrollWidget);
     m_layout = new QGraphicsLinearLayout(m_widget);
@@ -68,12 +70,20 @@ void ResultWidget::buildDialog()
     m_layout->setSpacing(1);
     m_scrollWidget->setWidget(m_widget);
 
-    connect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const KFileItem&, const QString&)),
-            this, SLOT(addWidget(Nepomuk::Resource*, const KFileItem&, const QString&)));
+    connect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const QString&, const KFileItem&)),
+            this, SLOT(addWidget(Nepomuk::Resource*, const QString&, const KFileItem&)));
 
 }
 
-void ResultWidget::addWidget(Nepomuk::Resource* resource, const KFileItem &item, const QString &query)
+void ResultWidget::newEntries(const QList<Nepomuk::Query::Result> &entries)
+{
+    foreach (Nepomuk::Query::Result res, entries) {
+        kDebug() << "REsult!!!" << res.resource();
+        addWidget(new Nepomuk::Resource(res.resource()));
+    }
+}
+
+void ResultWidget::addWidget(Nepomuk::Resource* resource, const QString &query, const KFileItem &item)
 {
     QString _mimeType = item.mimetype();
 
@@ -87,7 +97,9 @@ void ResultWidget::addWidget(Nepomuk::Resource* resource, const KFileItem &item,
         _widget = new ResourceWidget(resource, m_widget);
     }
     _widget->setQuery(query);
-    _widget->setFileItem(item);
+    if (!item.isNull()) {
+        _widget->setFileItem(item);
+    }
     connect(_widget, SIGNAL(run(const QUrl&)), SLOT(run(const QUrl&)));
     m_layout->addItem(_widget);
     m_widgets << _widget;

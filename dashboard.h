@@ -53,7 +53,7 @@ namespace Crystal
         void setHistory(const QStringList &history);
 
     Q_SIGNALS:
-        void search(const QUrl nepomukUrl);
+        void search(const QString&);
 
     public Q_SLOTS:
         void load(const QString &templatePath);

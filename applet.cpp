@@ -110,8 +110,8 @@ void Applet::configChanged()
     m_dialog->setHistory(history);
     //kDebug() << "timeout, maxMatches, useclipboard, defaultquery:" << m_timeout << m_maxMatches << m_useClipboard << m_defaultQuery << m_iconSize << history;
     if (!m_arg.isEmpty()) {
-        KUrl _url(m_arg);
-        m_dialog->search(_url);
+        //KUrl _url(m_arg);
+        m_dialog->search(m_arg);
     } else {
         m_dialog->updateQuery(m_defaultQuery);
     }

@@ -55,7 +55,7 @@ namespace Crystal
         virtual void setQuery(const QString&);
 
     Q_SIGNALS:
-        void resourceAdded(Nepomuk::Resource*, const KFileItem&, const QString&);
+        void resourceAdded(Nepomuk::Resource*, const QString&, const KFileItem&);
         void matchFound();
 
     public Q_SLOTS:

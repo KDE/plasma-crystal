@@ -37,6 +37,9 @@
 #include <Plasma/TabBar>
 #include <Plasma/WebView>
 
+
+#include <Nepomuk/Query/QueryServiceClient>
+
 //own
 #include "resultwebview.h"
 #include "resultwidget.h"
@@ -98,7 +101,8 @@ namespace Crystal
          * Perform a search
          */
         void search();
-        void search(const QUrl &nepomukUrl);
+        void search(const QString &queryString);
+        void search2(QString queryString);
 
         /**
          * @internal Gets called when a new match has been found
@@ -121,6 +125,8 @@ namespace Crystal
 
         KDirLister *m_lister;
 
+        Nepomuk::Query::QueryServiceClient* m_queryClient;
+        
         Plasma::IconWidget *m_navIcon;
         Plasma::LineEdit *m_lineEdit;
         Plasma::IconWidget *m_searchButton;
