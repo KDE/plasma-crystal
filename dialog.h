@@ -128,6 +128,7 @@ namespace Crystal
         KDirLister *m_lister;
 
         Nepomuk::Query::QueryServiceClient* m_queryClient;
+        Nepomuk::Query::QueryServiceClient* m_fileQueryClient;
 
         Plasma::IconWidget *m_navIcon;
         Plasma::LineEdit *m_lineEdit;

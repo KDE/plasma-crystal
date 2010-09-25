@@ -34,6 +34,7 @@ bool Utils::ratingLessThan(const Nepomuk::Resource &r1, const Nepomuk::Resource 
 
 QString Utils::abstract(const Nepomuk::Resource &res, const QString &query, int size)
 {
+    // FIXME: use dynamic url() here to prevent breakage with newer ontology versions
     return abstract(res.property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent")).toString(), query, size);
 }
 

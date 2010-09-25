@@ -44,6 +44,7 @@
 //#include <Nepomuk/Resource>
 #include <nepomuk/resourcemanager.h>
 #include <Nepomuk/Variant>
+#include <Nepomuk/Query/FileQuery>
 #include <Nepomuk/Query/Query>
 #include <soprano/queryresultiterator.h>
 #include <soprano/model.h>
@@ -54,6 +55,7 @@
 
 #include <nepomuk/tag.h>
 #include <nepomuk/andterm.h>
+#include <nepomuk/orterm.h>
 #include <nepomuk/comparisonterm.h>
 #include <nepomuk/literalterm.h>
 #include <nepomuk/resourcetypeterm.h>
@@ -92,6 +94,7 @@ Dialog::Dialog(QGraphicsWidget *parent)
     //            this, SLOT(entries(const KUrl&, const KFileItemList&)));
 
     m_queryClient = new Nepomuk::Query::QueryServiceClient(this);
+    m_fileQueryClient = new Nepomuk::Query::QueryServiceClient(this);
 
     buildDialog();
 }
@@ -168,6 +171,8 @@ void Dialog::buildDialog()
 
     connect(m_queryClient, SIGNAL(newEntries(const QList<Nepomuk::Query::Result> &)),
             m_resultsView, SLOT(newEntries(const QList<Nepomuk::Query::Result> &)));
+    connect(m_fileQueryClient, SIGNAL(newEntries(const QList<Nepomuk::Query::Result> &)),
+            m_resultsView, SLOT(newEntries(const QList<Nepomuk::Query::Result> &)));
     connect(m_resultsView, SIGNAL(matchFound()), this, SLOT(matchFound()));
     kDebug() << "CONNECTED!!!!!!!!";
 
@@ -232,10 +237,14 @@ void Dialog::search(const QString queryString)
     // searches emailAddress
     //QString name = "Marco Martin";
     kDebug() << queryString;
-    bool found = false;
+    //bool found = false;
     QUrl graphUri = QUrl();
     Nepomuk::Query::Query query;
-    /*
+
+    Nepomuk::Query::OrTerm orTerm;
+    Nepomuk::Query::ResourceTypeTerm personTypeTerm(Vocabulary::NCO::PersonContact());
+    orTerm.addSubTerm(personTypeTerm);
+/*
     Nepomuk::Query::AndTerm andTerm;
     Nepomuk::Query::ResourceTypeTerm personTypeTerm( Vocabulary::NCO::PersonContact() );
     andTerm.addSubTerm( personTypeTerm );
@@ -251,6 +260,15 @@ void Dialog::search(const QString queryString)
     query.setLimit( 20 );
 
     m_queryClient->query(query);
+
+    // File search
+
+    Nepomuk::Query::FileQuery fileQuery;
+    fileQuery.addIncludeFolder(KUrl("/home/sebas/kde/articles/"), true);
+    //Nepomuk::Query::LiteralTerm nepomukTerm(queryString);
+    fileQuery.setTerm( nepomukTerm );
+    fileQuery.setLimit( 20 );
+    m_fileQueryClient->query(fileQuery);
     //m_queryClient->sparqlQuery(query.toSparqlQuery(), Soprano::Query::QueryLanguageSparql );
 
 

@@ -78,7 +78,7 @@ void ResultWidget::buildDialog()
 void ResultWidget::newEntries(const QList<Nepomuk::Query::Result> &entries)
 {
     foreach (Nepomuk::Query::Result res, entries) {
-        kDebug() << "Result!!!" << res.resource().genericLabel() << res.resource().type();
+        //kDebug() << "Result!!!" << res.resource().genericLabel() << res.resource().type();
         //addWidget(res.resource());
         ResourceWidget* _widget = ResourceWidget::create(res.resource());
         connect(_widget, SIGNAL(run(const QUrl&)), SLOT(run(const QUrl&)));
@@ -88,7 +88,7 @@ void ResultWidget::newEntries(const QList<Nepomuk::Query::Result> &entries)
     }
     emit matchFound();
 }
-
+/*
 void ResultWidget::addWidget(Nepomuk::Resource resource, const QString &query, const KFileItem &item)
 {
     QString _mimeType;
@@ -113,7 +113,7 @@ void ResultWidget::addWidget(Nepomuk::Resource resource, const QString &query, c
     m_layout->addItem(_widget);
     m_widgets << _widget;
 }
-
+*/
 void ResultWidget::updateView()
 {
     m_layout->invalidate();
@@ -130,6 +130,11 @@ void ResultWidget::clear()
     m_widget = 0;
 
     buildDialog();
+}
+
+int ResultWidget::count()
+{
+    m_widgets.count();
 }
 
 ResultWidget::~ResultWidget()

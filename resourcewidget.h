@@ -33,6 +33,7 @@
 #include "ontologies/personcontact.h"
 #include "ontologies/nco.h"
 #include "ontologies/image.h"
+#include "ontologies/rasterimage.h"
 
 
 // Plasma
@@ -78,7 +79,7 @@ namespace Crystal
 
         virtual void setUrl(const QUrl &url);
         virtual void setQuery(const QString &query);
-        virtual void setFileItem(const KFileItem &item);
+        //virtual void setFileItem(const KFileItem &item);
         virtual void setResource(Nepomuk::Resource resource);
         virtual QPixmap pixmap();
 
@@ -95,6 +96,7 @@ namespace Crystal
     protected:
         virtual void updateWidgets();
         virtual void startDrag();
+        virtual void dumpProperties();
 
         Nepomuk::Resource m_resource;
 
@@ -117,7 +119,7 @@ namespace Crystal
         QString m_mimeType;
 
         QPointF m_startPos;
-        KFileItem m_fileItem;
+        //KFileItem m_fileItem;
   };
 }
 

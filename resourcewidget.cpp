@@ -42,6 +42,7 @@
 // Own
 #include "resourcewidget.h"
 #include "imageresourcewidget.h"
+#include "resourcewidgets/contactwidget.h"
 #include "ratingwidget.h"
 #include "utils.h"
 
@@ -57,7 +58,8 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource resource, QGraphicsWidget *pare
       m_nameLabel(0),
       m_infoLabel(0),
       m_ratingWidget(0),
-      m_iconSize(48)
+      m_iconSize(48),
+      m_icon("nepomuk")
 
 {
     setDrawBackground(true);
@@ -116,18 +118,31 @@ ResourceWidget::~ResourceWidget()
 {
 }
 
+void ResourceWidget::dumpProperties()
+{
+    kDebug() << "Types:" << m_resource.types() << m_resource.resourceType();
+    foreach (const QUrl &prop, m_resource.properties().keys()) {
+
+        QString v = m_resource.properties()[prop].toString();
+        v.truncate(32);
+        kDebug() << "P:" << prop.toString() << v;
+    }
+}
+
 ResourceWidget* ResourceWidget::create(Nepomuk::Resource resource)
 {
+    /*
     kDebug() << "-----------------------------------------------";
     kDebug() << "Resource:" << resource.uri() << resource.type() << resource.types();
     kDebug() << "Image         Type:" << NepomukFast::Image().uri() << NepomukFast::Image().type();
     kDebug() << "PersonContact Type:" << NepomukFast::PersonContact().uri();
-    
+    */
     if (QUrl(resource.type()) == NepomukFast::PersonContact().type()) {
         kDebug() << " MATCH --> This is a PersonContact.";
+        return new ContactWidget(resource);
     //} else if (QUrl(resource.type()) == Soprano::Vocabulary::NCO::url()) {
         //kDebug() << " MATCH --> This is an NCO.";
-    } else if (QUrl(resource.type()) == NepomukFast::Image().type()) {
+    } else if (QUrl(resource.type()) == NepomukFast::RasterImage().type()) {
         kDebug() << " MATCH --> This is an Image.";
         return new ImageResourceWidget(resource);
     }
@@ -191,13 +206,14 @@ void ResourceWidget::setResource(Nepomuk::Resource resource)
     updateWidgets();
 }
 
+/*
 void ResourceWidget::setFileItem(const KFileItem &item)
 {
     m_fileItem = item;
 
     m_icon = item.iconName();
     //m_mimeType = entry.stringValue( KIO::UDSEntry::UDS_MIME_TYPE );
-    /*
+    / *
     if (m_icon.isEmpty()) {
         if (!m_mimeType.isEmpty()) {
             m_icon = KMimeType::iconNameForUrl(m_url);
@@ -205,12 +221,13 @@ void ResourceWidget::setFileItem(const KFileItem &item)
             m_icon = "nepomuk";
         }
     }
-    */
+    * /
     updateWidgets();
 }
-
+*/
 void ResourceWidget::updateWidgets()
 {
+    // TODO: this first part shouldn't be done whenever a parent widget updates
     if (m_info.isEmpty()) {
         // dummy, only for testing
         //m_infoLabel->setText(Utils::highlight(Utils::abstract("Here goes the information about this resource, an abstract for example, or tags, or something ... Here goes the information about this resource, an abstract for example, or tags, or something Here goes the information about this resource, an abstract for example, or tags, or something Here goes the information about this resource, an abstract for example, or tags, or something", QString("example")), QString("example")));
@@ -223,11 +240,15 @@ void ResourceWidget::updateWidgets()
     if (m_iconWidget) {
         m_iconWidget->setIcon(m_icon);
     }
+
+    // This part, however, is interesting
     m_ratingWidget->setRating(m_resource.rating());
 
     setMinimumHeight(qMax(m_leftLayout->minimumHeight(), m_rightLayout->minimumHeight() + 12));
 
     m_layout->invalidate();
+
+    dumpProperties();
 }
 
 void ResourceWidget::mousePressEvent(QGraphicsSceneMouseEvent *event)

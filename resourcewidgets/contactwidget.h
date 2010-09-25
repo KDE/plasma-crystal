@@ -17,21 +17,27 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef CRYSTALRESULTWIDGET_H
-#define CRYSTALRESULTWIDGET_H
+#ifndef CRYSTALCONTACTWIDGET_H
+#define CRYSTALCONTACTWIDGET_H
+
+// own
+#include "../resourcewidget.h"
 
 //Qt
-#include <QGraphicsLinearLayout>
+#include <QGraphicsWidget>
 
-//own
-#include "resultview.h"
-#include "resourcewidget.h"
+// Plasma
+#include <Plasma/IconWidget>
+#include <Plasma/Frame>
 
-class CrystalApplet;
+
+class QGraphicsGridLayout;
+class QGraphicsProxyWidget;
 
 namespace Plasma
 {
-    class ScrollWidget;
+    class IconWidget;
+    class Label;
 }
 
 namespace Nepomuk
@@ -39,41 +45,41 @@ namespace Nepomuk
     class Resource;
 }
 
+using namespace NepomukFast;
+
 namespace Crystal
 {
   /**
-  * @short A plasma-widget view used to display search results.
+  * @short ContactWidget is a Plasma Widget to display a Nepomuk::Resource.
   *
   */
-  class ResultWidget : public ResultView
+  class ContactWidget : public ResourceWidget
   {
   Q_OBJECT
 
     public:
         /**
-        * Constructor of the dialog
+        * Constructor of the ContactWidget
+        * @param resource The Nepomuk::Resource this widget displays.
         * @param parent the parent of this object
         **/
-        ResultWidget(QGraphicsWidget *parent);
+        ContactWidget(Nepomuk::Resource resource, QGraphicsWidget *parent = 0);
+        virtual ~ContactWidget();
+        //virtual QPixmap pixmap();
+        //virtual void setResource(Nepomuk::Resource resource);
 
-        virtual ~ResultWidget();
-        virtual void clear();
-        virtual int count();
+        //void setUrl(const QUrl &url);
 
-    public Q_SLOTS:
-        void newEntries(const QList< Nepomuk::Query::Result > &entries);
+    protected:
+        virtual void updateWidgets();
+        //ImageWidget *m_imageWidget;
 
-    protected Q_SLOTS:
-        //void addWidget(Nepomuk::Resource, const QString& = QString(), const KFileItem& = KFileItem() );
-        virtual void updateView();
-
+    /*
+    private Q_SLOTS:
+        void updateUrl();
+    */
     private:
-        void buildDialog();
-        QGraphicsWidget *m_widget;
-        QGraphicsLinearLayout *m_outerLayout;
-        Plasma::ScrollWidget *m_scrollWidget;
-        QGraphicsLinearLayout *m_layout;
-        QList<ResourceWidget*> m_widgets;
+        PersonContact m_contact;
   };
 }
 

@@ -53,7 +53,6 @@ namespace Crystal
   *
   */
   class ImageResourceWidget : public ResourceWidget
-  //class ImageResourceWidget : public Plasma::Frame
   {
   Q_OBJECT
 
