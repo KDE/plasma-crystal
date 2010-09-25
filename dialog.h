@@ -112,7 +112,8 @@ namespace Crystal
         //void entries(const KUrl &url, const KFileItemList &list);
 
     private Q_SLOTS:
-        void searchFinished();
+        void matchFound();
+        void searchFinished(); // deprecated?
         void progressChanged(int percent);
         void updateNavIcon(int tabIndex);
         void toggleTab();

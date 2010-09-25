@@ -29,6 +29,12 @@
 // Nepomuk
 #include <Nepomuk/Resource>
 
+// CMake-generated ontologies
+#include "ontologies/personcontact.h"
+#include "ontologies/nco.h"
+#include "ontologies/image.h"
+
+
 // Plasma
 #include <Plasma/IconWidget>
 

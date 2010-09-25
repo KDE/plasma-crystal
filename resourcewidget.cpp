@@ -41,6 +41,7 @@
 
 // Own
 #include "resourcewidget.h"
+#include "imageresourcewidget.h"
 #include "ratingwidget.h"
 #include "utils.h"
 
@@ -117,6 +118,19 @@ ResourceWidget::~ResourceWidget()
 
 ResourceWidget* ResourceWidget::create(Nepomuk::Resource resource)
 {
+    kDebug() << "-----------------------------------------------";
+    kDebug() << "Resource:" << resource.uri() << resource.type() << resource.types();
+    kDebug() << "Image         Type:" << NepomukFast::Image().uri() << NepomukFast::Image().type();
+    kDebug() << "PersonContact Type:" << NepomukFast::PersonContact().uri();
+    
+    if (QUrl(resource.type()) == NepomukFast::PersonContact().type()) {
+        kDebug() << " MATCH --> This is a PersonContact.";
+    //} else if (QUrl(resource.type()) == Soprano::Vocabulary::NCO::url()) {
+        //kDebug() << " MATCH --> This is an NCO.";
+    } else if (QUrl(resource.type()) == NepomukFast::Image().type()) {
+        kDebug() << " MATCH --> This is an Image.";
+        return new ImageResourceWidget(resource);
+    }
     return new ResourceWidget(resource);
 }
 

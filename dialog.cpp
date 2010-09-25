@@ -88,8 +88,8 @@ Dialog::Dialog(QGraphicsWidget *parent)
     m_lister = new KDirLister(this);
     connect(m_lister, SIGNAL(completed()), this, SLOT(searchFinished()));
     connect(m_lister, SIGNAL(percent(int)), this, SLOT(progressChanged(int)));
-    connect(m_lister, SIGNAL(itemsAdded(const KUrl&, const KFileItemList&)),
-                this, SLOT(entries(const KUrl&, const KFileItemList&)));
+    //connect(m_lister, SIGNAL(itemsAdded(const KUrl&, const KFileItemList&)),
+    //            this, SLOT(entries(const KUrl&, const KFileItemList&)));
 
     m_queryClient = new Nepomuk::Query::QueryServiceClient(this);
 
@@ -168,6 +168,7 @@ void Dialog::buildDialog()
 
     connect(m_queryClient, SIGNAL(newEntries(const QList<Nepomuk::Query::Result> &)),
             m_resultsView, SLOT(newEntries(const QList<Nepomuk::Query::Result> &)));
+    connect(m_resultsView, SIGNAL(matchFound()), this, SLOT(matchFound()));
     kDebug() << "CONNECTED!!!!!!!!";
 
     updateStatus(i18nc("no active search, no results shown", "Idle."));
@@ -319,6 +320,21 @@ void Dialog::entries(const KUrl &url, const KFileItemList &list)
 
 }
 */
+
+void Dialog::matchFound()
+{
+    updateStatus(i18np("Found %1 result for \"<i>%2</i>\" in %3.",
+                       "Found %1 results for \"<i>%2</i>\" in %3.",
+                       m_resultsView->count(),
+                       m_query,
+                       KGlobal::locale()->formatDuration(m_time.elapsed())));
+    m_tabBar->setCurrentIndex(1);
+
+    m_resultsView->updateView();
+    emit updateToolTip(m_query, m_resultsView->count());
+
+
+}
 
 void Dialog::progressChanged(int percent)
 {
