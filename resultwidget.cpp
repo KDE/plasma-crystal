@@ -80,6 +80,7 @@ void ResultWidget::newEntries(const QList<Nepomuk::Query::Result> &entries)
     foreach (Nepomuk::Query::Result res, entries) {
         //kDebug() << "Result!!!" << res.resource().genericLabel() << res.resource().type();
         //addWidget(res.resource());
+        kDebug() << "Result Excerpt:" << res.excerpt();
         ResourceWidget* _widget = ResourceWidget::create(res.resource());
         connect(_widget, SIGNAL(run(const QUrl&)), SLOT(run(const QUrl&)));
         m_layout->addItem(_widget);
