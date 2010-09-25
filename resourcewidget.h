@@ -26,6 +26,9 @@
 // KDE
 #include <KFileItem>
 
+// Nepomuk
+#include <Nepomuk/Resource>
+
 // Plasma
 #include <Plasma/IconWidget>
 
@@ -62,13 +65,15 @@ namespace Crystal
         * @param resource The Nepomuk::Resource this widget displays.
         * @param parent the parent of this object
         **/
-        ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *parent = 0);
+        ResourceWidget(Nepomuk::Resource resource, QGraphicsWidget *parent = 0);
         virtual ~ResourceWidget();
+
+        static ResourceWidget* create(Nepomuk::Resource resource);
 
         virtual void setUrl(const QUrl &url);
         virtual void setQuery(const QString &query);
         virtual void setFileItem(const KFileItem &item);
-        virtual void setResource(Nepomuk::Resource *resource);
+        virtual void setResource(Nepomuk::Resource resource);
         virtual QPixmap pixmap();
 
     Q_SIGNALS:
@@ -85,7 +90,7 @@ namespace Crystal
         virtual void updateWidgets();
         virtual void startDrag();
 
-        Nepomuk::Resource *m_resource;
+        Nepomuk::Resource m_resource;
 
         QGraphicsGridLayout *m_layout;
         QGraphicsLinearLayout *m_leftLayout;

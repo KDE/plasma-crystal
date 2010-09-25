@@ -212,7 +212,7 @@ void Dialog::search()
     //search(QUrl(QString("nepomuksearch:/?query=%1").arg(m_query)));
     //search(QUrl(QString("filenamesearch:/home/sebas?search=%1&checkContent=yes").arg(m_query));
     //search(m_query);
-    search2(m_query);
+    search(m_query);
 }
 
 void Dialog::setHistory(QStringList history)
@@ -226,7 +226,7 @@ QStringList Dialog::history()
     return m_history;
 }
 
-void Dialog::search2(QString queryString)
+void Dialog::search(const QString queryString)
 {
     // searches emailAddress
     //QString name = "Marco Martin";
@@ -272,6 +272,7 @@ void Dialog::search2(QString queryString)
     */
 }
 
+/*
 void Dialog::search(const QString &queryString)
 {
     //m_query = nepomukUrl.toString().remove("nepomuksearch:/?query=");
@@ -317,6 +318,7 @@ void Dialog::entries(const KUrl &url, const KFileItemList &list)
     emit updateToolTip(m_query, m_resultsView->count());
 
 }
+*/
 
 void Dialog::progressChanged(int percent)
 {

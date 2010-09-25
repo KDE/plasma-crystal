@@ -27,14 +27,14 @@
 namespace Crystal
 {
 // For sorting results
-bool Utils::ratingLessThan(const Nepomuk::Resource *r1, const Nepomuk::Resource *r2)
+bool Utils::ratingLessThan(const Nepomuk::Resource &r1, const Nepomuk::Resource &r2)
 {
-    return r1->rating() < r2->rating();
+    return r1.rating() < r2.rating();
 }
 
-QString Utils::abstract(Nepomuk::Resource *res, const QString &query, int size)
+QString Utils::abstract(const Nepomuk::Resource &res, const QString &query, int size)
 {
-    return abstract(res->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent")).toString(), query, size);
+    return abstract(res.property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent")).toString(), query, size);
 }
 
 QString Utils::abstract(const QString &text, const QString &query, int size)

@@ -69,7 +69,7 @@ namespace Crystal
         /**
          * @internal Gets called when a new match has been found
          */
-        virtual void addMatch(const KFileItem& item);
+        //virtual void addMatch(const KFileItem& item);
 
     protected Q_SLOTS:
         /**
@@ -80,7 +80,7 @@ namespace Crystal
         void run(const QUrl&);
 
     protected:
-        QList<Nepomuk::Resource*> m_results;
+        QList<Nepomuk::Resource> m_results;
 
         // Last query ran
         QString m_query;

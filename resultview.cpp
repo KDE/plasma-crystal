@@ -49,6 +49,7 @@ int ResultView::count()
     return m_results.count();
 }
 
+/*
 void ResultView::addMatch(const KFileItem& item)
 {
     Nepomuk::Resource *res = new Nepomuk::Resource(item.nepomukUri());
@@ -57,7 +58,7 @@ void ResultView::addMatch(const KFileItem& item)
     emit resourceAdded(res, m_query, item);
     //emit matchAdded();
 }
-
+*/
 void ResultView::setQuery(const QString& query)
 {
     m_query = query;
@@ -66,7 +67,7 @@ void ResultView::setQuery(const QString& query)
 void ResultView::clear()
 {
     kDebug() << "Clear.";
-    qDeleteAll(m_results);
+    //qDeleteAll(m_results);
     m_results.clear();
 }
 

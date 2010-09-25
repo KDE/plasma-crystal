@@ -87,7 +87,7 @@ namespace Crystal
         /**
         * @internal build the dialog depending where it is
         **/
-        QString renderItem(Nepomuk::Resource *res);
+        QString renderItem(const Nepomuk::Resource &res);
         QString htmlHeader();
 
         Plasma::WebView *m_webView;

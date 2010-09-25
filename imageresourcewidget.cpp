@@ -35,7 +35,7 @@
 
 using namespace Crystal;
 
-ImageResourceWidget::ImageResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *parent)
+ImageResourceWidget::ImageResourceWidget(Nepomuk::Resource resource, QGraphicsWidget *parent)
     : ResourceWidget(resource, parent),
       m_imageWidget(0)
 {
@@ -72,20 +72,20 @@ void ImageResourceWidget::updateWidgets()
         m_infoLabel->setText(i18nc("info in the image widget", "Image Size: %1x%2", m_width, m_height));
         kDebug() << "Size: " << m_width << m_height;
     } else {
-        kDebug() << "=========> Size not found" << m_resource->properties().keys();
-        kDebug() << m_resource->property(QUrl("http://www.semanticdesktop.org/ontologies/2007/05/10/nexif#model")).toString().toInt();
-        kDebug() << m_resource->property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width")).toString().toInt();
-        kDebug() << m_resource->property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height")).toString().toInt();
+        kDebug() << "=========> Size not found" << m_resource.properties().keys();
+        kDebug() << m_resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/05/10/nexif#model")).toString().toInt();
+        kDebug() << m_resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width")).toString().toInt();
+        kDebug() << m_resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height")).toString().toInt();
         //http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height
     }
 }
 
-void ImageResourceWidget::setResource(Nepomuk::Resource *resource)
+void ImageResourceWidget::setResource(Nepomuk::Resource resource)
 {
     //http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height
-    //QString m_url = m_resource->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )).toString();
-    m_width = resource->property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width")).toString().toInt();
-    m_height = resource->property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height")).toString().toInt();
+    //QString m_url = m_resource.property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )).toString();
+    m_width = resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width")).toString().toInt();
+    m_height = resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height")).toString().toInt();
     kDebug() << "------> wxh::" << m_width << m_height;
     ResourceWidget::setResource(resource);
 }

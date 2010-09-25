@@ -60,10 +60,10 @@ namespace Crystal
         virtual void clear();
 
     public Q_SLOTS:
-        void newEntries (const QList< Nepomuk::Query::Result > &entries);
+        void newEntries(const QList< Nepomuk::Query::Result > &entries);
 
     protected Q_SLOTS:
-        void addWidget(Nepomuk::Resource*, const QString& = QString(), const KFileItem& = KFileItem() );
+        void addWidget(Nepomuk::Resource, const QString& = QString(), const KFileItem& = KFileItem() );
         virtual void updateView();
 
     private:

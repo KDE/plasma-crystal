@@ -101,14 +101,15 @@ namespace Crystal
          * Perform a search
          */
         void search();
-        void search(const QString &queryString);
-        void search2(QString queryString);
+        //void search(const QString &queryString);
+        void search(const QString queryString);
 
         /**
          * @internal Gets called when a new match has been found
          */
+        //void newEntries(const QList<Nepomuk::Query::Result> &entries);
         //void newMatches( const QList<Nepomuk::Search::Result>& results);
-        void entries(const KUrl &url, const KFileItemList &list);
+        //void entries(const KUrl &url, const KFileItemList &list);
 
     private Q_SLOTS:
         void searchFinished();
@@ -126,7 +127,7 @@ namespace Crystal
         KDirLister *m_lister;
 
         Nepomuk::Query::QueryServiceClient* m_queryClient;
-        
+
         Plasma::IconWidget *m_navIcon;
         Plasma::LineEdit *m_lineEdit;
         Plasma::IconWidget *m_searchButton;

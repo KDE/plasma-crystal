@@ -44,9 +44,9 @@ namespace Crystal
         * Constructor of the dialog
         * @param parent the parent of this object
         **/
-        static bool ratingLessThan(const Nepomuk::Resource *r1, const Nepomuk::Resource *r2);
+        static bool ratingLessThan(const Nepomuk::Resource &r1, const Nepomuk::Resource &r2);
 
-        static QString abstract(Nepomuk::Resource *res, const QString &query, int size = 100);
+        static QString abstract(const Nepomuk::Resource &res, const QString &query, int size = 100);
         static QString abstract(const QString &text, const QString &query, int size = 100);
 
         static QString highlight(QString text, QString query);

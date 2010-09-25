@@ -11,6 +11,7 @@ nepomuk_add_ontology_classes(
   ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nco.trig
   ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nmo.trig
   ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/ncal.trig
+  ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nfo.trig
   )
 
 # generate nfo extra since otherwise we have two Attachments classes
@@ -26,6 +27,8 @@ nepomuk_add_ontology_classes(
 soprano_add_ontology(nie_apps_SRCS ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nie.trig "NIE" "Vocabulary" "trig")
 soprano_add_ontology(nie_apps_SRCS ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nco.trig "NCO" "Vocabulary" "trig")
 soprano_add_ontology(nie_apps_SRCS ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nmo.trig "NMO" "Vocabulary" "trig")
+soprano_add_ontology(nie_apps_SRCS ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nfo/nfo.trig "Attachment" "Vocabulary" "trig")
+soprano_add_ontology(nie_apps_SRCS ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nfo/nfo.trig "Image" "Vocabulary" "trig")
 
 kde4_add_library(niefast_apps STATIC ${nie_apps_SRCS})
 target_link_libraries(niefast_apps ${QT_QTCORE_LIBRARY} ${SOPRANO_LIBRARIES} ${NEPOMUK_LIBRARIES})

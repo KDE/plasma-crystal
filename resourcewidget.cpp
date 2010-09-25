@@ -47,7 +47,7 @@
 
 using namespace Crystal;
 
-ResourceWidget::ResourceWidget(Nepomuk::Resource *resource, QGraphicsWidget *parent)
+ResourceWidget::ResourceWidget(Nepomuk::Resource resource, QGraphicsWidget *parent)
     : Plasma::IconWidget(parent),
     //: Plasma::Frame(parent),
       m_resource(resource),
@@ -115,6 +115,11 @@ ResourceWidget::~ResourceWidget()
 {
 }
 
+ResourceWidget* ResourceWidget::create(Nepomuk::Resource resource)
+{
+    return new ResourceWidget(resource);
+}
+
 void ResourceWidget::setQuery(const QString &query)
 {
     m_query = query;
@@ -134,33 +139,33 @@ void ResourceWidget::open()
     emit run(m_url);
 }
 
-void ResourceWidget::setResource(Nepomuk::Resource *resource)
+void ResourceWidget::setResource(Nepomuk::Resource resource)
 {
     m_resource = resource;
-    setUrl(QUrl(resource->property(QUrl("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url")).toString()));
+    setUrl(QUrl(resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url")).toString()));
 
 #if 0
     kDebug() << "============= Resource ===============";
-    foreach(QUrl var, m_resource->properties().keys()) {
-        //kDebug() << var << m_resource->properties()[var].variant();
+    foreach(QUrl var, m_resource.properties().keys()) {
+        //kDebug() << var << m_resource.properties()[var].variant();
         kDebug() << var;
     }
-    kDebug() << "genericLabel:" << resource->genericLabel();
-    kDebug() << "genericDescription:" << resource->genericDescription();
-    kDebug() << "genericIcon:" << resource->genericIcon();
+    kDebug() << "genericLabel:" << resource.genericLabel();
+    kDebug() << "genericDescription:" << resource.genericDescription();
+    kDebug() << "genericIcon:" << resource.genericIcon();
     kDebug() << "url" << m_url;
     //m_url = QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )
 
-    //QString m_url = m_resource->property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )).toString();
+    //QString m_url = m_resource.property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )).toString();
 #endif
     // What to display on the namelabel?
-    QString m_label = m_resource->genericLabel();
+    QString m_label = m_resource.genericLabel();
     if (m_label.isEmpty()) {
         m_label = "Name goes here...";
     }
 
     // What to display on the infolabel?
-    QString _description = m_resource->genericDescription();
+    QString _description = m_resource.genericDescription();
 
     if (m_info.isEmpty()) {
         m_info = _description;
@@ -200,11 +205,11 @@ void ResourceWidget::updateWidgets()
         m_infoLabel->setText(_abstract);
     }
     //m_nameLabel->setText(m_label);
-    m_nameLabel->setText("<strong>" + m_resource->genericLabel() + "</strong>");
+    m_nameLabel->setText("<strong>" + m_resource.genericLabel() + "</strong>");
     if (m_iconWidget) {
         m_iconWidget->setIcon(m_icon);
     }
-    m_ratingWidget->setRating(m_resource->rating());
+    m_ratingWidget->setRating(m_resource.rating());
 
     setMinimumHeight(qMax(m_leftLayout->minimumHeight(), m_rightLayout->minimumHeight() + 12));
 

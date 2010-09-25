@@ -61,8 +61,8 @@ ResultWidget::ResultWidget(QGraphicsWidget *parent)
 
 void ResultWidget::buildDialog()
 {
-    disconnect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const QString&, const KFileItem&)),
-            this, SLOT(addWidget(Nepomuk::Resource*, const QString&, const KFileItem&)));
+    disconnect(this, SIGNAL(resourceAdded(Nepomuk::Resource, const QString&, const KFileItem&)),
+            this, SLOT(addWidget(Nepomuk::Resource, const QString&, const KFileItem&)));
 
     m_widget = new QGraphicsWidget(m_scrollWidget);
     m_layout = new QGraphicsLinearLayout(m_widget);
@@ -70,8 +70,8 @@ void ResultWidget::buildDialog()
     m_layout->setSpacing(1);
     m_scrollWidget->setWidget(m_widget);
 
-    connect(this, SIGNAL(resourceAdded(Nepomuk::Resource*, const QString&, const KFileItem&)),
-            this, SLOT(addWidget(Nepomuk::Resource*, const QString&, const KFileItem&)));
+    connect(this, SIGNAL(resourceAdded(Nepomuk::Resource, const QString&, const KFileItem&)),
+            this, SLOT(addWidget(Nepomuk::Resource, const QString&, const KFileItem&)));
 
 }
 
@@ -79,11 +79,11 @@ void ResultWidget::newEntries(const QList<Nepomuk::Query::Result> &entries)
 {
     foreach (Nepomuk::Query::Result res, entries) {
         kDebug() << "Result!!!" << res.resource().genericLabel() << res.resource().type();
-        addWidget(new Nepomuk::Resource(res.resource()));
+        addWidget(res.resource());
     }
 }
 
-void ResultWidget::addWidget(Nepomuk::Resource* resource, const QString &query, const KFileItem &item)
+void ResultWidget::addWidget(Nepomuk::Resource resource, const QString &query, const KFileItem &item)
 {
     QString _mimeType;
     if (!item.isNull()) {
