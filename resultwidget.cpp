@@ -81,7 +81,7 @@ void ResultWidget::newEntries(const QList<Nepomuk::Query::Result> &entries)
         //kDebug() << "Result!!!" << res.resource().genericLabel() << res.resource().type();
         //addWidget(res.resource());
         kDebug() << "Result Excerpt:" << res.excerpt();
-        ResourceWidget* _widget = ResourceWidget::create(res.resource());
+        ResourceWidget* _widget = ResourceWidget::create(res);
         connect(_widget, SIGNAL(run(const QUrl&)), SLOT(run(const QUrl&)));
         m_layout->addItem(_widget);
         m_widgets << _widget;
@@ -135,7 +135,7 @@ void ResultWidget::clear()
 
 int ResultWidget::count()
 {
-    m_widgets.count();
+    return m_widgets.count();
 }
 
 ResultWidget::~ResultWidget()

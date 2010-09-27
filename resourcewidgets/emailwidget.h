@@ -17,8 +17,8 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef CRYSTALCONTACTWIDGET_H
-#define CRYSTALCONTACTWIDGET_H
+#ifndef CRYSTALEMAILWIDGET_H
+#define CRYSTALEMAILWIDGET_H
 
 // own
 #include "../resourcewidget.h"
@@ -50,38 +50,29 @@ using namespace NepomukFast;
 namespace Crystal
 {
   /**
-  * @short ContactWidget is a Plasma Widget to display a Nepomuk::Resource.
+  * @short EmailWidget is a Plasma Widget to display a Nepomuk::Resource.
   *
   */
-  class ContactWidget : public ResourceWidget
+  class EmailWidget : public ResourceWidget
   {
   Q_OBJECT
 
     public:
         /**
-        * Constructor of the ContactWidget
+        * Constructor of the EmailWidget
         * @param resource The Nepomuk::Resource this widget displays.
         * @param parent the parent of this object
         **/
-        ContactWidget(Nepomuk::Query::Result result, QGraphicsWidget *parent = 0);
-        virtual ~ContactWidget();
+        EmailWidget(Nepomuk::Query::Result result, QGraphicsWidget *parent = 0);
+        virtual ~EmailWidget();
 
         virtual QString info();
-        //virtual QPixmap pixmap();
-        //virtual void setResource(Nepomuk::Resource resource);
-
-        //void setUrl(const QUrl &url);
 
     protected:
         virtual void updateWidgets();
-        //ImageWidget *m_imageWidget;
 
-    /*
-    private Q_SLOTS:
-        void updateUrl();
-    */
     private:
-        PersonContact m_contact;
+        Email m_email;
   };
 }
 

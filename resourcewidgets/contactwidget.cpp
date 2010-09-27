@@ -35,11 +35,11 @@
 
 using namespace Crystal;
 
-ContactWidget::ContactWidget(Nepomuk::Resource resource, QGraphicsWidget *parent)
-    : ResourceWidget(resource, parent)
+ContactWidget::ContactWidget(Nepomuk::Query::Result result, QGraphicsWidget *parent)
+    : ResourceWidget(result, parent)
 {
     kDebug() << "Creating contact widget";
-    m_contact = PersonContact(resource.uri());
+    m_contact = PersonContact(result.resource().uri());
     m_icon = "x-office-contact";
     kDebug() << "need update?";
 
@@ -64,8 +64,13 @@ void ContactWidget::updateWidgets()
         //http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height
     //}
     //kDebug() << m_resource.properties();
-    m_infoLabel->setText("A Contact");
 }
+
+QString ContactWidget::info()
+{
+    return QString("A Contact");
+}
+
 /*
 void ContactWidget::setResource(Nepomuk::Resource resource)
 {

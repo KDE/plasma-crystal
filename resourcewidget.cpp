@@ -43,16 +43,19 @@
 #include "resourcewidget.h"
 #include "imageresourcewidget.h"
 #include "resourcewidgets/contactwidget.h"
+#include "resourcewidgets/emailwidget.h"
 #include "ratingwidget.h"
 #include "utils.h"
 
 
 using namespace Crystal;
 
-ResourceWidget::ResourceWidget(Nepomuk::Resource resource, QGraphicsWidget *parent)
+ResourceWidget::ResourceWidget(Nepomuk::Query::Result result, QGraphicsWidget *parent)
     : Plasma::IconWidget(parent),
     //: Plasma::Frame(parent),
-      m_resource(resource),
+      m_dumpProperties(true),
+      m_result(result),
+      m_resource(result.resource()),
       m_layout(0),
       m_iconWidget(0),
       m_nameLabel(0),
@@ -94,7 +97,7 @@ ResourceWidget::ResourceWidget(Nepomuk::Resource resource, QGraphicsWidget *pare
     m_nameLabel = new Plasma::Label(this);
     m_nameLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     m_nameLabel->setMaximumHeight(KGlobalSettings::generalFont().pointSize()*1.5);
-    m_nameLabel->setText("Nepomuk Resource");
+    m_nameLabel->setText(i18nc("default label for result, will usually be overwritten", "Generic Resource"));
     m_rightLayout->addItem(m_nameLabel);
 
     m_infoLabel = new Plasma::Label(this);
@@ -121,15 +124,18 @@ ResourceWidget::~ResourceWidget()
 void ResourceWidget::dumpProperties()
 {
     kDebug() << "Types:" << m_resource.types() << m_resource.resourceType();
+    if (!m_dumpProperties) {
+        return;
+    }
     foreach (const QUrl &prop, m_resource.properties().keys()) {
 
         QString v = m_resource.properties()[prop].toString();
         v.truncate(32);
-        kDebug() << "P:" << prop.toString() << v;
+        kDebug() << "\tP:" << prop.toString() << v;
     }
 }
 
-ResourceWidget* ResourceWidget::create(Nepomuk::Resource resource)
+ResourceWidget* ResourceWidget::create(Nepomuk::Query::Result result)
 {
     /*
     kDebug() << "-----------------------------------------------";
@@ -137,16 +143,23 @@ ResourceWidget* ResourceWidget::create(Nepomuk::Resource resource)
     kDebug() << "Image         Type:" << NepomukFast::Image().uri() << NepomukFast::Image().type();
     kDebug() << "PersonContact Type:" << NepomukFast::PersonContact().uri();
     */
-    if (QUrl(resource.type()) == NepomukFast::PersonContact().type()) {
+    Nepomuk::Resource resource = result.resource();
+    kDebug() << "email type:" << NepomukFast::Email().type();
+    kDebug() << "==================" << resource.genericLabel() << "=====================";
+    if (resource.types().contains(NepomukFast::Email().type())) {
+        kDebug() << " MATCH --> This is an Email.";
+        return new EmailWidget(result);
+    } else if (resource.types().contains(NepomukFast::PersonContact().type())) {
         kDebug() << " MATCH --> This is a PersonContact.";
-        return new ContactWidget(resource);
+        return new ContactWidget(result);
     //} else if (QUrl(resource.type()) == Soprano::Vocabulary::NCO::url()) {
         //kDebug() << " MATCH --> This is an NCO.";
-    } else if (QUrl(resource.type()) == NepomukFast::RasterImage().type()) {
+    } else if (resource.types().contains(NepomukFast::RasterImage().type())) {
         kDebug() << " MATCH --> This is an Image.";
-        return new ImageResourceWidget(resource);
+        return new ImageResourceWidget(result);
     }
-    return new ResourceWidget(resource);
+    kDebug() << " MATCH --> Unknown types.";
+    return new ResourceWidget(result);
 }
 
 void ResourceWidget::setQuery(const QString &query)
@@ -165,6 +178,10 @@ void ResourceWidget::setUrl(const QUrl &url)
 void ResourceWidget::open()
 {
     kDebug() << "open:" << m_url;
+    if (m_url.isEmpty()) {
+        kDebug() << "Empty URL";
+        return;
+    }
     emit run(m_url);
 }
 
@@ -232,11 +249,12 @@ void ResourceWidget::updateWidgets()
         // dummy, only for testing
         //m_infoLabel->setText(Utils::highlight(Utils::abstract("Here goes the information about this resource, an abstract for example, or tags, or something ... Here goes the information about this resource, an abstract for example, or tags, or something Here goes the information about this resource, an abstract for example, or tags, or something Here goes the information about this resource, an abstract for example, or tags, or something", QString("example")), QString("example")));
     } else {
-        QString _abstract = Utils::highlight(m_info, m_query);
-        m_infoLabel->setText(_abstract);
+        //QString _abstract = Utils::highlight(m_info, m_query);
+        kDebug() << "Setting Info:" << info();
+        m_infoLabel->setText(info());
     }
     //m_nameLabel->setText(m_label);
-    m_nameLabel->setText("<strong>" + m_resource.genericLabel() + "</strong>");
+    m_nameLabel->setText("<strong>" + label() + "</strong>");
     if (m_iconWidget) {
         m_iconWidget->setIcon(m_icon);
     }
@@ -293,6 +311,25 @@ void ResourceWidget::startDrag()
 QPixmap ResourceWidget::pixmap()
 {
     return KIcon(m_icon).pixmap(64,64);
+}
+
+QString ResourceWidget::label()
+{
+    return m_resource.genericLabel();
+}
+
+QString ResourceWidget::info()
+{
+    QString ex = m_result.excerpt();
+    if (ex.isEmpty()) {
+        m_result.resource().property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent")).toString();
+    }
+    if (ex.isEmpty()) {
+        ex = i18n("Generic Result");
+    }
+    // FIXME: could be more sensible, but this seems to work for plain text files
+    return ex;
+    //return m_result.resource().property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent")).toString();
 }
 
 #include "resourcewidget.moc"

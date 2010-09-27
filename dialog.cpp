@@ -101,6 +101,9 @@ Dialog::Dialog(QGraphicsWidget *parent)
 
 Dialog::~Dialog()
 {
+    m_queryClient->close();
+    m_fileQueryClient->close();
+
 }
 
 void Dialog::updateQuery(const QString query)
@@ -169,10 +172,17 @@ void Dialog::buildDialog()
     connect(m_tabBar, SIGNAL(currentChanged(int)), SLOT(updateNavIcon(int)));
     connect(m_navIcon, SIGNAL(clicked()), SLOT(toggleTab()));
 
+    // connect query clients
     connect(m_queryClient, SIGNAL(newEntries(const QList<Nepomuk::Query::Result> &)),
             m_resultsView, SLOT(newEntries(const QList<Nepomuk::Query::Result> &)));
+    connect(m_queryClient, SIGNAL(finishedListing()),
+            this, SLOT(searchFinished()));
+
     connect(m_fileQueryClient, SIGNAL(newEntries(const QList<Nepomuk::Query::Result> &)),
             m_resultsView, SLOT(newEntries(const QList<Nepomuk::Query::Result> &)));
+    connect(m_fileQueryClient, SIGNAL(finishedListing()),
+            this, SLOT(searchFinished()));
+
     connect(m_resultsView, SIGNAL(matchFound()), this, SLOT(matchFound()));
     kDebug() << "CONNECTED!!!!!!!!";
 
@@ -234,6 +244,10 @@ QStringList Dialog::history()
 
 void Dialog::search(const QString queryString)
 {
+    m_queryClient->close();
+    m_fileQueryClient->close();
+    m_lineEdit->setText(queryString);
+    m_resultsView->clear();
     // searches emailAddress
     //QString name = "Marco Martin";
     kDebug() << queryString;
@@ -259,6 +273,7 @@ void Dialog::search(const QString queryString)
     query.setTerm( nepomukTerm );
     query.setLimit( 20 );
 
+    kDebug() << "SPARQL:" << query.toSparqlQuery();
     m_queryClient->query(query);
 
     // File search
@@ -268,6 +283,8 @@ void Dialog::search(const QString queryString)
     //Nepomuk::Query::LiteralTerm nepomukTerm(queryString);
     fileQuery.setTerm( nepomukTerm );
     fileQuery.setLimit( 20 );
+
+    kDebug() << "SPARQL:" << fileQuery.toSparqlQuery();
     m_fileQueryClient->query(fileQuery);
     //m_queryClient->sparqlQuery(query.toSparqlQuery(), Soprano::Query::QueryLanguageSparql );
 

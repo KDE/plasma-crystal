@@ -28,8 +28,10 @@
 
 // Nepomuk
 #include <Nepomuk/Resource>
+#include <Nepomuk/Query/Result>
 
 // CMake-generated ontologies
+#include "ontologies/email.h"
 #include "ontologies/personcontact.h"
 #include "ontologies/nco.h"
 #include "ontologies/image.h"
@@ -72,16 +74,19 @@ namespace Crystal
         * @param resource The Nepomuk::Resource this widget displays.
         * @param parent the parent of this object
         **/
-        ResourceWidget(Nepomuk::Resource resource, QGraphicsWidget *parent = 0);
+        ResourceWidget(Nepomuk::Query::Result result, QGraphicsWidget *parent = 0);
         virtual ~ResourceWidget();
 
-        static ResourceWidget* create(Nepomuk::Resource resource);
+        static ResourceWidget* create(Nepomuk::Query::Result result);
 
         virtual void setUrl(const QUrl &url);
         virtual void setQuery(const QString &query);
         //virtual void setFileItem(const KFileItem &item);
         virtual void setResource(Nepomuk::Resource resource);
+
         virtual QPixmap pixmap();
+        virtual QString label();
+        virtual QString info();
 
     Q_SIGNALS:
         void run(const QUrl&);
@@ -97,7 +102,9 @@ namespace Crystal
         virtual void updateWidgets();
         virtual void startDrag();
         virtual void dumpProperties();
+        bool m_dumpProperties; /// Should all properties printed to debug output?
 
+        Nepomuk::Query::Result m_result;
         Nepomuk::Resource m_resource;
 
         QGraphicsGridLayout *m_layout;
@@ -119,7 +126,6 @@ namespace Crystal
         QString m_mimeType;
 
         QPointF m_startPos;
-        //KFileItem m_fileItem;
   };
 }
 

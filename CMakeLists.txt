@@ -30,6 +30,7 @@ set(crystal_SRCS
     resourcewidget.cpp
     imageresourcewidget.cpp
     resourcewidgets/contactwidget.cpp
+    resourcewidgets/emailwidget.cpp
     imagewidget.cpp
     ratingwidget.cpp
     utils.cpp
