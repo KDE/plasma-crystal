@@ -49,7 +49,7 @@
 #include <soprano/queryresultiterator.h>
 #include <soprano/model.h>
 //#include <nie.h>
-#include "ontologies/nco.h"
+//#include "ontologies/nco.h"
 //#include "onologies/personcontact.h"
 //#include <emailaddress.h>
 
@@ -255,9 +255,9 @@ void Dialog::search(const QString queryString)
     QUrl graphUri = QUrl();
     Nepomuk::Query::Query query;
 
-    Nepomuk::Query::OrTerm orTerm;
-    Nepomuk::Query::ResourceTypeTerm personTypeTerm(Vocabulary::NCO::PersonContact());
-    orTerm.addSubTerm(personTypeTerm);
+    //Nepomuk::Query::OrTerm orTerm;
+    //Nepomuk::Query::ResourceTypeTerm personTypeTerm(Vocabulary::NCO::PersonContact());
+    //orTerm.addSubTerm(personTypeTerm);
 /*
     Nepomuk::Query::AndTerm andTerm;
     Nepomuk::Query::ResourceTypeTerm personTypeTerm( Vocabulary::NCO::PersonContact() );

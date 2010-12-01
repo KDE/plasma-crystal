@@ -9,7 +9,6 @@ find_package(Soprano)
 
 include(SopranoAddOntology)
 
-add_subdirectory(ontologies)
 
 include_directories(
   ${CMAKE_BINARY_DIR}/ontologies)
@@ -43,10 +42,34 @@ set(crystal_SRCS
 #     ontologies/personcontact.cpp
     )
 
+nepomuk_add_ontology_classes(
+  crystal_SRCS
+  ONTOLOGIES
+  ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nfo.trig
+  ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nmo.trig
+  ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nco.trig
+  CLASSES 
+  "http://www.semanticdesktop.org/ontologies/2007/03/22/nmo#Email"
+  "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage"
+  "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image"
+  #nmo:Email
+  #nfo:Image
+  #nfo:RasterImage
+  #nco:PersonContact
+  #nfo:Website
+  #nfo:Video
+  "http://www.semanticdesktop.org/ontologies/2007/03/22/nco#PersonContact"
+  "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Website"
+  "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Video"
+  "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Visual"
+  )
+
+
 kde4_add_ui_files(crystal_SRCS crystalConfig.ui )
 kde4_add_plugin(plasma_applet_crystal ${crystal_SRCS})
 
 
+#add_subdirectory(ontologies)
 # nepomuk_add_ontology_classes(
 #   crystal_SRCS
 #   ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nie.trig
@@ -57,7 +80,7 @@ kde4_add_plugin(plasma_applet_crystal ${crystal_SRCS})
 # 
 # 
 # soprano_add_ontology(crystal_SRCS ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nie.trig "NIE" "Vocabulary" "trig")
-soprano_add_ontology(crystal_SRCS ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nco.trig "NCO" "Vocabulary" "trig")
+#soprano_add_ontology(crystal_SRCS ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nco.trig "NCO" "Vocabulary" "trig")
 # 
 
 target_link_libraries(
@@ -69,10 +92,9 @@ target_link_libraries(
     ${NEPOMUK_QUERY_LIBRARIES}
     ${SOPRANO_LIBRARIES}
     ${SOPRANO_CLIENT_LIBRARIES}
-    niefast_apps
+    #niefast_apps
   ${KDEPIMLIBS_KMIME_LIBS}
 
-    
 )
 
 install(TARGETS plasma_applet_crystal DESTINATION ${PLUGIN_INSTALL_DIR})

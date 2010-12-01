@@ -31,11 +31,11 @@
 #include <Nepomuk/Query/Result>
 
 // CMake-generated ontologies
-#include "ontologies/email.h"
-#include "ontologies/personcontact.h"
-#include "ontologies/nco.h"
-#include "ontologies/image.h"
-#include "ontologies/rasterimage.h"
+#include "email.h"
+#include "personcontact.h"
+//#include "nco.h"
+#include "image.h"
+//#include "rasterimage.h"
 
 
 // Plasma

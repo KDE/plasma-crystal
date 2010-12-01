@@ -45,7 +45,7 @@ namespace Nepomuk
     class Resource;
 }
 
-using namespace NepomukFast;
+using namespace Nepomuk;
 
 namespace Crystal
 {

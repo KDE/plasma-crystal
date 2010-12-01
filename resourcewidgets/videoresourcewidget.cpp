@@ -34,7 +34,7 @@
 #include "utils.h"
 
 // generated
-#include "ontologies/video.h"
+#include "video.h"
 
 using namespace Crystal;
 
@@ -63,8 +63,11 @@ void VideoResourceWidget::updateWidgets()
 
 void VideoResourceWidget::setResource(Nepomuk::Resource resource)
 {
-    m_width = resource.property(NepomukFast::Image().verticalResolutionUri()).toString().toInt();
-    m_height = resource.property(NepomukFast::Image().horizontalResolutionUri()).toString().toInt();
+    m_video = Nepomuk::Video(resource);
+    kDebug() << "VERT:" << m_video.heights();
+    kDebug() << "WITH" << m_video.widths();
+    m_width = resource.property(Nepomuk::Image().verticalResolutionUri()).toString().toInt();
+    m_height = resource.property(Nepomuk::Image().horizontalResolutionUri()).toString().toInt();
     kDebug() << "------> video resolution wxh::" << m_width << m_height;
     ResourceWidget::setResource(resource);
 }

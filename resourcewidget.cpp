@@ -38,7 +38,8 @@
 // Nepomuk
 #include <Nepomuk/Resource>
 #include <Nepomuk/Variant>
-#include "ontologies/video.h"
+#include "video.h"
+#include "rasterimage.h"
 // Own
 #include "resourcewidget.h"
 #include "resourcewidgets/contactwidget.h"
@@ -141,23 +142,23 @@ ResourceWidget* ResourceWidget::create(Nepomuk::Query::Result result)
     /*
     kDebug() << "-----------------------------------------------";
     kDebug() << "Resource:" << resource.uri() << resource.type() << resource.types();
-    kDebug() << "Image         Type:" << NepomukFast::Image().uri() << NepomukFast::Image().type();
-    kDebug() << "PersonContact Type:" << NepomukFast::PersonContact().uri();
-    kDebug() << "email type:" << NepomukFast::Email().type();
+    kDebug() << "Image         Type:" << Nepomuk::Image().uri() << Nepomuk::Image().type();
+    kDebug() << "PersonContact Type:" << Nepomuk::PersonContact().uri();
+    kDebug() << "email type:" << Nepomuk::Email().type();
     */
     ResourceWidget* rw = 0; 
     Nepomuk::Resource resource = result.resource();
     kDebug() << "==================" << resource.genericLabel() << "=====================";
-    if (resource.types().contains(NepomukFast::Email().type())) {
+    if (resource.types().contains(Nepomuk::Email().type())) {
         kDebug() << " MATCH --> This is an Email.";
         rw = new EmailWidget();
-    } else if (resource.types().contains(NepomukFast::PersonContact().type())) {
+    } else if (resource.types().contains(Nepomuk::PersonContact().type())) {
         kDebug() << " MATCH --> This is a PersonContact.";
         rw = new ContactWidget();
-    } else if (resource.types().contains(NepomukFast::RasterImage().type())) {
+    } else if (resource.types().contains(Nepomuk::RasterImage().type())) {
         kDebug() << " MATCH --> This is an Image.";
         rw = new ImageResourceWidget();
-    } else if (resource.types().contains(NepomukFast::Video().type())) {
+    } else if (resource.types().contains(Nepomuk::Video().type())) {
         kDebug() << " MATCH --> This is an VIDEO.";
         rw = new VideoResourceWidget();
     } else {

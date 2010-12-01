@@ -23,6 +23,9 @@
 // own
 #include "resourcewidgets/imageresourcewidget.h"
 
+// generated
+#include "video.h"
+
 //Qt
 #include <QGraphicsWidget>
 
@@ -72,7 +75,7 @@ namespace Crystal
     protected:
         virtual void updateWidgets();
         ImageWidget *m_imageWidget;
-
+        Nepomuk::Video m_video;
     private Q_SLOTS:
         void updateUrl();
   };
