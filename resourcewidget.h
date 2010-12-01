@@ -74,7 +74,7 @@ namespace Crystal
         * @param resource The Nepomuk::Resource this widget displays.
         * @param parent the parent of this object
         **/
-        ResourceWidget(Nepomuk::Query::Result result, QGraphicsWidget *parent = 0);
+        ResourceWidget(QGraphicsWidget *parent = 0);
         virtual ~ResourceWidget();
 
         static ResourceWidget* create(Nepomuk::Query::Result result);

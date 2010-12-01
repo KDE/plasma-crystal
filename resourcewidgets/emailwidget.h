@@ -63,10 +63,11 @@ namespace Crystal
         * @param resource The Nepomuk::Resource this widget displays.
         * @param parent the parent of this object
         **/
-        EmailWidget(Nepomuk::Query::Result result, QGraphicsWidget *parent = 0);
+        EmailWidget(QGraphicsWidget *parent = 0);
         virtual ~EmailWidget();
 
         virtual QString info();
+        virtual void setResource(Nepomuk::Resource resource);
 
     protected:
         virtual void updateWidgets();

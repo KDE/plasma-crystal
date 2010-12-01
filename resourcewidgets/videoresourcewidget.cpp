@@ -38,31 +38,11 @@
 
 using namespace Crystal;
 
-VideoResourceWidget::VideoResourceWidget(Nepomuk::Query::Result result, QGraphicsWidget *parent)
-    : ImageResourceWidget(result, parent),
+VideoResourceWidget::VideoResourceWidget(QGraphicsWidget *parent)
+    : ImageResourceWidget(parent),
       m_imageWidget(0)
 {
-    setResource(result.resource());
-    /*
-    m_width = 0;
-    m_height = 0;
-    delete m_iconWidget;
-    m_iconWidget = 0;
-    m_imageWidget = new ImageWidget(this);
-    m_imageWidget->setIconSize(m_iconSize);
-    m_leftLayout->insertItem(0, m_imageWidget);
-    updateUrl();
-    connect(this, SIGNAL(urlChanged()), this, SLOT(updateUrl()));
-    /*
-    // Fade in when this widget appears
-    Plasma::Animation* fadeAnimation = Plasma::Animator::create(Plasma::Animator::FadeAnimation);
-    fadeAnimation->setTargetWidget(this);
-    fadeAnimation->setProperty("startOpacity", 0.0);
-    fadeAnimation->setProperty("targetOpacity", 1.0);
-    fadeAnimation->setProperty("Duration", 2000);
-
-    fadeAnimation->start();
-    */
+    //setResource(result.resource());
 }
 
 VideoResourceWidget::~VideoResourceWidget()
@@ -73,27 +53,19 @@ void VideoResourceWidget::updateWidgets()
 {
     ResourceWidget::updateWidgets();
     if ((m_width + m_height) > 0) {
-        m_infoLabel->setText(i18nc("info in the video widget", "Image Size: %1x%2", m_width, m_height));
+        m_infoLabel->setText(i18nc("info in the video widget", "Resolution: %1x%2", m_width, m_height));
         kDebug() << "Size: " << m_width << m_height;
     } else {
         kDebug() << "=========> Size not found" << m_resource.properties().keys();
-        kDebug() << m_resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/05/10/nexif#model")).toString().toInt();
-        kDebug() << m_resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width")).toString().toInt();
-        kDebug() << m_resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height")).toString().toInt();
         //http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height
     }
 }
 
 void VideoResourceWidget::setResource(Nepomuk::Resource resource)
 {
-    //http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height
-    //QString m_url = m_resource.property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )).toString();
-    kDebug() << NepomukFast::Video().widthUri();
-    kDebug() << NepomukFast::Video().heightUri();
     m_width = resource.property(NepomukFast::Image().verticalResolutionUri()).toString().toInt();
     m_height = resource.property(NepomukFast::Image().horizontalResolutionUri()).toString().toInt();
-    //m_height = resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height")).toString().toInt();
-    kDebug() << "------> wxh::" << m_width << m_height;
+    kDebug() << "------> video resolution wxh::" << m_width << m_height;
     ResourceWidget::setResource(resource);
 }
 void VideoResourceWidget::updateUrl()

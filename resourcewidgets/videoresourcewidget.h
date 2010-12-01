@@ -62,7 +62,7 @@ namespace Crystal
         * @param resource The Nepomuk::Resource this widget displays.
         * @param parent the parent of this object
         **/
-        VideoResourceWidget(Nepomuk::Query::Result result, QGraphicsWidget *parent = 0);
+        VideoResourceWidget(QGraphicsWidget *parent = 0);
         virtual ~VideoResourceWidget();
         virtual QPixmap pixmap();
         virtual void setResource(Nepomuk::Resource resource);
@@ -75,10 +75,6 @@ namespace Crystal
 
     private Q_SLOTS:
         void updateUrl();
-
-    private:
-        int m_width;
-        int m_height;
   };
 }
 

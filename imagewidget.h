@@ -47,6 +47,7 @@ public:
 
 private Q_SLOTS:
     void previewUpdated(const KFileItem &item, const QPixmap &preview);
+    void previewJobFailed(const KFileItem &item);
 
 private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);

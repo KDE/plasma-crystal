@@ -42,7 +42,6 @@ ImageWidget::ImageWidget(QGraphicsWidget* parent)
     m_iconSize(48),
     m_previewJob(0)
 {
-
     border = 1; // should be a power of two, otherwise we get blurry lines
     fg = Plasma::Theme::defaultTheme()->color(Plasma::Theme::TextColor);
     bg = Plasma::Theme::defaultTheme()->color(Plasma::Theme::BackgroundColor);
@@ -63,7 +62,12 @@ void ImageWidget::setIconSize(int iconSize)
 
 void ImageWidget::setUrl(const QUrl& url)
 {
-    m_url = url.isValid() ? url : QUrl();
+    m_url = QUrl(url.toString(QUrl::None));
+    // apparently needed to make PreviewJob not fail for local files :/
+    if (url.toString(QUrl::None).startsWith('/')) {
+        m_url = QUrl(QString("file:/%1").arg(url.toString(QUrl::None)));
+    }
+    kDebug() << url.toString(QUrl::None) << m_url << QString("file:/%1").arg(url.toString(QUrl::None));
 }
 
 void ImageWidget::setMimeType(const QString &mime)
@@ -71,8 +75,15 @@ void ImageWidget::setMimeType(const QString &mime)
     m_mimeType = mime;
 }
 
+void ImageWidget::previewJobFailed(const KFileItem &item)
+{
+
+    kDebug() << "preview failed for" << m_url;
+}
+
 void ImageWidget::previewUpdated(const KFileItem &item, const QPixmap &preview)
 {
+    kDebug() << "preview for" << m_url << "is in.";
     Q_UNUSED( item )
     m_pixmap = preview;
     pixmapUpdated();
@@ -106,14 +117,17 @@ void ImageWidget::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
     Q_UNUSED(option)
     Q_UNUSED(widget)
 
-    if (!m_previewJob) {
+    if (!m_previewJob && m_url.isValid()) {
+        kDebug() << "Starting previewjob" << m_url;
         // KIO::PreviewJob: http://api.kde.org/4.x-api/kdelibs-apidocs/kio/html/classKIO_1_1PreviewJob.html
         KFileItem kfile(KUrl(m_url), m_mimeType, KFileItem::Unknown);
         KFileItemList list;
         list << kfile;
         KIO::PreviewJob *job = new KIO::PreviewJob(list, m_iconSize, m_iconSize, m_iconSize, 128, true, true, 0);
         connect(job, SIGNAL(gotPreview(const KFileItem&, const QPixmap&)), SLOT(previewUpdated(const KFileItem&, const QPixmap&)));
+        connect(job, SIGNAL(failed(const KFileItem&)), SLOT(previewJobFailed(const KFileItem&)));
         m_previewJob = job;
+        job->start();
         pixmapUpdated();
     }
     painter->setRenderHint(QPainter::SmoothPixmapTransform);

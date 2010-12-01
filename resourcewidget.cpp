@@ -51,12 +51,12 @@
 
 using namespace Crystal;
 
-ResourceWidget::ResourceWidget(Nepomuk::Query::Result result, QGraphicsWidget *parent)
+ResourceWidget::ResourceWidget(QGraphicsWidget *parent)
     : Plasma::IconWidget(parent),
     //: Plasma::Frame(parent),
       m_dumpProperties(true),
-      m_result(result),
-      m_resource(result.resource()),
+      m_result(),
+      m_resource(),
       m_layout(0),
       m_iconWidget(0),
       m_nameLabel(0),
@@ -114,7 +114,7 @@ ResourceWidget::ResourceWidget(Nepomuk::Query::Result result, QGraphicsWidget *p
     m_leftLayout->setContentsMargins(4, 4, 4, 4);
     m_rightLayout->setContentsMargins(4, 4, 4, 4);
 
-    setResource(m_resource);
+    //setResource(m_resource);
     //kDebug() << "GridLayout has rows, cols:" << m_layout->rowCount() << m_layout->columnCount();
 }
 
@@ -145,25 +145,28 @@ ResourceWidget* ResourceWidget::create(Nepomuk::Query::Result result)
     kDebug() << "PersonContact Type:" << NepomukFast::PersonContact().uri();
     kDebug() << "email type:" << NepomukFast::Email().type();
     */
+    ResourceWidget* rw = 0; 
     Nepomuk::Resource resource = result.resource();
     kDebug() << "==================" << resource.genericLabel() << "=====================";
     if (resource.types().contains(NepomukFast::Email().type())) {
         kDebug() << " MATCH --> This is an Email.";
-        return new EmailWidget(result);
+        rw = new EmailWidget();
     } else if (resource.types().contains(NepomukFast::PersonContact().type())) {
         kDebug() << " MATCH --> This is a PersonContact.";
-        return new ContactWidget(result);
-    //} else if (QUrl(resource.type()) == Soprano::Vocabulary::NCO::url()) {
-        //kDebug() << " MATCH --> This is an NCO.";
+        rw = new ContactWidget();
     } else if (resource.types().contains(NepomukFast::RasterImage().type())) {
         kDebug() << " MATCH --> This is an Image.";
-        return new ImageResourceWidget(result);
+        rw = new ImageResourceWidget();
     } else if (resource.types().contains(NepomukFast::Video().type())) {
         kDebug() << " MATCH --> This is an VIDEO.";
-        return new VideoResourceWidget(result);
+        rw = new VideoResourceWidget();
+    } else {
+        kDebug() << " MATCH --> Unknown types.";
+        rw = new ResourceWidget();
     }
-    kDebug() << " MATCH --> Unknown types.";
-    return new ResourceWidget(result);
+    rw->setResource(result.resource());
+    return rw;
+    
 }
 
 void ResourceWidget::setQuery(const QString &query)

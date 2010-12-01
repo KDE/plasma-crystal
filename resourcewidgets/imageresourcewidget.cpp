@@ -35,8 +35,8 @@
 
 using namespace Crystal;
 
-ImageResourceWidget::ImageResourceWidget(Nepomuk::Query::Result result, QGraphicsWidget *parent)
-    : ResourceWidget(result, parent),
+ImageResourceWidget::ImageResourceWidget(QGraphicsWidget *parent)
+    : ResourceWidget(parent),
       m_imageWidget(0)
 {
     m_width = 0;
@@ -48,7 +48,7 @@ ImageResourceWidget::ImageResourceWidget(Nepomuk::Query::Result result, QGraphic
     m_leftLayout->insertItem(0, m_imageWidget);
     updateUrl();
     connect(this, SIGNAL(urlChanged()), this, SLOT(updateUrl()));
-    setResource(result.resource());
+    //setResource(result.resource());
     /*
     // Fade in when this widget appears
     Plasma::Animation* fadeAnimation = Plasma::Animator::create(Plasma::Animator::FadeAnimation);

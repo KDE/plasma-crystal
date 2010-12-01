@@ -64,17 +64,15 @@ ja, es bleibt dabei,"
 
 //own
 #include "resourcewidgets/emailwidget.h"
-//#include "imagewidget.h"
 #include "../utils.h"
 
 
 using namespace Crystal;
 
-EmailWidget::EmailWidget(Nepomuk::Query::Result result, QGraphicsWidget *parent)
-    : ResourceWidget(result, parent)
+EmailWidget::EmailWidget(QGraphicsWidget *parent)
+    : ResourceWidget(parent)
 {
     kDebug() << "Creating an email widget";
-    m_email = Email(result.resource().uri());
     m_icon = "internet-mail";
     kDebug() << "need update?";
 
@@ -88,18 +86,7 @@ EmailWidget::~EmailWidget()
 void EmailWidget::updateWidgets()
 {
     ResourceWidget::updateWidgets();
-    //if ((m_width + m_height) > 0) {
-        //m_infoLabel->setText(i18nc("info in the image widget", "Image Size: %1x%2", m_width, m_height));
-        //kDebug() << "Size: " << m_width << m_height;
-    //} else {
-    //kDebug() << "=========> Contact updating" << m_resource.properties().keys();
-        //kDebug() << m_resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/05/10/nexif#model")).toString().toInt();
-        //kDebug() << m_resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width")).toString().toInt();
-        //kDebug() << m_resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height")).toString().toInt();
-        //http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height
-    //}
-    //kDebug() << m_resource.properties();
-    //m_infoLabel->setText("An Email");
+    //m_infoLabel->setText(i18nc("info in the image widget", "Image Size: %1x%2", m_width, m_height));
 }
 
 QString EmailWidget::info()
@@ -107,26 +94,11 @@ QString EmailWidget::info()
     return QString("An Email");
 }
 
-
-/*
 void EmailWidget::setResource(Nepomuk::Resource resource)
 {
-    //http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height
-    //QString m_url = m_resource.property(QUrl( "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url" )).toString();
-    m_width = resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width")).toString().toInt();
-    m_height = resource.property(QUrl("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height")).toString().toInt();
-    kDebug() << "------> wxh::" << m_width << m_height;
+    m_email = Email(resource.uri());
     ResourceWidget::setResource(resource);
 }
-void EmailWidget::updateUrl()
-{
-    m_imageWidget->setMimeType(m_mimeType);
-    m_imageWidget->setUrl(m_url);
-}
 
-QPixmap EmailWidget::pixmap()
-{
-    return m_imageWidget->pixmap();
-}
-*/
+
 #include "emailwidget.moc"
