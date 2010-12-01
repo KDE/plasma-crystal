@@ -36,7 +36,7 @@
 //own
 #include "resultwidget.h"
 #include "resourcewidget.h"
-#include "imageresourcewidget.h"
+//#include "resourcewidgets/imageresourcewidget.h"
 
 using namespace Crystal;
 

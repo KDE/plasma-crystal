@@ -28,9 +28,10 @@ set(crystal_SRCS
     resultwidget.cpp
     resultwebview.cpp
     resourcewidget.cpp
-    imageresourcewidget.cpp
+    resourcewidgets/imageresourcewidget.cpp
     resourcewidgets/contactwidget.cpp
     resourcewidgets/emailwidget.cpp
+    resourcewidgets/videoresourcewidget.cpp
     imagewidget.cpp
     ratingwidget.cpp
     utils.cpp

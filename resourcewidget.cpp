@@ -38,12 +38,13 @@
 // Nepomuk
 #include <Nepomuk/Resource>
 #include <Nepomuk/Variant>
-
+#include "ontologies/video.h"
 // Own
 #include "resourcewidget.h"
-#include "imageresourcewidget.h"
 #include "resourcewidgets/contactwidget.h"
 #include "resourcewidgets/emailwidget.h"
+#include "resourcewidgets/imageresourcewidget.h"
+#include "resourcewidgets/videoresourcewidget.h"
 #include "ratingwidget.h"
 #include "utils.h"
 
@@ -142,9 +143,9 @@ ResourceWidget* ResourceWidget::create(Nepomuk::Query::Result result)
     kDebug() << "Resource:" << resource.uri() << resource.type() << resource.types();
     kDebug() << "Image         Type:" << NepomukFast::Image().uri() << NepomukFast::Image().type();
     kDebug() << "PersonContact Type:" << NepomukFast::PersonContact().uri();
+    kDebug() << "email type:" << NepomukFast::Email().type();
     */
     Nepomuk::Resource resource = result.resource();
-    kDebug() << "email type:" << NepomukFast::Email().type();
     kDebug() << "==================" << resource.genericLabel() << "=====================";
     if (resource.types().contains(NepomukFast::Email().type())) {
         kDebug() << " MATCH --> This is an Email.";
@@ -157,6 +158,9 @@ ResourceWidget* ResourceWidget::create(Nepomuk::Query::Result result)
     } else if (resource.types().contains(NepomukFast::RasterImage().type())) {
         kDebug() << " MATCH --> This is an Image.";
         return new ImageResourceWidget(result);
+    } else if (resource.types().contains(NepomukFast::Video().type())) {
+        kDebug() << " MATCH --> This is an VIDEO.";
+        return new VideoResourceWidget(result);
     }
     kDebug() << " MATCH --> Unknown types.";
     return new ResourceWidget(result);
