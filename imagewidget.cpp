@@ -65,7 +65,7 @@ void ImageWidget::setUrl(const QUrl& url)
     m_url = QUrl(url.toString(QUrl::None));
     // apparently needed to make PreviewJob not fail for local files :/
     if (url.toString(QUrl::None).startsWith('/')) {
-        m_url = QUrl(QString("file:/%1").arg(url.toString(QUrl::None)));
+        m_url = QUrl(QString("file:%1").arg(url.toString(QUrl::None)));
     }
     kDebug() << url.toString(QUrl::None) << m_url << QString("file:/%1").arg(url.toString(QUrl::None));
 }
@@ -78,7 +78,13 @@ void ImageWidget::setMimeType(const QString &mime)
 void ImageWidget::previewJobFailed(const KFileItem &item)
 {
 
-    kDebug() << "preview failed for" << m_url;
+    kDebug() << "preview failed for" << item.url();
+}
+
+void ImageWidget::previewResult(KJob* job)
+{
+
+    kDebug() << "job result:" << job->errorText() << "success?" << (job->error() == 0);
 }
 
 void ImageWidget::previewUpdated(const KFileItem &item, const QPixmap &preview)
@@ -126,6 +132,7 @@ void ImageWidget::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
         KIO::PreviewJob *job = new KIO::PreviewJob(list, m_iconSize, m_iconSize, m_iconSize, 128, true, true, 0);
         connect(job, SIGNAL(gotPreview(const KFileItem&, const QPixmap&)), SLOT(previewUpdated(const KFileItem&, const QPixmap&)));
         connect(job, SIGNAL(failed(const KFileItem&)), SLOT(previewJobFailed(const KFileItem&)));
+        connect(job, SIGNAL(result(KJob*)), SLOT(previewResult(KJob*)));
         m_previewJob = job;
         job->start();
         pixmapUpdated();
