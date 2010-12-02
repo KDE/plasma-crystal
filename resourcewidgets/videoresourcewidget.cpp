@@ -39,10 +39,9 @@
 using namespace Crystal;
 
 VideoResourceWidget::VideoResourceWidget(QGraphicsWidget *parent)
-    : ImageResourceWidget(parent),
-      m_imageWidget(0)
+    : ImageResourceWidget(parent)
 {
-    //setResource(result.resource());
+    m_imageWidget->setIcon("video-x-generic");
 }
 
 VideoResourceWidget::~VideoResourceWidget()
@@ -71,15 +70,11 @@ void VideoResourceWidget::setResource(Nepomuk::Resource resource)
     kDebug() << "------> video resolution wxh::" << m_width << m_height;
     ResourceWidget::setResource(resource);
 }
+
 void VideoResourceWidget::updateUrl()
 {
     m_imageWidget->setMimeType(m_mimeType);
     m_imageWidget->setUrl(m_url);
-}
-
-QPixmap VideoResourceWidget::pixmap()
-{
-    return m_imageWidget->pixmap();
 }
 
 #include "videoresourcewidget.moc"

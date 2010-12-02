@@ -3,7 +3,8 @@ project(plasma-crystal)
 find_package(Nepomuk REQUIRED)
 
 find_package(Soprano)
-  macro_log_feature(Soprano_FOUND "Soprano" "Semantic Desktop Storing" "http://soprano.sourceforge.net" TRUE "${SOPRANO_MIN_VERSION}" "Soprano is needed for Nepomuk")
+  macro_log_feature(Soprano_FOUND "Soprano" "Semantic Desktop Storing" "http://soprano.sourceforge.net"
+  TRUE "${SOPRANO_MIN_VERSION}" "Soprano is needed for Nepomuk")
 
 
 
@@ -45,6 +46,7 @@ set(crystal_SRCS
 nepomuk_add_ontology_classes(
   crystal_SRCS
   ONTOLOGIES
+  ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nexif.trig
   ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nfo.trig
   ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nmo.trig
   ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/nie/nco.trig
@@ -62,6 +64,7 @@ nepomuk_add_ontology_classes(
   "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Website"
   "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Video"
   "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Visual"
+  "http://www.semanticdesktop.org/ontologies/2007/05/10/nexif#Photo"
   )
 
 

@@ -38,7 +38,7 @@ using namespace Crystal;
 
 ImageWidget::ImageWidget(QGraphicsWidget* parent)
     : QGraphicsWidget(parent),
-    m_icon(QString()),
+    m_icon(QString("image-x-generic")),
     m_iconSize(48),
     m_previewJob(0)
 {
@@ -51,6 +51,13 @@ ImageWidget::ImageWidget(QGraphicsWidget* parent)
 ImageWidget::~ImageWidget()
 {
 }
+
+void ImageWidget::setIcon(const QString& icon)
+{
+    m_icon = icon;
+    //pixmapUpdated();
+}
+
 
 void ImageWidget::setIconSize(int iconSize)
 {

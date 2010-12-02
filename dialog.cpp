@@ -46,12 +46,11 @@
 #include <Nepomuk/Variant>
 #include <Nepomuk/Query/FileQuery>
 #include <Nepomuk/Query/Query>
+#include <Nepomuk/Query/ResourceTerm>
 #include <soprano/queryresultiterator.h>
+#include <Nepomuk/Tag>
 #include <soprano/model.h>
-//#include <nie.h>
-//#include "ontologies/nco.h"
-//#include "onologies/personcontact.h"
-//#include <emailaddress.h>
+#include <soprano/vocabulary.h>
 
 #include <nepomuk/tag.h>
 #include <nepomuk/andterm.h>
@@ -62,7 +61,6 @@
 
 //own
 #include "dialog.h"
-//#include "helpers.cpp"
 
 
 using namespace Crystal;
@@ -244,6 +242,7 @@ QStringList Dialog::history()
 
 void Dialog::search(const QString queryString)
 {
+    m_query = queryString;
     m_queryClient->close();
     m_fileQueryClient->close();
     m_lineEdit->setText(queryString);
@@ -269,22 +268,53 @@ void Dialog::search(const QString queryString)
 
     andTerm.addSubTerm( mailTerm );
     */
-    Nepomuk::Query::LiteralTerm nepomukTerm(queryString);
-    query.setTerm( nepomukTerm );
-    query.setLimit( 20 );
+    kDebug() << "tagsearch?" << queryString << queryString.startsWith("hastag:", Qt::CaseInsensitive);
+    Nepomuk::Query::FileQuery fileQuery;
+    if (queryString.startsWith("hastag:", Qt::CaseInsensitive)) {
+        QString tagName = queryString;
+        tagName.remove("hastag:", Qt::CaseSensitive);
+        kDebug() << "Searching tag" << tagName;
+        //Nepomuk::Tag myTag = Nepomuk::Tag(tagName);
+        QList<Nepomuk::Tag> allTags = Nepomuk::Tag::allTags();
+        if (!allTags.count()) {
+            return;
+        }
+        foreach (const Nepomuk::Tag &t, allTags) {
 
+            if (QString::compare(tagName, t.genericLabel(), Qt::CaseInsensitive) == 0) {
+                // term matching the tag
+                kDebug() << "Found tag:" << t.genericLabel() << t.uri();
+                Nepomuk::Query::ResourceTerm tagTerm( t );
+
+                // term matching tagged resource
+                Nepomuk::Query::ComparisonTerm term( Soprano::Vocabulary::NAO::hasTag(),
+                                                    tagTerm,
+                                                    Nepomuk::Query::ComparisonTerm::Equal );
+                fileQuery.setTerm(term);
+                query.setTerm(term);
+                continue;
+            }
+        }
+
+    } else {
+        Nepomuk::Query::LiteralTerm nepomukTerm(queryString);
+        query.setTerm( nepomukTerm );
+        query.setLimit( 20 );
+
+
+        // File search
+        kDebug() << "file search for query:" << m_query;
+        //Nepomuk::Query::LiteralTerm nepomukTerm(queryString);
+        fileQuery.setTerm( nepomukTerm );
+
+    }
+    m_time.restart();
+
+//     kDebug() << "SPARQL:" << fileQuery.toSparqlQuery();
     kDebug() << "SPARQL:" << query.toSparqlQuery();
     m_queryClient->query(query);
-
-    // File search
-
-    Nepomuk::Query::FileQuery fileQuery;
     fileQuery.addIncludeFolder(KUrl("/home/sebas/kde/articles/"), true);
-    //Nepomuk::Query::LiteralTerm nepomukTerm(queryString);
-    fileQuery.setTerm( nepomukTerm );
     fileQuery.setLimit( 20 );
-
-    kDebug() << "SPARQL:" << fileQuery.toSparqlQuery();
     m_fileQueryClient->query(fileQuery);
     //m_queryClient->sparqlQuery(query.toSparqlQuery(), Soprano::Query::QueryLanguageSparql );
 
@@ -367,8 +397,6 @@ void Dialog::matchFound()
 
     m_resultsView->updateView();
     emit updateToolTip(m_query, m_resultsView->count());
-
-
 }
 
 void Dialog::progressChanged(int percent)

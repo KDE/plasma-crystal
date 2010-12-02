@@ -39,6 +39,7 @@
 #include <Nepomuk/Resource>
 #include <Nepomuk/Variant>
 #include "video.h"
+#include "photo.h"
 #include "rasterimage.h"
 // Own
 #include "resourcewidget.h"
@@ -155,7 +156,9 @@ ResourceWidget* ResourceWidget::create(Nepomuk::Query::Result result)
     } else if (resource.types().contains(Nepomuk::PersonContact().type())) {
         kDebug() << " MATCH --> This is a PersonContact.";
         rw = new ContactWidget();
-    } else if (resource.types().contains(Nepomuk::RasterImage().type())) {
+    //} else if (resource.types().contains(Nepomuk::RasterImage().type())) {
+    } else if (resource.types().contains(Nepomuk::RasterImage().type())
+            || resource.types().contains(Nepomuk::Photo().type())) {
         kDebug() << " MATCH --> This is an Image.";
         rw = new ImageResourceWidget();
     } else if (resource.types().contains(Nepomuk::Video().type())) {

@@ -67,15 +67,15 @@ namespace Crystal
         **/
         VideoResourceWidget(QGraphicsWidget *parent = 0);
         virtual ~VideoResourceWidget();
-        virtual QPixmap pixmap();
+        //virtual QPixmap pixmap();
         virtual void setResource(Nepomuk::Resource resource);
 
         //void setUrl(const QUrl &url);
 
     protected:
         virtual void updateWidgets();
-        ImageWidget *m_imageWidget;
         Nepomuk::Video m_video;
+
     private Q_SLOTS:
         void updateUrl();
   };

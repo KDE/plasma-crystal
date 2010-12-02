@@ -43,6 +43,7 @@ public:
     void setUrl(const QUrl& url);
     void setMimeType(const QString &mime);
     void setIconSize(int iconSize);
+    void setIcon(const QString& icon);
     QPixmap pixmap();
 
 private Q_SLOTS:
