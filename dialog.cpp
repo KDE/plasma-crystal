@@ -37,6 +37,7 @@
 
 //plasma
 #include <Plasma/Dialog>
+#include <Plasma/PushButton>
 #include <Plasma/Theme>
 
 // Nepomuk
@@ -127,21 +128,22 @@ void Dialog::buildDialog()
 {
     QGraphicsGridLayout *gridLayout = new QGraphicsGridLayout(this);
     setLayout(gridLayout);
-
+    int row = 0;
     m_navIcon = new Plasma::IconWidget(this);
     m_navIcon->setIcon("go-next");
     m_navIcon->setMaximumSize(22, 22);
     m_navIcon->setMinimumSize(22, 22);
-    gridLayout->addItem(m_navIcon, 0, 0);
+    gridLayout->addItem(m_navIcon, row, 0);
 
     m_lineEdit = new Plasma::LineEdit(this);
-    gridLayout->addItem(m_lineEdit, 0, 1);
+    gridLayout->addItem(m_lineEdit, row, 1);
 
     m_searchButton = new Plasma::IconWidget(this);
     m_searchButton->setIcon("system-search");
     m_searchButton->setMaximumSize(22, 22);
     m_searchButton->setMinimumSize(22, 22);
-    gridLayout->addItem(m_searchButton, 0, 2);
+    gridLayout->addItem(m_searchButton, row, 2);
+    row++;
 
     m_tabBar = new Plasma::TabBar(this);
 
@@ -154,14 +156,41 @@ void Dialog::buildDialog()
     m_tabBar->addTab(KIcon("system-search"), i18n("Results"), m_resultsView);
     m_tabBar->setTabBarShown(false);
 
-    gridLayout->addItem(m_tabBar, 1, 0, 1, 3);
+    /* // TODO: filtering by types
+    QGraphicsWidget* typesWidget = new QGraphicsWidget(this);
+    typesWidget->setMaximumHeight(32);
+    QGraphicsLinearLayout* typesLayout = new QGraphicsLinearLayout(typesWidget);
 
+    m_typeFolder = new Plasma::PushButton(typesWidget);
+    m_typeFolder->setCheckable(true);
+    m_typeFolder->setIcon(KIcon("folder"));
+    typesLayout->addItem(m_typeFolder);
+
+    m_typePerson = new Plasma::PushButton(typesWidget);
+    m_typePerson->setCheckable(true);
+    m_typePerson->setIcon(KIcon("user-identity"));
+    typesLayout->addItem(m_typePerson);
+
+    m_typeImage = new Plasma::PushButton(typesWidget);
+    m_typeImage->setCheckable(true);
+    m_typeImage->setIcon(KIcon("image-x-generic"));
+    typesLayout->addItem(m_typeImage);
+
+    // Default type filters:
+    m_typePerson->setChecked(true);
+    m_typeImage->setChecked(true);
+
+    gridLayout->addItem(typesWidget, row, 0, 1, 3);
+    row++;
+    */
+    gridLayout->addItem(m_tabBar, row, 0, 1, 3);
+    row++;
     m_statusBar = new Plasma::Label(this);
     //m_statusBar->setText("status");
     m_statusBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     m_statusBar->setMaximumHeight(22);
     m_statusBar->setFont(KGlobalSettings::smallestReadableFont());
-    gridLayout->addItem(m_statusBar, 2, 0, 1, 3);
+    gridLayout->addItem(m_statusBar, row, 0, 1, 3);
 
     connect(m_lineEdit, SIGNAL(returnPressed()), SLOT(search()));
     connect(m_lineEdit, SIGNAL(returnPressed()), m_searchButton, SLOT(setPressed()));
@@ -419,9 +448,11 @@ void Dialog::updateNavIcon(int tabIndex)
     if (tabIndex == 0) {
         m_navIcon->setEnabled((m_resultsView->count() > 0));
         m_navIcon->setIcon("go-next");
+        m_navIcon->setToolTip(i18nc("tooltip on result/dashboard button", "Show Results"));
     } else {
         m_navIcon->setEnabled(true);
         m_navIcon->setIcon("go-previous");
+        m_navIcon->setToolTip(i18nc("tooltip on result/dashboard button", "Show Dashboard"));
     }
 }
 

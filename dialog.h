@@ -52,6 +52,7 @@ namespace Plasma
 {
     class Icon;
     class Dialog;
+    class PushButton;
 }
 
 namespace Solid
@@ -138,7 +139,6 @@ namespace Crystal
         ResultView *m_resultsView;
         Plasma::Label *m_statusBar;
 
-
         // All icon sizes, indexed
         QHash<int, int> m_iconSizes;
         int m_timeout;
@@ -150,6 +150,10 @@ namespace Crystal
 
         QStringList m_history;
         int m_historySize;
+
+        Plasma::PushButton* m_typeFolder;
+        Plasma::PushButton* m_typePerson;
+        Plasma::PushButton* m_typeImage;
   };
 }
 

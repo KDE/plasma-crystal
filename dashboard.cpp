@@ -101,7 +101,8 @@ void DashBoard::update()
 
     stringMap["%style"] = m_css->styleSheet();
     stringMap["%title"] = i18nc("dashboard title", "Crystal Desktop Search");
-    stringMap["%introduction"] = i18nc("dashboard introduction", "Type in a word to search for it in your files. For more complex queries, you can prefix your query with \"<strong>?</strong>\" to use the more powerful <a href=\"http://techbase.kde.org/Development/Tutorials/Metadata/Nepomuk/QueryService#Simple_Search_Syntax\" target=\"_new\">Nepomuk search syntax</a>.");
+    stringMap["%introduction"] = i18nc("dashboard introduction", "Enter your query into the search field above and press the search button. You can refine your search using the buttons above.");
+    //word to search for it in your files. For more complex queries, you can prefix your query with \"<strong>?</strong>\" to use the more powerful <a href=\"http://techbase.kde.org/Development/Tutorials/Metadata/Nepomuk/QueryService#Simple_Search_Syntax\" target=\"_new\">Nepomuk search syntax</a>.");
     stringMap["%headerTags"] = i18nc("dashboard header tags", "My Tags");
     stringMap["%headerRecent"] = i18nc("dashboard header recent", "Recent Searches");
     stringMap["%tags"] = tags();
