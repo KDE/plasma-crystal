@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Crystal Desktop Search
+Name[da]=Crystal skrivebordssøgning
 Name[el]=Αναζήτηση επιφάνειας εργασίας Crystal
 Name[en_GB]=Crystal Desktop Search
 Name[es]=Búsqueda de escritorio Crystal
@@ -22,6 +23,7 @@ Name[tr]=Crystal Masaüstü Araması
 Name[uk]=Стільничний пошук Crystal
 Name[x-test]=xxCrystal Desktop Searchxx
 Comment=Search through your documents
+Comment[da]=Gennemsøg dine dokumenter
 Comment[el]=Αναζήτηση στα έγγραφά σας
 Comment[en_GB]=Search through your documents
 Comment[es]=Busca en sus documentos
