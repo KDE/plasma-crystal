@@ -70,7 +70,7 @@ DashBoard::DashBoard(QGraphicsWidget *parent)
     //mainFrame()->setUrl(QUrl(_baseDir));
 
     // debugging...
-    css = "/home/sebas/kdesvn/src/playground-plasma/applets/crystal/dashboard.css";
+    //css = "/home/sebas/kdesvn/src/playground-plasma/applets/crystal/dashboard.css";
     //kDebug() << "BaseDir:" << m_baseDir;
     m_css = new StyleSheet(this);
     m_css->setFileName(css);
@@ -78,7 +78,7 @@ DashBoard::DashBoard(QGraphicsWidget *parent)
 
     // The template
     QString m_templateFile = QUrl(KStandardDirs::locate("data", "plasma-applet-crystal/dashboard.html")).path();
-    m_templateFile = "/home/sebas/kdesvn/src/playground-plasma/applets/crystal/dashboard.html";
+    //m_templateFile = "/home/sebas/kdesvn/src/playground-plasma/applets/crystal/dashboard.html";
 
     load(m_templateFile);
     m_templateWatch = new KDirWatch(this);
