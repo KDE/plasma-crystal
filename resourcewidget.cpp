@@ -90,7 +90,10 @@ ResourceWidget::ResourceWidget(QGraphicsWidget *parent)
     m_iconWidget->setMinimumSize(m_iconSize, m_iconSize);
     m_iconWidget->setMaximumSize(m_iconSize, m_iconSize);
     m_iconWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    m_iconWidget->setAcceptsHoverEvents(false);
+    m_iconWidget->setAcceptHoverEvents(false);
+    m_iconWidget->setAcceptTouchEvents(false);
+    m_iconWidget->setAcceptedMouseButtons(0);
+    m_iconWidget->setAcceptDrops(false);
     m_leftLayout->addItem(m_iconWidget);
     connect(m_iconWidget, SIGNAL(activated()), this, SLOT(open()));
 
@@ -283,7 +286,6 @@ void ResourceWidget::updateWidgets()
 void ResourceWidget::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
-        kDebug() << "clicked";
         m_startPos = event->pos();
     }
     Plasma::IconWidget::mousePressEvent(event);
@@ -293,7 +295,7 @@ void ResourceWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->buttons() & Qt::LeftButton) {
         int distance = (event->pos() - m_startPos).toPoint().manhattanLength();
-        if (distance >= QApplication::startDragDistance()) {
+        if ((event->pos().x() < m_iconSize + 8) && distance >= QApplication::startDragDistance()) {
             startDrag();
         }
     }

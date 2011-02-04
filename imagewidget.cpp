@@ -46,6 +46,11 @@ ImageWidget::ImageWidget(QGraphicsWidget* parent)
     fg = Plasma::Theme::defaultTheme()->color(Plasma::Theme::TextColor);
     bg = Plasma::Theme::defaultTheme()->color(Plasma::Theme::BackgroundColor);
     setIconSize(m_iconSize);
+    setAcceptHoverEvents(false);
+    setAcceptTouchEvents(false);
+    setAcceptedMouseButtons(0);
+    setAcceptDrops(false);
+
 }
 
 ImageWidget::~ImageWidget()
