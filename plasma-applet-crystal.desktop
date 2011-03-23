@@ -1,6 +1,12 @@
 [Desktop Entry]
 Name=Crystal Desktop Search
+Name[pt]=Pesquisa no Ambiente de Trabalho Crystal
+Name[uk]=Стільничний пошук Crystal
+Name[x-test]=xxCrystal Desktop Searchxx
 Comment=Search through your documents
+Comment[pt]=Pesquisar nos seus documentos
+Comment[uk]=Пошук у ваших документах
+Comment[x-test]=xxSearch through your documentsxx
 Icon=system-search
 Type=Service
 X-KDE-ServiceTypes=Plasma/Applet
