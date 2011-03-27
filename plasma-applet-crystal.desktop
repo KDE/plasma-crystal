@@ -1,10 +1,12 @@
 [Desktop Entry]
 Name=Crystal Desktop Search
+Name[nds]=Crystal-Schriefdischsöök
 Name[pt]=Pesquisa no Ambiente de Trabalho Crystal
 Name[pt_BR]=Pesquisa na área de trabalho Crystal
 Name[uk]=Стільничний пошук Crystal
 Name[x-test]=xxCrystal Desktop Searchxx
 Comment=Search through your documents
+Comment[nds]=Dien Dokmenten dörkieken
 Comment[pt]=Pesquisar nos seus documentos
 Comment[pt_BR]=Pesquisar pelos seus documentos
 Comment[uk]=Пошук у ваших документах
