@@ -342,7 +342,8 @@ void Dialog::search(const QString queryString)
 //     kDebug() << "SPARQL:" << fileQuery.toSparqlQuery();
     kDebug() << "SPARQL:" << query.toSparqlQuery();
     m_queryClient->query(query);
-    fileQuery.addIncludeFolder(KUrl("/home/sebas/kde/articles/"), true);
+    //fileQuery.addIncludeFolder(KUrl("/home/sebas/kde/articles/"), true);
+    fileQuery.addIncludeFolder(KUrl("/"), true);
     fileQuery.setLimit( 20 );
     m_fileQueryClient->query(fileQuery);
     //m_queryClient->sparqlQuery(query.toSparqlQuery(), Soprano::Query::QueryLanguageSparql );

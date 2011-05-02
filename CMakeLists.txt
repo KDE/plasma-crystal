@@ -1,18 +1,19 @@
 project(plasma-crystal)
 
+find_package(KDE4 REQUIRED)
 find_package(Nepomuk REQUIRED)
 
 find_package(Soprano)
   macro_log_feature(Soprano_FOUND "Soprano" "Semantic Desktop Storing" "http://soprano.sourceforge.net"
   TRUE "${SOPRANO_MIN_VERSION}" "Soprano is needed for Nepomuk")
 
-
-
+include(KDE4Defaults)
 include(SopranoAddOntology)
 
-
 include_directories(
-  ${CMAKE_BINARY_DIR}/ontologies)
+    ${CMAKE_BINARY_DIR}/ontologies
+    ${KDE4_INCLUDES}
+)
 
 #  ${CMAKE_SOURCE_DIR}/ontologies)
 
