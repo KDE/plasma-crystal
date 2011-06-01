@@ -2,7 +2,7 @@
 Name=Crystal Desktop Search
 Name[cs]=Vyhledávací služba Crystal
 Name[et]=Crystali töölauaotsing
-Name[km]= 
+Name[km]=ការ​ស្វែងរក​ផ្ទៃតុ​គ្រីស្តាល់
 Name[nds]=Crystal-Schriefdischsöök
 Name[nl]=Crystal Bureaubladzoeken
 Name[pt]=Pesquisa no Ambiente de Trabalho Crystal
@@ -14,6 +14,7 @@ Comment=Search through your documents
 Comment[cs]=Prohledávání Vašich dokumentů
 Comment[de]=Durchsuchen Sie Ihre Dokumente
 Comment[et]=Dokumentides otsimine
+Comment[km]=ស្វែងរក​តាមរយៈ​ឯកសារ​របស់​អ្នក
 Comment[nds]=Dien Dokmenten dörkieken
 Comment[nl]=Uw documenten doorzoeken
 Comment[pt]=Pesquisar nos seus documentos
