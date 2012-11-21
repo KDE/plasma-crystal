@@ -1,5 +1,9 @@
 project(plasma-crystal)
 
+# disable deprecated libnepomuk stuff for less compiler warnings
+add_definitions(-DDISABLE_NEPOMUK_LEGACY=1)
+
+
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
 find_package(Nepomuk REQUIRED)
