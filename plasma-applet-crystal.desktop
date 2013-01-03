@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Crystal Desktop Search
+Name[bs]=Postavke kristalnog desktopa
 Name[cs]=Vyhledávací služba Crystal
 Name[es]=Búsqueda de escritorio Crystal
 Name[et]=Crystali töölauaotsing
@@ -19,6 +20,7 @@ Name[sv]=Crystal skrivbordssökning
 Name[uk]=Стільничний пошук Crystal
 Name[x-test]=xxCrystal Desktop Searchxx
 Comment=Search through your documents
+Comment[bs]=Pretražuje sadržaj vaših dokumenata
 Comment[cs]=Prohledávání Vašich dokumentů
 Comment[de]=Durchsuchen Sie Ihre Dokumente
 Comment[es]=Buscar en sus documentos
